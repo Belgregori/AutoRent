@@ -1,0 +1,104 @@
+.logoContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+    gap: 20px;
+    box-sizing: border-box;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+
+.header {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #06113f;
+    box-sizing: border-box;
+    position: fixed;
+    height: 64px;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.navBar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    box-sizing: border-box;
+    color: 3b82f6;
+}
+
+
+.button {
+    display: flex;
+    justify-content: flex-end;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-family: 'Bodoni Moda', serif;
+
+}
+
+.button:hover {
+    background: #3b82f6;
+    color: #fff;
+    text-decoration: underline;
+}
+
+.slogan {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 400;
+    margin-left: 20px;
+    text-align: center;
+    flex-grow: 1;
+    font-family: 'Bodoni Moda', serif;
+   
+}
+
+.slogan:hover {
+    background-color: #142e58;
+    color: #fff;
+    text-decoration: underline;
+    padding: 6px;
+    border-radius: 4px;
+    
+}
+
+@media (max-width: 768px) {
+    .header {
+
+        height: auto;
+        padding: 8px 8px;
+    }
+
+    .logoContainer {
+        margin-bottom: 8px;
+    }
+
+    .navBar {
+
+        gap: 10px;
+        width: 100%;
+        align-items: flex-start;
+    }
+
+    .logo {
+        width: 40px;
+        height: 40px;
+    }
+}
