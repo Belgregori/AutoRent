@@ -1,3 +1,14 @@
+:root{
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --secondary-color: #06113f;
+  --background-color: #06113f;
+  --background-white: #f8fafc;
+  --border-color: #06113f;
+  --text-dark: #0f172a;
+  --text-light: #f8fafc;
+  --shadow: 0 ipx 3px 0 rgba(0, 0, 0, 0.1);
+}
 .logoContainer {
     display: flex;
     align-items: center;
@@ -99,6 +110,10 @@
 
     .logo {
         width: 40px;
-        height: 40px;
+        height: 40px;
     }
-}
+    .slogan {
+        font-size: 14px;
+        margin-left: 10px;
+    }
+  }

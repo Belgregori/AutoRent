@@ -20,8 +20,6 @@ function Header() { //componente
   );
 }
 
-export default Header;
-
-
+export default Header;
 
 

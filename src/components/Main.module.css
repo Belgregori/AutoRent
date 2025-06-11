@@ -1,47 +1,298 @@
 .main {
-  min-height: 100vh;
-  margin-top: 64px; 
-  background-color: #f0f0f0;
+  min-height: calc(100vh - 64px); /* Ajusta 64px si tu header tiene otra altura */
+  margin-top: 64px;
+  background: #0e6ac7;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 40px 20px;
-  font-family: 'Bodoni Moda', serif;
-  color: #06113f;
+  padding: 32px 16px;
   box-sizing: border-box;
 }
 
-.main h1 {
-  font-size: 32px;
+.welcomeContainer {
+  width: 100%;
+  max-width: 900px;
+  margin-bottom: 32px;
+}
+
+.buscador {
+  background: #521bd4;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  padding: 32px 24px;
   margin-bottom: 24px;
-  color: #06113f;
-  text-align: center;
 }
 
-.main p {
+.Subtitle {
   font-size: 18px;
-  max-width: 800px;
-  line-height: 1.6;
-  text-align: center;
-  color: #333;
+  color: #3b82f6;
+  margin-bottom: 16px;
 }
 
-.main .botonPrincipal {
-  margin-top: 40px;
+.buscadorForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 180px;
+  min-width: 180px;
+}
+
+.inputGroup label {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.inputGroup input {
+  padding: 8px 12px;
+  border: 1px solid #1a7fd2;
+  border-radius: 6px;
+  font-size: 16px;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.inputGroup input:focus {
+  border: 1.5px solid #3b82f6;
+}
+
+.searchButton {
+  background: #3b82f6;
+  color: #0b37cb;
+  border: none;
+  border-radius: 8px;
   padding: 12px 24px;
-  background-color: #3b82f6;
-  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 18px;
+  transition: background 0.2s;
+}
+
+.searchButton:hover {
+  background: #2563eb;
+}
+
+.categorias {
+  width: 100%;
+  max-width: 900px;
+  margin: 32px 0 24px 0;
+}
+
+.sectionSubtitle {
+  color: #2563eb;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.categoriasGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 12px;
+}
+
+.categoriaCard {
+  background: #2111cf;
+  border-radius: 12px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  padding: 18px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 120px;
+  min-height: 110px;
+  flex: 1 1 120px;
+  transition: box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.categoriaCard:hover {
+  box-shadow: 0 4px 16px rgba(59,130,246,0.13);
+}
+
+.categoriaIcon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.recomendaciones {
+  width: 100%;
+  max-width: 900px;
+  margin: 32px 0 18px 0;
+}
+
+.productosGrid {
+  width: 100%;
+  max-width: 1100px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.productoCard {
+  background: #140577;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.2s;
+}
+
+.productoCard:hover {
+  box-shadow: 0 6px 24px rgba(59,130,246,0.13);
+}
+
+.productoImagen {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.productoIcon {
+  font-size: 2.2rem;
+}
+
+.disponibilidadBadge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #106ad1;
+  color: #2563eb;
+  border-radius: 8px;
+  padding: 2px 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.disponible {
+  color: #22c55e;
+}
+
+.noDisponible {
+  color: #ef4444;
+}
+
+.productoInfo {
+  width: 100%;
+  text-align: center;
+}
+
+.productoNombre {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.productoCategoria {
+  font-size: 15px;
+  color: #0647a2;
+  margin-bottom: 8px;
+}
+
+.productoCalificacion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.estrella {
+  color: #fbbf24;
+}
+
+.reseñas {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.productoPrecio {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.precio {
+  color: #2563eb;
+}
+
+.periodo {
+  color: #093d85;
+  font-size: 14px;
+}
+
+.productoAcciones {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.verDetalleButton {
+  background: #cb0f0f;
+  color: #2563eb;
+  border: 1.5px solid #2563eb;
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.verDetalleButton:hover {
+  background: #2563eb;
+  color: #ac0707;
+}
+
+.reservarButton {
+  background: #22c55e;
+  color: #c22020;
   border: none;
   border-radius: 6px;
+  padding: 7px 14px;
+  font-size: 15px;
   cursor: pointer;
-  font-weight: bold;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
+  transition: background 0.2s;
 }
 
-.main .botonPrincipal:hover {
-  background-color: #1e40af;
+.reservarButton:disabled {
+  background: #0d64ac;
+  color: #fff;
+  cursor: not-allowed;
 }
 
+.verMasContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
 
+.verMasButton {
+  background: #2563eb;
+  color: #160cad;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 32px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
 
+.verMasButton:hover {
+  background: #3b82f6;
+}
