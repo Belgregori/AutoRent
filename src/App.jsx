@@ -4,7 +4,7 @@ import { Home } from './pages/Home.jsx';
 import { AgregarProductos } from './pages/AgregarProductos.jsx';
 import { DetalleProducto } from './pages/DetalleProducto.jsx';
 import { ListaProductos } from './pages/ListaProductos.jsx';
-
+import { EditarProducto } from './pages/EditarProducto.jsx';
 
 
 
@@ -18,6 +18,7 @@ function App() {
         <Route path="/AgregarProductos" element={<AgregarProductos />} />
         <Route path="/producto/:id" element={<DetalleProducto />} />
         <Route path="/ListaProductos" element={<ListaProductos />} />
+        <Route path="/EditarProducto" element={<EditarProducto />} />
         {/* otras rutas */}
       </Routes>
     </BrowserRouter>

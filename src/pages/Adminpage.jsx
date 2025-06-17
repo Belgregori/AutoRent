@@ -14,6 +14,10 @@ export const Adminpage = () => {
     navigate('/ListaProductos');
   };
 
+   const handleEditarProductos = () => {
+    navigate('/EditarProducto');
+  };
+
   return (
     <>
      <h1>Panel del Administrador</h1>
@@ -27,6 +31,12 @@ export const Adminpage = () => {
     className={styles.listaProductos}
     onClick={handleListaProductos}>
       Ver lista de productos
+    </button>
+
+    <button type="button" 
+    className={styles.EditarProductos}
+    onClick={handleEditarProductos}>
+      Editar Caracteristicas
     </button>
     </>
   )

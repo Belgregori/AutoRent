@@ -1,4 +1,4 @@
-/* Fondo animado */
+
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
@@ -14,7 +14,7 @@ body {
   100% { background-position: 0% 50%; }
 }
 
-/* Título */
+
 .titulo {
   text-align: center;
   margin-top: 30px;
@@ -22,7 +22,7 @@ body {
   color: #ffffff;
 }
 
-/* Botones */
+
 .botones {
   display: flex;
   justify-content: center;
@@ -30,7 +30,7 @@ body {
   margin-top: 40px;
 }
 
-/* Estilos para cada botón */
+
 .agregarNombre,
 .agregarImagen,
 .agregarDescripcion,
@@ -48,13 +48,14 @@ body {
 .agregarNombre:hover,
 .agregarImagen:hover,
 .agregarDescripcion:hover,
-.confirmar:hover {
+.confirmar:hover 
+ {
   background-color: #3b82f6;
   box-shadow: 0 6px 12px rgba(59, 130, 246, 0.5);
   transform: translateY(-2px);
 }
 
-/* Inputs */
+
 .input {
   margin: 10px 0;
   padding: 10px;
@@ -66,7 +67,7 @@ body {
   color: #0f172a;
 }
 
-/* Secciones que aparecen después del click */
+
 .seccion {
   margin-top: 10px;
   display: flex;
@@ -74,7 +75,7 @@ body {
   align-items: center;
 }
 
-/* Errores */
+
 .error {
   color: #f87171;
   margin-top: 5px;
@@ -85,4 +86,25 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+
+
+.enviar, .BOTONENVIAR {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 32px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 32px auto 0 auto;
+  display: block;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px rgba(59,130,246,0.10);
+}
+
+.enviar:hover, .BOTONENVIAR:hover {
+  background: #3b82f6;
 }

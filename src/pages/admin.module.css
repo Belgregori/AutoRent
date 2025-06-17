@@ -1,10 +1,10 @@
-/* Variables de color basadas en tus tonos de AgregarProductos */
+
 :root {
-  --color-primario: #4a90e2;    /* Azul profesional */
-  --color-secundario: #50e3c2;  /* Verde aguamarina */
-  --color-fondo: #f9f9f9;       /* Fondo suave */
-  --color-texto: #333333;       /* Texto oscuro */
-  --color-boton-hover: #357ABD; /* Azul para hover */
+  --color-primario: #4a90e2;  
+  --color-secundario: #50e3c2; 
+  --color-fondo: #f9f9f9;       
+  --color-texto: #333333;       
+  --color-boton-hover: #357ABD; 
 }
 
 
@@ -70,6 +70,23 @@ h1 {
   box-shadow: 0 6px 14px rgba(53, 122, 189, 0.7);
 }
 
+.EditarProductos {
+  background-color: var(--color-secundario);
+  border: none;
+  border-radius: 30px;
+  padding: 15px 40px;
+  font-size: 1.25rem;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(80, 227, 194, 0.5);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  display: block;
+  margin: 80px auto 0 auto;
+  user-select: none;
+}
 
-
-
+.EditarProductos:hover {
+  background-color: var(--color-boton-hover);
+  box-shadow: 0 6px 14px rgba(53, 122, 189, 0.7);
+}

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from 'react';
 import styles from './lista.module.css';
-
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -13,14 +13,18 @@ const datosIniciales = [
 
 export const ListaProductos = () => {
     const [productos, setProductos] = useState(datosIniciales);
-
-    // Filtramos solo los disponibles para mostrar
+    const navigate = useNavigate();
+    
     const productosDisponibles = productos.filter(p => p.disponible);
 
     const eliminarProducto = (id) => {
         if (window.confirm('¿Querés eliminar este producto? No hay vuelta atrás.')) {
             setProductos(productos.filter(p => p.id !== id));
         }
+    };
+
+    const handleEditarProductos = () => {
+        navigate('/EditarProducto');
     };
 
     return (
@@ -43,12 +47,20 @@ export const ListaProductos = () => {
                                 <td>{prod.id}</td>
                                 <td>{prod.nombre}</td>
                                 <td>
-                                    <button
+                                    <div className={styles.Botones}>
+                                    <button className={styles.botonEliminar}
+                                    
                                         onClick={() => eliminarProducto(prod.id)}
-                                        style={{ color: 'red', cursor: 'pointer' }}
+                                        
                                     >
                                         Eliminar
                                     </button>
+                                    <button  
+                                        className={styles.botonEditar}
+                                        onClick={() => handleEditarProductos(prod.id)}>
+                                        Editar Caracteristicas
+                                    </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}
@@ -58,4 +70,7 @@ export const ListaProductos = () => {
         </div>
     );
 }
+
+
+
 

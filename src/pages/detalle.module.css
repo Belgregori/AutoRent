@@ -1,8 +1,8 @@
 .container {
-  min-height: calc(100vh - 64px); /* Asegura que ocupe casi toda la pantalla */
-  margin-top: 64px; /* misma altura que el Header */
-  background: #0e6ac7; /* mismo fondo que en .main */
-  display: flex;
+  min-height: calc(100vh - 64px); 
+  margin-top: 64px; 
+  background: #0e6ac7; 
+   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 32px 16px;
@@ -15,15 +15,12 @@
     text-align: left;
     width: 100%;
     margin-bottom: 1rem;
- 
-
-
 }
 
 .descripcion {
   margin-bottom: 1.5rem;
   font-size: 1.1rem;
-  color: #e0e0e0; /* más claro por el fondo azul */
+  color: #e0e0e0; 
 }
 
 .galeria {
@@ -95,7 +92,7 @@
   background-color: #2563eb;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
   .galeria {
     flex-direction: column;

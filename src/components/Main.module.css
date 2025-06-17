@@ -1,5 +1,5 @@
 .main {
-  min-height: calc(100vh - 64px); /* Ajusta 64px si tu header tiene otra altura */
+  min-height: calc(100vh - 64px); 
   margin-top: 64px;
   background: #0e6ac7;
   display: flex;
