@@ -1,4 +1,5 @@
 package com.autoRent.autoRent.repository;
 
-public class ProductoRepository {
+public interface ProductoRepository extends org.springframework.data.jpa.repository.JpaRepository<com.autoRent.autoRent.model.Producto, Long> {
+
 }
