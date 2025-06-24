@@ -3,6 +3,9 @@ package com.autoRent.autoRent.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class Producto {
 
@@ -15,8 +18,13 @@ public class Producto {
     private double precio;
     private String categoria;
 
+
     @Lob
-    private byte[]imagenData;
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "imagenes_producto", joinColumns = @JoinColumn(name = "producto_id"))
+    @Column(name = "imagen")
+    private List<byte[]> imagenesData = new ArrayList<>();
+
 
     public Long getId() {
         return id;
@@ -58,8 +66,8 @@ public class Producto {
         this.categoria = categoria;
     }
 
-    public byte[] getImagenData() { return imagenData; }
-    public void setImagenData(byte[] imagenData) { this.imagenData = imagenData; }
+    public List<byte[]> getImagenesData() { return imagenesData; }
+    public void setImagenesData(List<byte[]> imagenesData) { this.imagenesData = imagenesData; }
 
 
 
@@ -68,7 +76,7 @@ public class Producto {
         // Constructor vacío requerido por JPA
     }
 
-    public Producto(String nombre, String descripcion, double precio, String categoria, String imagePath) {
+    public Producto(String nombre, String descripcion, double precio, String categoria, byte[] imagenData) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
