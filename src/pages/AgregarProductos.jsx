@@ -7,8 +7,7 @@ export const AgregarProductos = () => {
   const [descripcion, setDescripcion] = useState('');
   const [precio, setPrecio] = useState(0);
   const [categoria, setCategoria] = useState('');
-  const [imagen, setImagen] = useState(null);
-
+  const [imagenes, setImagenes] = useState([]);
 
   const [mostrarNombre, setMostrarNombre] = useState(false);
   const [mostrarImagen, setMostrarImagen] = useState(false);
@@ -16,9 +15,7 @@ export const AgregarProductos = () => {
   const [mostrarPrecio, setMostrarPrecio] = useState(false);
   const [mostrarCategoria, setMostrarCategoria] = useState(false);
 
-
   const [errorNombre, setErrorNombre] = useState('');
-
 
   const handleAgregarNombre = () => {
     if (!nombre.trim()) {
@@ -33,8 +30,9 @@ export const AgregarProductos = () => {
     setMostrarDescripcion(false);
   };
 
-
-  const handleSubirImagen = () => {
+  // Permite subir varias imágenes
+  const handleSubirImagenes = (e) => {
+    setImagenes([...imagenes, ...Array.from(e.target.files)]);
     setMostrarImagen(false);
   };
 
@@ -49,7 +47,6 @@ export const AgregarProductos = () => {
   const handleAgregarProducto = async (e) => {
     e.preventDefault();
 
-
     if (!nombre.trim() || !descripcion.trim() || !precio || !categoria) {
       alert('Por favor completa todos los campos obligatorios.');
       return;
@@ -60,16 +57,16 @@ export const AgregarProductos = () => {
     formData.append('descripcion', descripcion.trim());
     formData.append('precio', precio);
     formData.append('categoria', categoria);
-    if (imagen) {
-      formData.append('imagen', imagen);
-    }
+
+    imagenes.forEach((imagen) => {
+      formData.append(`imagen_`, imagen);
+    });
 
     try {
-      const response = await fetch('/api/productos/agregar', {
+      const response = await fetch('/api/productos', {
         method: 'POST',
         body: formData,
         headers: {
-
         }
       });
 
@@ -77,15 +74,13 @@ export const AgregarProductos = () => {
       const resultado = text ? JSON.parse(text) : {};
       console.log('Respuesta del servidor:', resultado);
 
-
       if (response.ok) {
         alert('✅ Producto agregado con éxito');
-
         setNombre('');
         setDescripcion('');
         setPrecio(0);
         setCategoria('');
-        setImagen(null);
+        setImagenes([]);
       } else {
         alert('❌ Error al agregar el producto');
       }
@@ -140,12 +135,18 @@ export const AgregarProductos = () => {
               <input
                 type="file"
                 className={styles.input}
-                onChange={(e) => setImagen(e.target.files[0])}
+                onChange={handleSubirImagenes}
                 accept="image/*"
+                multiple
               />
-              <button type="button" className={styles.confirmar} onClick={handleSubirImagen}>
-                Subir Imagen
-              </button>
+              {/* Puedes mostrar las imágenes seleccionadas si quieres */}
+              {imagenes.length > 0 && (
+                <ul>
+                  {imagenes.map((img, idx) => (
+                    <li key={idx}>{img.name}</li>
+                  ))}
+                </ul>
+              )}
             </div>
           )}
         </div>
@@ -187,7 +188,7 @@ export const AgregarProductos = () => {
             <div className={styles.seccion}>
               <input
                 type="number"
-                value={precio}
+                value={precio === 0 ? '' : precio}
                 placeholder="Precio"
                 onChange={(e) => setPrecio(parseFloat(e.target.value))}
                 className={styles.input}
@@ -227,7 +228,8 @@ export const AgregarProductos = () => {
       </div>
       <div className={styles.botonEnviar}>
         <button type="submit" className={styles.enviar}>
-          Guardar Producto</button>
+          Guardar Producto
+        </button>
       </div>
     </form>
   );

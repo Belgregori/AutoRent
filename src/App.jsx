@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Adminpage } from './pages/Adminpage.jsx';
-import { Home } from './pages/Home.jsx';
+import Home from './pages/Home.jsx';
 import { AgregarProductos } from './pages/AgregarProductos.jsx';
 import { DetalleProducto } from './pages/DetalleProducto.jsx';
 import { ListaProductos } from './pages/ListaProductos.jsx';
