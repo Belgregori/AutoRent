@@ -2,30 +2,37 @@ import React from 'react'
 import { useState } from 'react';
 import styles from './lista.module.css';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 
 
-const datosIniciales = [
-    { id: 1, nombre: 'Producto 1', disponible: true },
-    { id: 2, nombre: 'Producto 2', disponible: true },
-    { id: 3, nombre: 'Producto 3', disponible: true },
-];
 
 export const ListaProductos = () => {
-    const [productos, setProductos] = useState(datosIniciales);
+    const [productos, setProductos] = useState([]);
     const navigate = useNavigate();
     
-    const productosDisponibles = productos.filter(p => p.disponible);
+    useEffect(() => {
+        fetch('/api/productos')
+        .then(res => res.json())
+        .then(data => setProductos(data))
+        .catch(err =>console.error('Error al cargar productos:', err));
+    }, []);
+
+    const productosDisponibles = productos;
 
     const eliminarProducto = (id) => {
-        if (window.confirm('¿Querés eliminar este producto? No hay vuelta atrás.')) {
-            setProductos(productos.filter(p => p.id !== id));
-        }
-    };
-
-    const handleEditarProductos = () => {
-        navigate('/EditarProducto');
-    };
+        if (!window.confirm('¿Seguro que deseas eliminar este producto?')) return;
+        fetch(`/api/productos/${id}`, {method: 'DELETE'})
+        .then(res => {
+            if (res.ok) {
+                setProductos(productos.filter(prod => prod.id !== id));
+                alert('Producto eliminado con éxito');
+            }else{
+                alert('Error al eliminar el producto');
+            }
+    })
+    .catch(() => alert('Error al eliminar el producto en el servidor'))
+};
 
     return (
         <div>
@@ -58,7 +65,7 @@ export const ListaProductos = () => {
                                     <button  
                                         className={styles.botonEditar}
                                         onClick={() => handleEditarProductos(prod.id)}>
-                                        Editar Caracteristicas
+                                        Editar Producto
                                     </button>
                                     </div>
                                 </td>
@@ -69,7 +76,7 @@ export const ListaProductos = () => {
             )}
         </div>
     );
-}
+};
 
 
 

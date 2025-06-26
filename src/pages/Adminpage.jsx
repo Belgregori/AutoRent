@@ -14,8 +14,8 @@ export const Adminpage = () => {
     navigate('/ListaProductos');
   };
 
-   const handleEditarProductos = () => {
-    navigate('/EditarProducto');
+   const handleAgregarCategoria = () => {
+    navigate('/AgregarCategoria');
   };
 
   return (
@@ -34,9 +34,9 @@ export const Adminpage = () => {
     </button>
 
     <button type="button" 
-    className={styles.EditarProductos}
-    onClick={handleEditarProductos}>
-      Editar Caracteristicas
+    className={styles.AgregarCategoria}
+    onClick={handleAgregarCategoria}>
+      Agregar Categoria
     </button>
     </>
   )

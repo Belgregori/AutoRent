@@ -1,0 +1,154 @@
+.agregarCategoriaContainer {
+  max-width: 340px;
+  min-width: 240px;
+  padding: 1.5rem 1.2rem 1.2rem 1.2rem;
+  margin: 40px auto 0 auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(80, 227, 194, 0.10);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.agregarCategoriaForm {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  align-items: stretch;
+}
+
+.agregarCategoriaForm label {
+  font-weight: 600;
+  color: var(--color-primario, #4a90e2);
+  font-size: 1rem;
+  margin-bottom: 0.6rem;
+  text-align: center;   /* <--- AHORA CENTRADO */
+  display: block;
+}
+
+.agregarCategoriaForm input[type="text"],
+.agregarCategoriaForm textarea {
+  width: 92%;
+  min-width: 120px;
+  max-width: 200px;
+  margin: 0 auto 0.2rem auto;
+  box-sizing: border-box;
+  padding: 0.32rem 0.5rem;
+  border-radius: 7px;
+  border: 1px solid #d0d0d0;
+  font-size: 0.97rem;
+  background: #f9f9f9;
+  display: block;
+}
+
+.agregarCategoriaForm textarea {
+  resize: vertical;
+  min-height: 38px;
+}
+
+.agregarCategoriaForm input[type="file"] {
+  width: 92%;
+  min-width: 120px;
+  max-width: 200px;
+  margin: 0.4rem auto 2.2rem auto; /* aumenta el espacio inferior */
+  padding: 0.32rem 0.5rem;
+  border-radius: 7px;
+  border: 1px solid #d0d0d0;
+  font-size: 0.97rem;
+  background: #fff;         /* Fondo blanco igual que los otros inputs */
+  display: block;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+
+
+.agregarCategoriaForm button {
+  background: var(--color-secundario, #50e3c2);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 32px 13px 32px; /* más espacio a los costados */
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0.7rem auto 0 auto;
+  /* Elimina width fija para que el padding funcione bien */
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px rgba(80, 227, 194, 0.10);
+  display: block;
+}
+
+.agregarCategoriaForm button:hover {
+  background: var(--color-boton-hover, #357ABD);
+}
+
+.btnVerCategoriasContainer {
+  display: flex;
+  justify-content: center;
+  margin: 2.2rem 0 0.5rem 0;
+  width: 100%;
+}
+
+.btnVerCaracteristicas {
+  background: var(--color-primario, #4a90e2);
+  color: #fff;
+  border: none;
+  border-radius: 18px;
+  padding: 6px 18px;
+  font-size: 0.97rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 0.2rem;
+}
+
+.btnVerCaracteristicas:hover {
+  background: var(--color-boton-hover, #357ABD);
+}
+
+.categoriasList {
+  margin: 1rem 0 0 0;
+  padding: 0;
+  list-style: none;
+  width: 100%;
+}
+
+.categoriasList li {
+  background: #f9f9f9;
+  border-radius: 7px;
+  margin-bottom: 0.4rem;
+  padding: 0.5rem 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #333;
+  font-size: 0.97rem;
+}
+
+.categoriasList button {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 13px;
+  padding: 0.18rem 0.7rem;
+  font-size: 0.93rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.categoriasList button:hover {
+  background: #c82333;
+}
+
+.nombreArchivo {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #555;
+  margin-top: 0.7rem;
+  margin-bottom: 0.5rem;
+  word-break: break-all;
+}
