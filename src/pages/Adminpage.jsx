@@ -18,6 +18,10 @@ export const Adminpage = () => {
     navigate('/AgregarCategoria');
   };
 
+  const handleAdministrarCaracteristicas = () => {
+    navigate('/AdminCaracteristicas');
+  }
+
   return (
     <>
      <h1>Panel del Administrador</h1>
@@ -38,6 +42,14 @@ export const Adminpage = () => {
     onClick={handleAgregarCategoria}>
       Agregar Categoria
     </button>
+
+
+    <button type="button"
+    className={styles.AdministrarCaracteristicas}
+    onClick={handleAdministrarCaracteristicas}>
+      Administrar Características
+    </button>
     </>
+
   )
 }
