@@ -1,7 +1,6 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import styles from './admin.module.css'
-
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import styles from './admin.module.css';
 
 export const Adminpage = () => {
   const navigate = useNavigate();
@@ -14,7 +13,7 @@ export const Adminpage = () => {
     navigate('/ListaProductos');
   };
 
-   const handleAgregarCategoria = () => {
+  const handleAgregarCategoria = () => {
     navigate('/AgregarCategoria');
   };
 
@@ -24,18 +23,23 @@ export const Adminpage = () => {
 
   return (
     <>
-     <h1>Panel del Administrador</h1>
-    <button type="button" 
-    className={styles.agregarProducto}
-    onClick={handleAgregarProducto}>
-      Agregar Producto
-    </button>
+      <h1>Panel del Administrador</h1>
 
-    <button type="button" 
-    className={styles.listaProductos}
-    onClick={handleListaProductos}>
-      Ver lista de productos
-    </button>
+      <button
+        type="button"
+        className={styles.agregarProducto}
+        onClick={handleAgregarProducto}
+      >
+        Agregar Producto
+      </button>
+
+      <button
+        type="button"
+        className={styles.listaProductos}
+        onClick={handleListaProductos}
+      >
+        Ver lista de productos
+      </button>
 
     <button type="button" 
     className={styles.AgregarCategoria}
