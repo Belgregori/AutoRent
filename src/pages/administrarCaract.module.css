@@ -1,0 +1,193 @@
+:root {
+  --color-primario: #4a90e2;  
+  --color-secundario: #50e3c2; 
+  --color-fondo: #f9f9f9;       
+  --color-texto: #333333;       
+  --color-boton-hover: #357ABD; 
+}
+
+.container {
+  max-width: 600px;
+  background-color: white;
+  padding: 30px;
+  margin: 40px auto;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(80, 227, 194, 0.3);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--color-texto);
+}
+
+.title {
+  color: var(--color-primario);
+  text-align: center;
+  margin-bottom: 25px;
+  letter-spacing: 1.1px;
+}
+
+
+.nuevaCaracteristicaWrapper {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.input {
+  flex: 1;
+  padding: 12px 15px;
+  border: 2px solid var(--color-secundario);
+  border-radius: 25px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  border-color: var(--color-primario);
+}
+
+.botonAgregar {
+  background-color: var(--color-secundario);
+  border: none;
+  border-radius: 30px;
+  padding: 12px 30px;
+  font-size: 1.1rem;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(80, 227, 194, 0.5);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.botonAgregar:hover {
+  background-color: var(--color-boton-hover);
+  box-shadow: 0 6px 14px rgba(53, 122, 189, 0.7);
+}
+
+.listaCaracteristicas {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 40px 0;
+}
+
+.caracteristicaItem {
+  background-color: var(--color-fondo);
+  margin-bottom: 12px;
+  padding: 12px 20px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-texto);
+  font-weight: 600;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 6px rgba(80, 227, 194, 0.3);
+}
+
+.inputEditar {
+  width: 70%;
+  padding: 8px 12px;
+  border: 2px solid var(--color-secundario);
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.inputEditar:focus {
+  border-color: var(--color-primario);
+}
+
+.botones {
+  display: flex;
+  gap: 10px;
+}
+
+.botonEditar,
+.botonEliminar {
+  background-color: var(--color-primario);
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  box-shadow: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  color: white;
+  border: none;
+  user-select: none;
+}
+
+.botonEditar:hover,
+.botonEliminar:hover {
+  background-color: var(--color-boton-hover);
+}
+
+.select {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border: 2px solid var(--color-secundario);
+  border-radius: 25px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.select:focus {
+  border-color: var(--color-primario);
+}
+
+.botonAsociar {
+  background-color: var(--color-secundario);
+  border: none;
+  border-radius: 30px;
+  padding: 12px 40px;
+  font-size: 1.1rem;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(80, 227, 194, 0.5);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+  display: block;
+  margin: 0 auto 30px auto;
+  white-space: nowrap;
+}
+
+.botonAsociar:hover {
+  background-color: var(--color-boton-hover);
+  box-shadow: 0 6px 14px rgba(53, 122, 189, 0.7);
+}
+
+
+.listaProductos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.productoItem {
+  background-color: var(--color-fondo);
+  margin-bottom: 15px;
+  padding: 15px 20px;
+  border-radius: 20px;
+  box-shadow: 0 2px 6px rgba(80, 227, 194, 0.3);
+  font-weight: 600;
+  color: var(--color-texto);
+}
+
+.caracteristicasAsignadas {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: var(--color-primario);
+  font-weight: 500;
+}
+
+
+
