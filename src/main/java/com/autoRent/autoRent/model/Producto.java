@@ -4,7 +4,9 @@ package com.autoRent.autoRent.model;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Producto {
@@ -24,6 +26,23 @@ public class Producto {
     @CollectionTable(name = "imagenes_producto", joinColumns = @JoinColumn(name = "producto_id"))
     @Column(name = "imagen")
     private List<byte[]> imagenesData = new ArrayList<>();
+
+
+    @ManyToMany
+    @JoinTable(
+            name= "producto_caracteristica",
+            joinColumns = @JoinColumn(name = "producto_id"),
+            inverseJoinColumns = @JoinColumn(name = "caracteristica_id")
+    )
+    private Set<Caracteristica> caracteristicas = new HashSet<>();
+
+    public Set<Caracteristica> getCaracteristicas() {
+        return caracteristicas;
+    }
+
+    public void setCaracteristicas(Set<Caracteristica> caracteristicas) {
+        this.caracteristicas = caracteristicas;
+    }
 
 
     public Long getId() {
@@ -83,5 +102,7 @@ public class Producto {
         this.categoria = categoria;
 
     }
+
+
 
 }
