@@ -16,7 +16,8 @@ public class ProductoDTO {
         this.nombre = producto.getNombre();
         this.descripcion = producto.getDescripcion();
         this.precio = producto.getPrecio();
-        this.categoria = producto.getCategoria();
+        this.categoria = producto.getCategoria() != null ? producto.getCategoria().getNombre() : null;
+
         if (producto.getImagenesData() != null && !producto.getImagenesData().isEmpty()) {
             byte[] primeraImagen = producto.getImagenesData().get(0);
             // usa primeraImagen

@@ -1,7 +1,9 @@
 package com.autoRent.autoRent.controller;
 
+import com.autoRent.autoRent.model.Categoria;
 import com.autoRent.autoRent.model.Producto;
 import com.autoRent.autoRent.model.Caracteristica;
+import com.autoRent.autoRent.repository.CategoriaRepository;
 import com.autoRent.autoRent.repository.ProductoRepository;
 import com.autoRent.autoRent.repository.CaracteristicaRepository;
 
@@ -25,11 +27,14 @@ public class ProductoController {
     @Autowired
     private CaracteristicaRepository caracteristicaRepository;
 
+    @Autowired
+    private CategoriaRepository categoriaRepository;
+
     @PostMapping
     public ResponseEntity<?> agregarProducto(@RequestParam("nombre") String nombre,
                                              @RequestParam("descripcion") String descripcion,
                                              @RequestParam("precio") double precio,
-                                             @RequestParam("categoria") String categoria,
+                                             @RequestParam("categoria") Categoria categoria,
                                              @RequestParam(value = "imagen_", required = false) MultipartFile[] imagenes) {
 
         Producto producto = new Producto();
@@ -38,7 +43,7 @@ public class ProductoController {
         producto.setPrecio(precio);
         producto.setCategoria(categoria);
 
-        // ⚠️ Te aviso que esto no guarda imágenes aún porque está comentado
+
         if (imagenes != null && imagenes.length > 0) {
             for (MultipartFile imagen : imagenes) {
                 try {
@@ -66,7 +71,7 @@ public class ProductoController {
         return productoRepository.findAll();
     }
 
-    // ⭐ NUEVO: asociar característica a producto
+
     @PostMapping("/{id}/caracteristicas")
     public ResponseEntity<?> asociarCaracteristica(
             @PathVariable Long id,

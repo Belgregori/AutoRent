@@ -18,7 +18,7 @@ public class Producto {
     private String nombre;
     private String descripcion;
     private double precio;
-    private String categoria;
+
 
 
     @Lob
@@ -42,6 +42,18 @@ public class Producto {
 
     public void setCaracteristicas(Set<Caracteristica> caracteristicas) {
         this.caracteristicas = caracteristicas;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private Categoria categoria;
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 
 
@@ -77,13 +89,9 @@ public class Producto {
         this.precio = precio;
     }
 
-    public String getCategoria() {
-        return categoria;
-    }
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
+
+
 
     public List<byte[]> getImagenesData() { return imagenesData; }
     public void setImagenesData(List<byte[]> imagenesData) { this.imagenesData = imagenesData; }
@@ -99,7 +107,6 @@ public class Producto {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
-        this.categoria = categoria;
 
     }
 
