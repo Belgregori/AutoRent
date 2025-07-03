@@ -6,7 +6,7 @@ import { DetalleProducto } from './pages/DetalleProducto.jsx';
 import { ListaProductos } from './pages/ListaProductos.jsx';
 import { AgregarCategoria } from './pages/AgregarCategoria.jsx';
 import { AdministrarCaracteristicas } from './pages/AdministrarCaracteristicas.jsx';
-
+import { EditarProducto } from './pages/EditarProducto.jsx';
 
 function App() {
   return (
@@ -20,6 +20,7 @@ function App() {
         <Route path="/ListaProductos" element={<ListaProductos />} />
         <Route path="/AgregarCategoria" element={<AgregarCategoria />} />
         <Route path="/AdministrarCaracteristicas" element={<AdministrarCaracteristicas />} />
+        <Route path="/EditarProducto/:id" element={<EditarProducto />} />
         {/* otras rutas */}
       </Routes>
     </BrowserRouter>

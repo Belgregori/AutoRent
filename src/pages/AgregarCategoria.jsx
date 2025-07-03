@@ -17,31 +17,26 @@ export const AgregarCategoria = ({ productoId }) => {
     }, []);
 
     const handleAgregarCategoria = (e) => {
-        e.preventDefault();
-        if( !nombre.trim() || !descripcion.trim() || !imagen) {
-            alert('Completa todos los campos');
-            return;
-        }
+  e.preventDefault();
+  if (!nombre.trim() || !descripcion.trim()) {
+    alert('Completa todos los campos');
+    return;
+  }
 
-    const formData = new FormData();
-        formData.append('nombre', nombre.trim());
-        formData.append('descripcion', descripcion.trim());
-        formData.append('imagen', imagen);
-        
-        fetch('/api/categorias', {
-            method: 'POST',
-            body: formData
-        })
-        .then(res => res.json())
-        .then(cat => {
-            setCategorias([...categorias, cat]);
-            setNombre('');
-            setDescripcion('');
-            setImagen(null);
-            alert('Categoría agregada');
-        })    
-        .catch(() => alert('Error al agregar categoría'));
-    };
+  fetch('/api/categorias', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nombre: nombre.trim(), descripcion: descripcion.trim() })
+  })
+  .then(res => res.json())
+  .then(cat => {
+    setCategorias([...categorias, cat]);
+    setNombre('');
+    setDescripcion('');
+    alert('Categoría agregada');
+  })
+  .catch(() => alert('Error al agregar categoría'));
+};
 
 
 

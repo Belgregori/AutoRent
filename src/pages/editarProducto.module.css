@@ -1,0 +1,79 @@
+:root {
+  --color-primario: #4a90e2;
+  --color-secundario: #50e3c2;
+  --color-fondo: #f9f9f9;
+  --color-texto: #333333;
+  --color-boton-hover: #357ABD;
+}
+
+.container {
+  max-width: 600px;
+  margin: 50px auto;
+  background-color: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(80, 227, 194, 0.3);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--color-texto);
+}
+
+.title {
+  text-align: center;
+  color: var(--color-primario);
+  font-size: 2rem;
+  margin-bottom: 25px;
+  letter-spacing: 1px;
+}
+
+.select,
+.input {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border: 2px solid var(--color-secundario);
+  border-radius: 25px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+}
+
+.select:focus,
+.input:focus {
+  border-color: var(--color-primario);
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.botonGuardar {
+  background-color: var(--color-secundario);
+  border: none;
+  border-radius: 30px;
+  padding: 12px 30px;
+  font-size: 1.1rem;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(80, 227, 194, 0.5);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+  align-self: center;
+  margin-top: 10px;
+}
+
+.botonGuardar:hover {
+  background-color: var(--color-boton-hover);
+  box-shadow: 0 6px 14px rgba(53, 122, 189, 0.7);
+}
+
+.infoActual {
+  text-align: center;
+  font-size: 0.95rem;
+  margin-top: 10px;
+  color: #666;
+}

@@ -18,6 +18,10 @@ export const ListaProductos = () => {
         .catch(err =>console.error('Error al cargar productos:', err));
     }, []);
 
+    const handleEditarProductos = (id) => {
+        navigate(`/EditarProducto/${id}`);
+    };
+
     const productosDisponibles = productos;
 
     const eliminarProducto = (id) => {
