@@ -1,9 +1,32 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './admin.module.css';
+import { useState, useEffect } from 'react';
 
 export const Adminpage = () => {
   const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile(); // Verifica al cargar
+    window.addEventListener('resize', checkMobile); // Verifica si se redimensiona
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  if (isMobile) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center', color: 'red' }}>
+        <h2>⚠️ Acceso restringido</h2>
+        <p>El panel de administración no está disponible en dispositivos móviles.</p>
+      </div>
+    );
+  }
+
 
   const handleAgregarProducto = () => {
     navigate('/AgregarProductos');
@@ -41,21 +64,17 @@ export const Adminpage = () => {
         Ver lista de productos
       </button>
 
-    <button type="button" 
-    className={styles.AgregarCategoria}
-    onClick={handleAgregarCategoria}>
-      Agregar Categoria
-    </button>
+      <button type="button"
+        className={styles.AgregarCategoria}
+        onClick={handleAgregarCategoria}>
+        Agregar Categoria
+      </button>
 
-<button type="button" 
-    className={styles.AdministrarCaracteristicas}
-    onClick={handleAdministarCaracteristicas}>
-      Administrar Caracteristicas
-    </button>
-    
-
+      <button type="button"
+        className={styles.AdministrarCaracteristicas}
+        onClick={handleAdministarCaracteristicas}>
+        Administrar Caracteristicas
+      </button>
     </>
-
-    
   )
 }

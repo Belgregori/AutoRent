@@ -8,6 +8,17 @@ export const AdministrarCaracteristicas = () => {
   const [productos, setProductos] = useState([]);
   const [productoId, setProductoId] = useState('');
   const [caracteristicaId, setCaracteristicaId] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     cargarCaracteristicas();
@@ -62,8 +73,17 @@ export const AdministrarCaracteristicas = () => {
     alert('¡Asociada con éxito!');
     setProductoId('');
     setCaracteristicaId('');
-    cargarProductos(); // Refrescar las características asignadas
+    cargarProductos();
   };
+
+  if (isMobile) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center', color: 'red' }}>
+        <h2>⚠️ Acceso restringido</h2>
+        <p>Esta sección no está disponible en dispositivos móviles.</p>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -124,7 +144,7 @@ export const AdministrarCaracteristicas = () => {
       <ul className={styles.listaProductos}>
         {productos.map(p => (
           <li key={p.id} className={styles.productoItem}>
-            <strong>{p.nombre}</strong>  
+            <strong>{p.nombre}</strong>
             <small className={styles.caracteristicasAsignadas}>
               {p.caracteristicas && p.caracteristicas.length > 0
                 ? p.caracteristicas.map(c => c.nombre).join(', ')
@@ -136,6 +156,3 @@ export const AdministrarCaracteristicas = () => {
     </div>
   );
 };
-
-
-
