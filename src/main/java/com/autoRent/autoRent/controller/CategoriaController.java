@@ -7,6 +7,9 @@ import com.autoRent.autoRent.service.CategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.io.File;
 
 import java.util.List;
 
@@ -27,9 +30,38 @@ public class CategoriaController {
     }
 
     @PostMapping
-    public ResponseEntity<Categoria> crearCategoria(@RequestBody Categoria categoria) {
-        Categoria catCreada = categoriaRepository.save(categoria);
-        return ResponseEntity.ok(catCreada);
+    public ResponseEntity<?> crearCategoria(
+            @RequestParam("nombre") String nombre,
+            @RequestParam("descripcion") String descripcion,
+            @RequestParam("imagen") MultipartFile imagen) {
+
+        try {
+            // Ruta donde se guardará la imagen
+            String carpeta = System.getProperty("user.dir") + "/uploads/imagenes/";
+            File directorio = new File(carpeta);
+            if (!directorio.exists()) {
+                directorio.mkdirs(); // crea la carpeta si no existe
+            }
+
+            // Nombre único para la imagen
+            String nombreArchivo = System.currentTimeMillis() + "_" + imagen.getOriginalFilename();
+            String ruta = carpeta + nombreArchivo;
+
+            // Guardar la imagen en disco
+            imagen.transferTo(new File(ruta));
+
+            // Crear la categoría con la URL pública de la imagen
+            Categoria categoria = new Categoria();
+            categoria.setNombre(nombre);
+            categoria.setDescripcion(descripcion);
+            categoria.setImagenUrl("/imagenes/" + nombreArchivo); // esta URL se usará en el frontend
+
+            categoriaRepository.save(categoria);
+            return ResponseEntity.ok(categoria);
+
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error al guardar la imagen: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
@@ -40,7 +72,4 @@ public class CategoriaController {
         }
         return ResponseEntity.ok(cat);
     }
-
-
-
 }

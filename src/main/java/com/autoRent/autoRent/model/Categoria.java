@@ -23,9 +23,25 @@ public class Categoria {
 
     private String descripcion;
 
+    private String imagenUrl;
+
     @JsonIgnore
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
     private List<Producto> productos;
+
+    public String getDescripcion(){
+        return descripcion;
+    }
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public String getImagenUrl() {
+        return imagenUrl;
+    }
+    public void setImagenUrl(String imagenUrl) {
+        this.imagenUrl = imagenUrl;
+    }
 
     public String getNombre() {
         return nombre;

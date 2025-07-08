@@ -27,21 +27,19 @@ public class ProductoController {
     @Autowired
     private CaracteristicaRepository caracteristicaRepository;
 
-    @Autowired
-    private CategoriaRepository categoriaRepository;
+
 
     @PostMapping
     public ResponseEntity<?> agregarProducto(@RequestParam("nombre") String nombre,
                                              @RequestParam("descripcion") String descripcion,
                                              @RequestParam("precio") double precio,
-                                             @RequestParam("categoria") Categoria categoria,
                                              @RequestParam(value = "imagen_", required = false) MultipartFile[] imagenes) {
 
         Producto producto = new Producto();
         producto.setNombre(nombre);
         producto.setDescripcion(descripcion);
         producto.setPrecio(precio);
-        producto.setCategoria(categoria);
+
 
 
         if (imagenes != null && imagenes.length > 0) {
