@@ -33,11 +33,17 @@ export const AgregarCategoria = ({ productoId }) => {
       return;
     }
 
+
+    const formData = new FormData();
+    formData.append('nombre', nombre.trim());
+    formData.append('descripcion', descripcion.trim());
+    formData.append('imagen', imagen); // esta es la imagen seleccionada
+
     fetch('/api/categorias', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nombre: nombre.trim(), descripcion: descripcion.trim() })
+      body: formData
     })
+
       .then(res => res.json())
       .then(cat => {
         setCategorias([...categorias, cat]);
@@ -118,14 +124,22 @@ export const AgregarCategoria = ({ productoId }) => {
           Ver Categorías Registradas
         </button>
       </div>
-
       {mostrarCategorias && (
-        <ul>
+        <ul className={styles.categoriasList}>
           {categorias.map(cat => (
-            <li key={cat.id}>
-              {cat.nombre} - {cat.descripcion}
+            <li key={cat.id} className={styles.categoriaItem}>
+              <div className={styles.categoriaInfo}>
+                {cat.imagenUrl && (
+                  <img
+                    src={`http://localhost:62926${cat.imagenUrl}`}
+                    alt={cat.nombre}
+                    className={styles.categoriaImagen}
+                  />
+                )}
+                <span>{cat.nombre} - {cat.descripcion}</span>
+              </div>
               <button
-                style={{ marginLeft: '1rem', color: 'red' }}
+                className={styles.btnEliminar}
                 onClick={() => handleEliminarCategoria(cat.id)}
               >
                 Eliminar
@@ -134,6 +148,7 @@ export const AgregarCategoria = ({ productoId }) => {
           ))}
         </ul>
       )}
+
     </>
   );
 };
