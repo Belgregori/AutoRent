@@ -26,22 +26,41 @@ export const AdministrarCaracteristicas = () => {
   }, []);
 
   const cargarCaracteristicas = async () => {
-    const res = await fetch(`/api/caracteristicas`);
+    const token = localStorage.getItem('token');
+
+    const res = await fetch(`/api/caracteristicas`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
     const data = await res.json();
     setCaracteristicas(data);
   };
 
+
   const cargarProductos = async () => {
-    const res = await fetch('/api/productos');
+    const token = localStorage.getItem('token');
+
+    const res = await fetch('/api/productos', {
+      headders: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
     const data = await res.json();
     setProductos(data);
   };
 
   const crearCaracteristica = async () => {
     if (!nuevaCaracteristica.trim()) return;
+    const token = localStorage.getItem('token');
     await fetch('/api/caracteristicas', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({ nombre: nuevaCaracteristica })
     });
     setNuevaCaracteristica('');
@@ -49,14 +68,25 @@ export const AdministrarCaracteristicas = () => {
   };
 
   const eliminarCaracteristica = async (id) => {
-    await fetch(`/api/caracteristicas/${id}`, { method: 'DELETE' });
+    const token = localStorage.getItem('token');
+    await fetch(`/api/caracteristicas/${id}`,{
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+        });
     cargarCaracteristicas();
   };
 
+
   const editarCaracteristica = async (id, nombre) => {
+    const token = localStorage.getItem('token');
     await fetch(`/api/caracteristicas/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+         'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({ nombre })
     });
     setEditando(null);
@@ -65,9 +95,13 @@ export const AdministrarCaracteristicas = () => {
 
   const asociarCaracteristica = async () => {
     if (!productoId || !caracteristicaId) return;
+    const token = localStorage.getItem('token');
     await fetch(`/api/productos/${productoId}/caracteristicas`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+       },
       body: JSON.stringify({ id: caracteristicaId })
     });
     alert('¡Asociada con éxito!');

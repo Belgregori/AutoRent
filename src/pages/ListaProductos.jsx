@@ -18,11 +18,23 @@ export const ListaProductos = () => {
   }, []);
 
   useEffect(() => {
-    fetch('/api/productos')
-      .then(res => res.json())
+    const token = localStorage.getItem('token'); // Obtener el token del localStorage
+    fetch('/api/productos', {
+      headers: {
+        'Authorization': `Bearer ${token}`, // Enviar el token 
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('No autorizado o error al obtener productos');
+        }
+        return res.json();
+      })
       .then(data => setProductos(data))
       .catch(err => console.error('Error al cargar productos:', err));
   }, []);
+
 
   const handleEditarProductos = (id) => {
     navigate(`/EditarProducto/${id}`);
@@ -30,7 +42,15 @@ export const ListaProductos = () => {
 
   const eliminarProducto = (id) => {
     if (!window.confirm('¿Seguro que deseas eliminar este producto?')) return;
-    fetch(`/api/productos/${id}`, { method: 'DELETE' })
+    
+    const token = localStorage.getItem('token');     
+    fetch(`/api/productos/${id}`, {
+       method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`, 
+        'Content-Type': 'application/json'
+      }
+    })
       .then(res => {
         if (res.ok) {
           setProductos(productos.filter(prod => prod.id !== id));

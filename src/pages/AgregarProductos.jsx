@@ -66,8 +66,14 @@ export const AgregarProductos = () => {
     });
 
     try {
+      const token = localStorage.getItem('token');
+
+
       const response = await fetch('/api/productos', {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
         body: formData
       });
 
@@ -91,7 +97,7 @@ export const AgregarProductos = () => {
     }
   };
 
-  if (isMobile) {
+  if (isMobile) {  //No pueden acceder desde dispositivos móviles
     return (
       <div style={{ padding: '2rem', textAlign: 'center', color: 'red' }}>
         <h2>⚠️ Acceso restringido</h2>

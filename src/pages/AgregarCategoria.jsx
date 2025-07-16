@@ -20,11 +20,18 @@ export const AgregarCategoria = ({ productoId }) => {
   }, []);
 
   useEffect(() => {
-    fetch('/api/categorias')
-      .then(res => res.json())
-      .then(data => setCategorias(data))
-      .catch(err => console.error(err));
-  }, []);
+  const token = localStorage.getItem('token'); 
+  fetch('/api/categorias', {
+    headers: {
+      'Authorization': `Bearer ${token}`, 
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(res => res.json())
+    .then(data => setCategorias(data))
+    .catch(err => console.error(err));
+}, []);
+
 
   const handleAgregarCategoria = (e) => {
     e.preventDefault();
@@ -37,10 +44,15 @@ export const AgregarCategoria = ({ productoId }) => {
     const formData = new FormData();
     formData.append('nombre', nombre.trim());
     formData.append('descripcion', descripcion.trim());
-    formData.append('imagen', imagen); // esta es la imagen seleccionada
+    formData.append('imagen', imagen); // esta es la imagen seleccionada 
+ 
+   const token = localStorage.getItem('token'); 
 
     fetch('/api/categorias', {
       method: 'POST',
+      headeres: {
+        'Authorization': `Bearer ${token}`
+      },
       body: formData
     })
 
@@ -56,8 +68,14 @@ export const AgregarCategoria = ({ productoId }) => {
 
   const handleEliminarCategoria = (id) => {
     if (!window.confirm('¿Seguro que deseas eliminar esta categoría?')) return;
+    
+    const token = localStorage.getItem('token');
+    
     fetch(`/api/categorias/${id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
     })
       .then(() => {
         setCategorias(categorias.filter(cat => cat.id !== id));
@@ -131,7 +149,7 @@ export const AgregarCategoria = ({ productoId }) => {
               <div className={styles.categoriaInfo}>
                 {cat.imagenUrl && (
                   <img
-                    src={`http://localhost:62926${cat.imagenUrl}`}
+                    src={`http://localhost:59216${cat.imagenUrl}`}
                     alt={cat.nombre}
                     className={styles.categoriaImagen}
                   />
@@ -148,7 +166,6 @@ export const AgregarCategoria = ({ productoId }) => {
           ))}
         </ul>
       )}
-
     </>
   );
 };
