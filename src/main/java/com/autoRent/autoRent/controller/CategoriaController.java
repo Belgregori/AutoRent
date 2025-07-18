@@ -1,6 +1,5 @@
 package com.autoRent.autoRent.controller;
 
-
 import com.autoRent.autoRent.model.Categoria;
 import com.autoRent.autoRent.repository.CategoriaRepository;
 import com.autoRent.autoRent.service.CategoriaService;
@@ -10,13 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.File;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/categorias")
 public class CategoriaController {
-
 
     @Autowired
     private CategoriaRepository categoriaRepository;
@@ -72,4 +69,40 @@ public class CategoriaController {
         }
         return ResponseEntity.ok(cat);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarCategoria(@PathVariable Long id) {
+        System.out.println("🔍 Intentando eliminar categoría con ID: " + id);
+        return categoriaRepository.findById(id).map(categoria -> {
+            try {
+                // ruta absoluta del archivo guardado
+                String carpeta = System.getProperty("user.dir") + "/uploads/imagenes/";
+                String imagenUrl = categoria.getImagenUrl();
+                if (imagenUrl != null && !imagenUrl.isEmpty()) {
+                    File archivoImagen = new File(carpeta + imagenUrl.replace("/imagenes/", ""));
+                    // elimina el archivo si existe
+                    if (archivoImagen.exists()) {
+                        if (archivoImagen.delete()) {
+                            System.out.println("✅ Imagen eliminada: " + archivoImagen.getAbsolutePath());
+                        } else {
+                            System.out.println("⚠️ No se pudo eliminar la imagen: " + archivoImagen.getAbsolutePath());
+                        }
+                    } else {
+                        System.out.println("ℹ️ Imagen no encontrada en disco: " + archivoImagen.getAbsolutePath());
+                    }
+                }
+                // elimina el registro de la base
+                categoriaRepository.deleteById(id);
+                System.out.println("✅ Categoría eliminada correctamente");
+                return ResponseEntity.ok().build();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(500).body("Error al eliminar la categoría: " + e.getMessage());
+            }
+        }).orElseGet(() -> {
+            System.out.println("❌ Categoría no encontrada con ID: " + id);
+            return ResponseEntity.notFound().build();
+        });
+    }
 }
+

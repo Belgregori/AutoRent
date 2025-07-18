@@ -46,7 +46,7 @@ public class ProductoController {
             for (MultipartFile imagen : imagenes) {
                 try {
                     byte[] imagenData = imagen.getBytes();
-                    // Guardá la imagen si necesitás (ej: producto.getImagenesData().add(imagenData);)
+                    producto.getImagenesData().add(imagenData);
                 } catch (IOException e) {
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al procesar la imagen.");
                 }
@@ -68,7 +68,36 @@ public class ProductoController {
     public List<Producto> listarProductos() {
         return productoRepository.findAll();
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizarProducto(
+            @PathVariable Long id,
+            @RequestBody Producto productoActualizado) {
 
+        return productoRepository.findById(id).map(producto -> {
+            producto.setNombre(productoActualizado.getNombre());
+            producto.setDescripcion(productoActualizado.getDescripcion());
+            producto.setPrecio(productoActualizado.getPrecio());
+
+            // Actualizar la categoría si viene en el request
+            if (productoActualizado.getCategoria() != null && productoActualizado.getCategoria().getId() != null) {
+                producto.setCategoria(productoActualizado.getCategoria());
+            }
+
+            productoRepository.save(producto);
+            return ResponseEntity.ok(producto);
+        }).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarProducto(@PathVariable Long id) {
+        if (!productoRepository.existsById(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Producto no encontrado.");
+        }
+        productoRepository.deleteById(id);
+        return ResponseEntity.ok().body("Producto eliminado con éxito.");
+    }
 
     @PostMapping("/{id}/caracteristicas")
     public ResponseEntity<?> asociarCaracteristica(

@@ -24,7 +24,7 @@ public class Producto {
     @Lob
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "imagenes_producto", joinColumns = @JoinColumn(name = "producto_id"))
-    @Column(name = "imagen")
+    @Column(name = "imagen", columnDefinition = "LONGBLOB")
     private List<byte[]> imagenesData = new ArrayList<>();
 
 
@@ -109,7 +109,4 @@ public class Producto {
         this.precio = precio;
 
     }
-
-
-
 }

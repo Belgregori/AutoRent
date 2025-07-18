@@ -51,4 +51,7 @@ public class Categoria {
         this.nombre = nombre;
     }
 
+    public Long getId() {
+        return id;
+    }
 }

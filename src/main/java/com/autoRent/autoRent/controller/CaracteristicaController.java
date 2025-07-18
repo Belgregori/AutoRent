@@ -38,8 +38,4 @@ public class CaracteristicaController {
     public void eliminar(@PathVariable Long id) {
         service.eliminar(id);
     }
-
-
-
-
 }

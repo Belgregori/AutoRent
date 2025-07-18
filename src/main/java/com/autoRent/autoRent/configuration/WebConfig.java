@@ -3,9 +3,11 @@ package com.autoRent.autoRent.configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -17,6 +19,9 @@ import java.util.Arrays;
 @Configuration
 public class WebConfig {
 
+
+
+
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
@@ -26,22 +31,26 @@ public class WebConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomAccessDeniedHandler customAccessDeniedHandler) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/usuarios/register", "/usuarios/login").permitAll()
-
-                        // 3️⃣ Protegemos todas estas rutas solo para ADMIN
+                        .requestMatchers("/error").permitAll()
+                        .requestMatchers("/imagenes/**").permitAll()
+                        // Protege todas estas rutas solo para ADMIN
                         .requestMatchers(
                                 "/usuarios/**",
                                 "/productos/**",
-                                "/categorias/**",
+                                "/api/categorias/**",
                                 "/caracteristicas/**"
                         )
                         .hasRole("ADMIN")
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler(customAccessDeniedHandler)
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 

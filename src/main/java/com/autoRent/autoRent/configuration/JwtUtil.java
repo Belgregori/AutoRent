@@ -15,7 +15,7 @@ import java.util.Map;
 public class JwtUtil {
 
     private final String SECRET_KEY ="X7@rP9!vS2qLmZ4#bF6nYwD3$hGkTy8Q";
-    private final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hora
+    private final long EXPIRATION_TIME = 1000L * 60 * 60 * 24 * 7; // 1 hora
 
     public String generateToken(String email, String rol) {
         Map<String, Object> claims = new HashMap<>();
