@@ -12,7 +12,7 @@ export const LoginPage = () => {
         setError("");
 
         try {
-            const response = await fetch("http://localhost:64757/usuarios/login", {
+            const response = await fetch("http://localhost:65098/usuarios/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

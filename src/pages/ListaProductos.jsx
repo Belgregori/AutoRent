@@ -18,10 +18,10 @@ export const ListaProductos = () => {
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem('token'); // Obtener el token del localStorage
+    const token = localStorage.getItem('token'); 
     fetch('/api/productos', {
       headers: {
-        'Authorization': `Bearer ${token}`, // Enviar el token 
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       }
     })
@@ -35,19 +35,18 @@ export const ListaProductos = () => {
       .catch(err => console.error('Error al cargar productos:', err));
   }, []);
 
-
   const handleEditarProductos = (id) => {
     navigate(`/EditarProducto/${id}`);
   };
 
   const eliminarProducto = (id) => {
     if (!window.confirm('¿Seguro que deseas eliminar este producto?')) return;
-    
-    const token = localStorage.getItem('token');     
+
+    const token = localStorage.getItem('token');
     fetch(`/api/productos/${id}`, {
-       method: 'DELETE',
+      method: 'DELETE',
       headers: {
-        'Authorization': `Bearer ${token}`, 
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       }
     })
@@ -87,6 +86,7 @@ export const ListaProductos = () => {
             <tr>
               <th>ID</th>
               <th>Nombre</th>
+              <th>Imagen</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -95,6 +95,22 @@ export const ListaProductos = () => {
               <tr key={prod.id}>
                 <td>{prod.id}</td>
                 <td>{prod.nombre}</td>
+                <td>
+                  {prod.imagenesData && prod.imagenesData.length > 0 ? (
+                    <img
+                      src={`data:image/jpeg;base64,${prod.imagenesData[0]}`}
+                      alt="Miniatura"
+                      style={{
+                        width: '100px',
+                        height: 'auto',
+                        objectFit: 'cover',
+                        borderRadius: '8px'
+                      }}
+                    />
+                  ) : (
+                    <span>Sin imagen</span>
+                  )}
+                </td>
                 <td>
                   <div className={styles.Botones}>
                     <button
@@ -119,6 +135,5 @@ export const ListaProductos = () => {
     </div>
   );
 };
-
 
 

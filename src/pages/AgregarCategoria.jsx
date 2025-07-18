@@ -20,68 +20,101 @@ export const AgregarCategoria = ({ productoId }) => {
   }, []);
 
   useEffect(() => {
-  const token = localStorage.getItem('token'); 
-  fetch('/api/categorias', {
-    headers: {
-      'Authorization': `Bearer ${token}`, 
-      'Content-Type': 'application/json'
-    }
-  })
-    .then(res => res.json())
-    .then(data => setCategorias(data))
-    .catch(err => console.error(err));
-}, []);
-
-
-  const handleAgregarCategoria = (e) => {
-    e.preventDefault();
-    if (!nombre.trim() || !descripcion.trim()) {
-      alert('Completa todos los campos');
-      return;
-    }
-
-
-    const formData = new FormData();
-    formData.append('nombre', nombre.trim());
-    formData.append('descripcion', descripcion.trim());
-    formData.append('imagen', imagen); // esta es la imagen seleccionada 
- 
-   const token = localStorage.getItem('token'); 
-
-    fetch('/api/categorias', {
-      method: 'POST',
-      headeres: {
-        'Authorization': `Bearer ${token}`
-      },
-      body: formData
-    })
-
-      .then(res => res.json())
-      .then(cat => {
-        setCategorias([...categorias, cat]);
-        setNombre('');
-        setDescripcion('');
-        alert('Categoría agregada');
-      })
-      .catch(() => alert('Error al agregar categoría'));
-  };
-
-  const handleEliminarCategoria = (id) => {
-    if (!window.confirm('¿Seguro que deseas eliminar esta categoría?')) return;
-    
     const token = localStorage.getItem('token');
-    
-    fetch(`/api/categorias/${id}`, {
-      method: 'DELETE',
+    fetch('http://localhost:65098/api/categorias', {
       headers: {
         'Authorization': `Bearer ${token}`
       }
     })
-      .then(() => {
-        setCategorias(categorias.filter(cat => cat.id !== id));
-        alert('Categoría eliminada');
+      .then(res => res.json())
+      .then(data => setCategorias(data))
+      .catch(err => console.error(err));
+  }, []);
+
+
+  const handleAgregarCategoria = (e) => {
+    e.preventDefault();
+    if (!nombre.trim() || !descripcion.trim() || !imagen) {
+      alert('Completa todos los campos');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('nombre', nombre.trim());
+    formData.append('descripcion', descripcion.trim());
+    formData.append('imagen', imagen);
+
+    const token = localStorage.getItem('token');
+
+    fetch('http://localhost:65098/api/categorias', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` },
+      body: formData
+    })
+      .then(async res => {
+        if (!res.ok) {
+          const errorText = await res.text();
+          alert('❌ Error al agregar la categoría:\n' + errorText);
+          return null;
+        }
+        // Intenta parsear el JSON, pero si falla igual muestra el alert
+        try {
+          const cat = await res.json();
+          alert('✅ Categoría creada correctamente');
+          setCategorias(prev => [...prev, cat]);
+          setNombre('');
+          setDescripcion('');
+          setImagen(null);
+        } catch {
+          alert('✅ Categoría creada correctamente');
+          setNombre('');
+          setDescripcion('');
+          setImagen(null);
+        }
       })
-      .catch(() => alert('Error al eliminar categoría'));
+      .catch(err => {
+        alert('❌ Error de conexión al agregar categoría');
+        console.error('Fallo:', err);
+      });
+  }
+
+
+  const handleEliminarCategoria = async (id) => {
+    if (!window.confirm('¿Seguro que deseas eliminar esta categoría?')) return;
+
+    const token = localStorage.getItem('token');
+
+    try {
+      const res = await fetch(`http://localhost:65098/api/categorias/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const contentType = res.headers.get('content-type');
+      let errorText = '';
+
+      if (!res.ok) {
+        if (contentType && contentType.includes('application/json')) {
+          const data = await res.json();
+          errorText = data.message || JSON.stringify(data);
+        } else {
+          errorText = await res.text();
+        }
+
+        console.error(`❌ Error ${res.status}:`, errorText);
+        alert(`❌ No se pudo eliminar la categoría.\nCódigo: ${res.status}\nDetalle: ${errorText}`);
+        return;
+      }
+
+      // Si todo salió bien
+      setCategorias(categorias.filter(cat => cat.id !== id));
+      alert('✅ Categoría eliminada correctamente');
+    } catch (err) {
+      console.error('❌ Error de conexión:', err);
+      alert('❌ Error de conexión al eliminar categoría');
+    }
   };
 
   if (isMobile) {
@@ -149,7 +182,7 @@ export const AgregarCategoria = ({ productoId }) => {
               <div className={styles.categoriaInfo}>
                 {cat.imagenUrl && (
                   <img
-                    src={`http://localhost:59216${cat.imagenUrl}`}
+                    src={`http://localhost:65098${cat.imagenUrl}`}
                     alt={cat.nombre}
                     className={styles.categoriaImagen}
                   />
@@ -169,3 +202,4 @@ export const AgregarCategoria = ({ productoId }) => {
     </>
   );
 };
+

@@ -14,13 +14,23 @@ export const EditarProducto = () => {
   }, []);
 
   const cargarProductos = async () => {
-    const res = await fetch('/api/productos');
+    const token = localStorage.getItem('token');
+    const res = await fetch('/api/productos', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
     const data = await res.json();
     setProductos(data);
   };
 
   const cargarCategorias = async () => {
-    const res = await fetch('/api/categorias');
+    const token = localStorage.getItem('token');
+    const res = await fetch('/api/categorias', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
     const data = await res.json();
     setCategorias(data);
   };
@@ -37,7 +47,10 @@ export const EditarProducto = () => {
 
     await fetch(`/api/productos/${productoSeleccionado.id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
       body: JSON.stringify({
         nombre: nuevoNombre,
         categoria: { id: categoriaId }
@@ -54,6 +67,21 @@ export const EditarProducto = () => {
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Editar Producto</h2>
+
+      {/* Listado de productos y su categoría asignada */}
+      <div className={styles.listadoProductos}>
+        <h3 className={styles.subtituloListado}>Listado de productos y su categoría</h3>
+        <ul className={styles.listaProductos}>
+          {productos.map(p => (
+            <li key={p.id} className={styles.itemProducto}>
+              <span className={styles.nombreProducto}>{p.nombre}</span>
+              <span className={styles.categoriaProducto}>
+                {p.categoria?.nombre || 'Sin categoría asignada'}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       <select className={styles.select} onChange={e => seleccionarProducto(e.target.value)}>
         <option value="">-- Seleccionar producto --</option>

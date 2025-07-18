@@ -43,7 +43,7 @@ export const AdministrarCaracteristicas = () => {
     const token = localStorage.getItem('token');
 
     const res = await fetch('/api/productos', {
-      headders: {
+      headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       }

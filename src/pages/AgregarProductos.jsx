@@ -77,9 +77,18 @@ export const AgregarProductos = () => {
         body: formData
       });
 
-      const text = await response.text();
-      const resultado = text ? JSON.parse(text) : {};
-      console.log('Respuesta del servidor:', resultado);
+      console.log('📌 STATUS:', response.status, response.statusText);
+      console.log('📌 HEADERS:', [...response.headers]);
+
+      const contentType = response.headers.get('content-type');
+      let data;
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        data = await response.text();
+      }
+
+      console.log('📌 BODY CRUDO DEL BACKEND:', data);
 
       if (response.ok) {
         alert('✅ Producto agregado con éxito');
