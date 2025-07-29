@@ -1,298 +1,156 @@
+
 .main {
-  min-height: calc(100vh - 64px); 
-  margin-top: 64px;
-  background: #0e6ac7;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 32px 16px;
+  height: 100vh;
+  padding: 80px 20px 20px; /* para que no se pegue al header */
+  background-color: #f9f9f9;
   box-sizing: border-box;
+  overflow-y: auto;
 }
 
-.welcomeContainer {
-  width: 100%;
-  max-width: 900px;
-  margin-bottom: 32px;
-}
 
-.buscador {
-  background: #521bd4;
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-  padding: 32px 24px;
-  margin-bottom: 24px;
-}
-
-.Subtitle {
-  font-size: 18px;
-  color: #3b82f6;
-  margin-bottom: 16px;
-}
-
-.buscadorForm {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-top: 16px;
-}
-
-.inputGroup {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 180px;
-  min-width: 180px;
-}
-
-.inputGroup label {
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.inputGroup input {
-  padding: 8px 12px;
-  border: 1px solid #1a7fd2;
-  border-radius: 6px;
-  font-size: 16px;
-  outline: none;
-  transition: border 0.2s;
-}
-
-.inputGroup input:focus {
-  border: 1.5px solid #3b82f6;
-}
-
-.searchButton {
-  background: #3b82f6;
-  color: #0b37cb;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 24px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 18px;
-  transition: background 0.2s;
-}
-
-.searchButton:hover {
-  background: #2563eb;
-}
-
-.categorias {
-  width: 100%;
-  max-width: 900px;
-  margin: 32px 0 24px 0;
-}
-
-.sectionSubtitle {
-  color: #2563eb;
-  font-size: 15px;
-  margin-bottom: 10px;
-}
-
-.categoriasGrid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-  margin-top: 12px;
-}
-
-.categoriaCard {
-  background: #2111cf;
-  border-radius: 12px;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
-  padding: 18px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 120px;
-  min-height: 110px;
-  flex: 1 1 120px;
-  transition: box-shadow 0.2s;
-  cursor: pointer;
-}
-
-.categoriaCard:hover {
-  box-shadow: 0 4px 16px rgba(59,130,246,0.13);
-}
-
-.categoriaIcon {
-  font-size: 2rem;
-  margin-bottom: 8px;
-}
-
-.recomendaciones {
-  width: 100%;
-  max-width: 900px;
-  margin: 32px 0 18px 0;
+.productosContainer {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .productosGrid {
-  width: 100%;
-  max-width: 1100px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 24px;
-  margin-bottom: 32px;
+  grid-template-columns: repeat(2, 1fr); 
+  grid-auto-rows: auto;                 
+  gap: 20px;
+  max-width: 800px;                     
+  margin: 0 auto;
 }
 
+
 .productoCard {
-  background: #140577;
-  border-radius: 14px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-  padding: 18px 16px;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+  height: 100%; 
+  min-height: 300px; 
   display: flex;
   flex-direction: column;
-  align-items: center;
-  transition: box-shadow 0.2s;
 }
 
 .productoCard:hover {
-  box-shadow: 0 6px 24px rgba(59,130,246,0.13);
+  transform: translateY(-5px);
 }
 
+
 .productoImagen {
-  width: 100%;
+  position: relative;
+  height: 160px;
+  background-color: #eaeaea;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
-  position: relative;
 }
 
-.productoIcon {
-  font-size: 2.2rem;
+.productoImagenImg {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
 }
+
+
+.productoIconPlaceholder {
+  font-size: 48px;
+  color: #bbb;
+}
+
 
 .disponibilidadBadge {
   position: absolute;
-  top: 0;
-  right: 0;
-  background: #106ad1;
-  color: #2563eb;
-  border-radius: 8px;
-  padding: 2px 10px;
-  font-size: 13px;
-  font-weight: 600;
+  top: 10px;
+  left: 10px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
 }
 
 .disponible {
-  color: #22c55e;
+  background-color: #4caf50;
 }
 
 .noDisponible {
-  color: #ef4444;
+  background-color: #f44336;
 }
 
+
 .productoInfo {
-  width: 100%;
-  text-align: center;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .productoNombre {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 4px;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
 }
 
 .productoCategoria {
-  font-size: 15px;
-  color: #0647a2;
-  margin-bottom: 8px;
-}
-
-.productoCalificacion {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  font-size: 15px;
-  margin-bottom: 8px;
-}
-
-.estrella {
-  color: #fbbf24;
-}
-
-.reseñas {
-  color: #64748b;
-  font-size: 13px;
+  font-size: 0.9rem;
+  color: #777;
 }
 
 .productoPrecio {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #222;
 }
 
 .precio {
-  color: #2563eb;
+  color: #0d6efd;
 }
 
 .periodo {
-  color: #093d85;
-  font-size: 14px;
+  font-size: 0.85rem;
+  color: #777;
+  margin-left: 4px;
 }
 
+/* Botones */
 .productoAcciones {
   display: flex;
-  gap: 10px;
-  justify-content: center;
+  justify-content: space-between;
   margin-top: 10px;
 }
 
-.verDetalleButton {
-  background: #cb0f0f;
-  color: #2563eb;
-  border: 1.5px solid #2563eb;
+.verDetalleButton,
+.reservarButton {
+  flex: 1;
+  padding: 8px;
+  font-size: 0.9rem;
+  border: none;
   border-radius: 6px;
-  padding: 7px 14px;
-  font-size: 15px;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: background-color 0.2s ease;
+}
+
+.verDetalleButton {
+  background-color: #0d6efd;
+  color: white;
+  margin-right: 8px;
 }
 
 .verDetalleButton:hover {
-  background: #2563eb;
-  color: #ac0707;
+  background-color: #0b5ed7;
 }
 
 .reservarButton {
-  background: #22c55e;
-  color: #c22020;
-  border: none;
-  border-radius: 6px;
-  padding: 7px 14px;
-  font-size: 15px;
-  cursor: pointer;
-  transition: background 0.2s;
+  background-color: #28a745;
+  color: white;
 }
 
 .reservarButton:disabled {
-  background: #0d64ac;
-  color: #fff;
+  background-color: #ccc;
   cursor: not-allowed;
-}
-
-.verMasContainer {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-bottom: 32px;
-}
-
-.verMasButton {
-  background: #2563eb;
-  color: #160cad;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 32px;
-  font-size: 17px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.verMasButton:hover {
-  background: #3b82f6;
 }

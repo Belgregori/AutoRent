@@ -8,7 +8,7 @@ export const AgregarCategoria = ({ productoId }) => {
   const [imagen, setImagen] = useState(null);
   const [mostrarCategorias, setMostrarCategorias] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-
+  
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -21,7 +21,7 @@ export const AgregarCategoria = ({ productoId }) => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch('http://localhost:65098/api/categorias', {
+    fetch('http://localhost:65371/api/categorias', {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -46,7 +46,7 @@ export const AgregarCategoria = ({ productoId }) => {
 
     const token = localStorage.getItem('token');
 
-    fetch('http://localhost:65098/api/categorias', {
+    fetch('http://localhost:65371/api/categorias', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` },
       body: formData
@@ -85,7 +85,7 @@ export const AgregarCategoria = ({ productoId }) => {
     const token = localStorage.getItem('token');
 
     try {
-      const res = await fetch(`http://localhost:65098/api/categorias/${id}`, {
+      const res = await fetch(`http://localhost:65371/api/categorias/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -182,7 +182,7 @@ export const AgregarCategoria = ({ productoId }) => {
               <div className={styles.categoriaInfo}>
                 {cat.imagenUrl && (
                   <img
-                    src={`http://localhost:65098${cat.imagenUrl}`}
+                    src={`http://localhost:65371${cat.imagenUrl}`}
                     alt={cat.nombre}
                     className={styles.categoriaImagen}
                   />

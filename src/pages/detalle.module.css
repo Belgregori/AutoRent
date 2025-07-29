@@ -1,41 +1,74 @@
 .container {
-  min-height: calc(100vh - 64px); 
-  margin-top: 64px; 
-  background: #0e6ac7; 
-   display: flex;
+  min-height: calc(100vh - 64px);
+  background: #0e6ac7;
+  display: flex;
   flex-direction: column;
   align-items: center;
   padding: 32px 16px;
   box-sizing: border-box;
   color: white;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
 }
 
-.nombre{
-    text-align: left;
-    width: 100%;
-    margin-bottom: 1rem;
+.flechaVolver {
+  cursor: pointer;
+  font-size: 1.3rem;
+  color: #fff;
+  font-weight: bold;
+  transition: color 0.3s;
+  margin-left: auto; /* empuja la flecha hacia la derecha en un contenedor flex */
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.15);
+  user-select: none;
+}
+
+.flechaVolver:hover {
+  color: #ccc;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.nombre {
+  text-align: left;
+  width: 100%;
+  margin-bottom: 0.3rem;
+  font-size: 2.4rem;
+  color: #fff;
+  font-weight: 900;
+  letter-spacing: 2px;
+  font-family: 'Segoe UI Black', 'Segoe UI Bold', sans-serif;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+}
+
+.precio {
+  font-size: 1.6rem;
+  color: #ffd700; 
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-align: left;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
 }
 
 .descripcion {
   margin-bottom: 1.5rem;
   font-size: 1.1rem;
-  color: #e0e0e0; 
+  color: #e0e0e0;
+  width: 100%;
+  text-align: left;
 }
 
 .galeria {
   display: flex;
-  flex-wrap: wrap;
   gap: 1rem;
   width: 100%;
-  max-width: 900px;
+  max-width: 1200px;
   box-sizing: border-box;
   margin-top: 16px;
 }
 
 .imagenPrincipal {
-  flex: 1 1 50%;
-  max-width: 50%;
+  flex: 1 1 60%;
 }
 
 .imagenPrincipal img {
@@ -47,12 +80,11 @@
 }
 
 .imagenesSecundarias {
-  flex: 1 1 50%;
-  max-width: 50%;
+  flex: 1 1 40%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 150px);
-  gap: 10px;
+  gap: 1rem;
 }
 
 .imagenesSecundarias img {
@@ -92,7 +124,7 @@
   background-color: #2563eb;
 }
 
-
+/* Responsive para móviles */
 @media (max-width: 768px) {
   .galeria {
     flex-direction: column;
@@ -106,10 +138,8 @@
   }
 
   .imagenesSecundarias {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     grid-template-rows: 100px;
     gap: 8px;
   }
 }
-
-

@@ -61,13 +61,19 @@ export const AgregarProductos = () => {
     formData.append('descripcion', descripcion.trim());
     formData.append('precio', precio);
 
+    for (let pair of formData.entries()) {
+      console.log(`${pair[0]}: ${pair[1]}`);
+    }
+    
+
     imagenes.forEach((imagen) => {
       formData.append(`imagen_`, imagen);
     });
 
     try {
       const token = localStorage.getItem('token');
-
+     
+      console.log('🧾 Descripción enviada:', descripcion);
 
       const response = await fetch('/api/productos', {
         method: 'POST',
@@ -119,7 +125,7 @@ export const AgregarProductos = () => {
     <form onSubmit={handleAgregarProducto}>
       <h1 className={styles.titulo}>Agregar Producto</h1>
       <div className={styles.botones}>
-        {/* Sección Nombre */}
+        
         <div className={styles.bloque}>
           <button
             type="button"
@@ -201,7 +207,7 @@ export const AgregarProductos = () => {
           )}
         </div>
 
-        {/* Sección Precio */}
+       
         <div className={styles.bloque}>
           <button
             type="button"
