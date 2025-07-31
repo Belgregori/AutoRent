@@ -14,8 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/productos")
@@ -40,7 +39,7 @@ public class ProductoController {
         producto.setDescripcion(descripcion);
         producto.setPrecio(precio);
 
-
+        System.out.println("Guardando producto: " + nombre + " | Precio: " + precio);
 
         if (imagenes != null && imagenes.length > 0) {
             for (MultipartFile imagen : imagenes) {
@@ -58,11 +57,29 @@ public class ProductoController {
     }
 
     @GetMapping("/random")
-    public List<Producto> getRandomProductos() {
+    public List<Map<String,Object>> getRandomProductos(@RequestParam(defaultValue = "10") int cantidad) {
         List<Producto> todos = productoRepository.findAll();
         Collections.shuffle(todos);
-        return todos.stream().limit(4).toList();
+        return todos.stream().limit(cantidad).map(producto ->{
+            Map<String, Object> productoMap = new HashMap<>();
+            productoMap.put("id", producto.getId());
+            productoMap.put("nombre", producto.getNombre());
+            productoMap.put("categoria", producto.getCategoria() != null ? producto.getCategoria().getNombre() : "sin Categoria");
+            productoMap.put("precio", producto.getPrecio());
+
+            if(producto.getImagenesData() != null && !producto.getImagenesData().isEmpty()){
+                byte[] imagen = producto.getImagenesData().get(0);
+                String base64 = Base64.getEncoder().encodeToString(imagen);
+                productoMap.put("imagenUrl", "data:image/jpeg;base64," + base64);
+            } else{
+                productoMap.put("imagenUrl", null);
+            }
+            return productoMap;
+        }).toList();
     }
+
+
+
 
     @GetMapping
     public List<Producto> listarProductos() {
@@ -116,4 +133,15 @@ public class ProductoController {
 
         return ResponseEntity.ok().body("Característica asociada con éxito.");
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> obtenerProductoPorId(@PathVariable Long id) {
+        Optional<Producto> producto = productoRepository.findById(id);
+        if (producto.isPresent()) {
+            return ResponseEntity.ok(producto.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado");
+        }
+    }
+
 }
