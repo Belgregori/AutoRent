@@ -1,48 +1,61 @@
-
 .main {
   height: 100vh;
   padding: 80px 20px 20px; /* para que no se pegue al header */
   background-color: #f9f9f9;
   box-sizing: border-box;
   overflow-y: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
 }
 
-
-.productosContainer {
+/* Contenedor general con máximo ancho y centrado */
+.productosContainer,
+.categorias,
+.recomendaciones,
+.resultadosBusqueda {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 30px auto;
+  padding: 0 15px;
 }
 
+/* Título de secciones */
+h2 {
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #0d6efd;
+  border-bottom: 2px solid #0d6efd;
+  padding-bottom: 6px;
+}
+
+/* Grid responsive para productos */
 .productosGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); 
-  grid-auto-rows: auto;                 
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
-  max-width: 800px;                     
-  margin: 0 auto;
+  width: 100%;
 }
 
-
+/* Tarjeta de producto */
 .productoCard {
   background-color: #fff;
   border-radius: 10px;
-  overflow: hidden;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease;
-  height: 100%; 
-  min-height: 300px; 
+  overflow: hidden;
   display: flex;
   flex-direction: column;
+  min-height: 350px;
+  transition: transform 0.2s ease;
+  cursor: default;
 }
 
 .productoCard:hover {
   transform: translateY(-5px);
 }
 
-
+/* Imagen del producto */
 .productoImagen {
   position: relative;
-  height: 160px;
+  height: 180px;
   background-color: #eaeaea;
   display: flex;
   align-items: center;
@@ -55,13 +68,12 @@
   object-fit: cover;
 }
 
-
 .productoIconPlaceholder {
   font-size: 48px;
   color: #bbb;
 }
 
-
+/* Badge disponibilidad */
 .disponibilidadBadge {
   position: absolute;
   top: 10px;
@@ -69,8 +81,9 @@
   padding: 4px 8px;
   border-radius: 6px;
   font-size: 12px;
-  font-weight: bold;
+  font-weight: 700;
   color: white;
+  user-select: none;
 }
 
 .disponible {
@@ -81,30 +94,35 @@
   background-color: #f44336;
 }
 
-
+/* Info del producto */
 .productoInfo {
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  flex-grow: 1;
+  justify-content: space-between;
 }
 
 .productoNombre {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #333;
+  margin: 0 0 8px 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #222;
 }
 
 .productoCategoria {
-  font-size: 0.9rem;
-  color: #777;
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 12px;
+  font-style: italic;
 }
 
 .productoPrecio {
-  font-size: 1rem;
-  font-weight: bold;
-  color: #222;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0d6efd;
+  display: flex;
+  align-items: baseline;
 }
 
 .precio {
@@ -114,31 +132,31 @@
 .periodo {
   font-size: 0.85rem;
   color: #777;
-  margin-left: 4px;
+  margin-left: 6px;
 }
 
-/* Botones */
+/* Botones de acciones */
 .productoAcciones {
   display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .verDetalleButton,
 .reservarButton {
   flex: 1;
-  padding: 8px;
-  font-size: 0.9rem;
+  padding: 10px 0;
+  font-size: 0.95rem;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.25s ease;
+  user-select: none;
 }
 
 .verDetalleButton {
   background-color: #0d6efd;
   color: white;
-  margin-right: 8px;
 }
 
 .verDetalleButton:hover {
@@ -153,4 +171,62 @@
 .reservarButton:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+
+/* Buscador */
+.buscador {
+  max-width: 600px;
+  margin: 40px auto 0;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.buscador input[type="text"] {
+  flex: 1;
+  padding: 10px 14px;
+  font-size: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  transition: border-color 0.2s ease;
+}
+
+.buscador input[type="text"]:focus {
+  outline: none;
+  border-color: #0d6efd;
+}
+
+.buscador button {
+  padding: 10px 18px;
+  font-size: 1rem;
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.buscador button:hover {
+  background-color: #0b5ed7;
+}
+
+/* Categorías: si querés podes agregar margen entre categorías */
+.categoria {
+  margin-bottom: 40px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .productosGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .buscador {
+    flex-direction: column;
+  }
+
+  .buscador button {
+    width: 100%;
+  }
 }
