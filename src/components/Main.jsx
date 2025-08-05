@@ -5,13 +5,14 @@ import { useNavigate } from 'react-router-dom';
 export const Main = () => {
   const navigate = useNavigate();
 
-  // Estados
+
   const [categorias, setCategorias] = useState([]);
   const [productos, setProductos] = useState([]);
   const [recomendaciones, setRecomendaciones] = useState([]);
   const [aleatorios, setAleatorios] = useState([]);
-  
-  
+  const [categoriaActiva, setCategoriaActiva] = useState(null);
+
+
   useEffect(() => {
     fetch('/api/categorias')
       .then(res => res.json())
@@ -21,7 +22,7 @@ export const Main = () => {
       .catch(err => console.error('Error cargando categorías:', err));
   }, []);
 
-  
+
   useEffect(() => {
     fetch('/api/productos')
       .then(res => res.json())
@@ -33,48 +34,55 @@ export const Main = () => {
       .catch(err => console.error('Error cargando productos:', err));
   }, []);
 
-  useEffect(() => {// 1) Leemos el flag
+
+  useEffect(() => {
+    const productosGuardados = sessionStorage.getItem('productosAleatorios');
     const yaCargo = sessionStorage.getItem('primerCargaAleatorios');
-  
-    
+
     if (yaCargo) {
       setAleatorios([]);
       return;
     }
-  
-    
+
+    if (productosGuardados) {
+      const parsed =
+        JSON.parse(productosGuardados).map(transformProducto);
+      setAleatorios(parsed);
+      sessionStorage.getItem('primerCargaAleatorios', 'true');
+      return;
+    }
+
     const fetchProductosAleatorios = async () => {
       try {
         const response = await fetch('/api/productos/random?cantidad=10');
         if (!response.ok) throw new Error('Error al obtener productos aleatorios');
-  
+
         const data = await response.json();
         const productosValidos = data
           .map(transformProducto)
           .filter(p => p !== null)
           .slice(0, 10);
-  
-        
+
+
         setAleatorios(productosValidos);
         sessionStorage.setItem('productosAleatorios', JSON.stringify(productosValidos));
-  
-       
+
         sessionStorage.setItem('primerCargaAleatorios', 'true');
-  
+
       } catch (error) {
         console.error('Error al obtener productos aleatorios:', error);
         setAleatorios([]);
       }
     };
-  
+
     fetchProductosAleatorios();
   }, []);
-  
+
 
 
   const transformProducto = (producto) => {
     if (!producto || typeof producto !== 'object') return null;
-  
+
 
     const imagenesData = producto.imagenesData || [];
     if (imagenesData.length > 0) {
@@ -87,8 +95,8 @@ export const Main = () => {
         imagenUrl: `data:image/jpeg;base64,${imagenesData[0]}`,
       };
     }
-  
-    
+
+
     if (producto.imagenUrl) {
       return {
         id: String(producto.id),
@@ -96,11 +104,11 @@ export const Main = () => {
         categoria: producto.categoria,
         precio: Number(producto.precio || 0).toFixed(2),
         disponible: Boolean(producto.disponible),
-        imagenUrl: producto.imagenUrl, 
+        imagenUrl: producto.imagenUrl,
       };
     }
-  
-   
+
+
     return {
       id: String(producto.id),
       nombre: producto.nombre,
@@ -150,46 +158,60 @@ export const Main = () => {
   return (
     <main className={styles.main}>
 
-{/* Productos Aleatorios al iniciar */}
-<section className={styles.aleatorios}>
-  
-  <div className={styles.productosGrid}>
-    {aleatorios.map(producto => (
-      <ProductoCard key={producto.id} producto={producto} />
-    ))}
-  </div>
-</section>
- 
-
-      {/* Categorías con sus productos */}
-      <section className={styles.categorias}>
-        <h2>Categorías</h2>
-        {categorias.map(cat => (
-          <div key={cat.id} className={styles.categoria}>
-            <h3>{cat.nombre}</h3>
-            <div className={styles.productosGrid}>
-              {/* Filtramos productos que pertenezcan a esta categoría */}
-              {productos
-                .filter(prod => prod.categoria && (prod.categoria.id === cat.id || prod.categoria === cat.nombre))
-                .map(prod => (
-                  <ProductoCard key={prod.id} producto={prod} />
-                ))
-              }
-            </div>
-          </div>
-        ))}
-      </section>
-
-      {/* Recomendaciones fijas */}
-      <section className={styles.recomendaciones}>
-        <h2>Recomendaciones</h2>
+      
+      <section className={styles.aleatorios}>
+       
         <div className={styles.productosGrid}>
-          {recomendaciones.map(prod => (
-            <ProductoCard key={prod.id} producto={prod} />
+          {aleatorios.map(producto => (
+            <ProductoCard key={producto.id} producto={producto} />
           ))}
         </div>
       </section>
 
+      <div className={styles.sectionsWrapper}>
+
+        <section className={styles.categorias}>
+          <h2>Categorías</h2>
+          {categorias.map(cat => (
+            <div key={cat.id}
+              className={styles.categoria}
+              onMouseEnter={() => setCategoriaActiva(cat.id)}
+              onMouseLeave={() => setCategoriaActiva(null)}>
+              <img
+                src={cat.imagenUrl}
+                alt={cat.nombre}
+                className={styles.categoriaImagen}
+              />
+              <h3>{cat.nombre}</h3>
+
+              {categoriaActiva === cat.id && (
+                <div className={styles.popupProductos}>
+                  {productos
+                    .filter(p => p.categoria.id === cat.id)
+                    .map(p => (
+                      <div key={p.id} className={styles.miniProducto}>
+                        <img src={p.imagenUrl} alt={p.nombre} />
+                        <p>{p.nombre}</p>
+                      </div>
+                    ))
+                  }
+                </div>
+              )}
+            </div>
+          ))}
+        </section>
+
+       
+        <section className={styles.recomendaciones}>
+          <h2>Recomendaciones</h2>
+          <div className={styles.productosGrid}>
+            {recomendaciones.map(prod => (
+              <ProductoCard key={prod.id} producto={prod} />
+            ))}
+          </div>
+        </section>
+
+      </div>
     </main>
-  );
+  )
 }
