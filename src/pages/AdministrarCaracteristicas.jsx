@@ -9,6 +9,8 @@ export const AdministrarCaracteristicas = () => {
   const [productoId, setProductoId] = useState('');
   const [caracteristicaId, setCaracteristicaId] = useState('');
   const [isMobile, setIsMobile] = useState(false);
+  const [imagenCaracteristica, setImagenCaracteristica] = useState(null);
+
 
   useEffect(() => {
     const checkMobile = () => {
@@ -55,26 +57,35 @@ export const AdministrarCaracteristicas = () => {
   const crearCaracteristica = async () => {
     if (!nuevaCaracteristica.trim()) return;
     const token = localStorage.getItem('token');
+
+    const formData = new FormData();
+    formData.append('nombre', nuevaCaracteristica);
+    if (imagenCaracteristica) {
+      formData.append('imagen', imagenCaracteristica);
+    }
+
     await fetch('/api/caracteristicas', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+
       },
-      body: JSON.stringify({ nombre: nuevaCaracteristica })
+      body: formData
     });
+
     setNuevaCaracteristica('');
+    setImagenCaracteristica(null);
     cargarCaracteristicas();
   };
 
   const eliminarCaracteristica = async (id) => {
     const token = localStorage.getItem('token');
-    await fetch(`/api/caracteristicas/${id}`,{
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-        });
+    await fetch(`/api/caracteristicas/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
     cargarCaracteristicas();
   };
 
@@ -84,7 +95,7 @@ export const AdministrarCaracteristicas = () => {
     await fetch(`/api/caracteristicas/${id}`, {
       method: 'PUT',
       headers: {
-         'Authorization': `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ nombre })
@@ -98,10 +109,10 @@ export const AdministrarCaracteristicas = () => {
     const token = localStorage.getItem('token');
     await fetch(`/api/productos/${productoId}/caracteristicas`, {
       method: 'POST',
-      headers: { 
+      headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
-       },
+      },
       body: JSON.stringify({ id: caracteristicaId })
     });
     alert('¡Asociada con éxito!');
@@ -130,6 +141,16 @@ export const AdministrarCaracteristicas = () => {
           value={nuevaCaracteristica}
           onChange={e => setNuevaCaracteristica(e.target.value)}
         />
+        <label className={styles.botonArchivo}>
+          📁 Elegir imagen
+          <input
+            type="file"
+            accept="image/*"
+            onChange={e => setImagenCaracteristica(e.target.files[0])}
+            style={{ display: 'none' }}
+          />
+        </label>
+
         <button className={styles.botonAgregar} onClick={crearCaracteristica}>Agregar</button>
       </div>
 
@@ -145,6 +166,13 @@ export const AdministrarCaracteristicas = () => {
               />
             ) : (
               <>
+                {c.imagenUrl && (
+                  <img
+                    src={c.imagenUrl}
+                    alt={c.nombre}
+                    className={styles.thumbnail}
+                  />
+                )}
                 <span>{c.nombre}</span>
                 <div className={styles.botones}>
                   <button className={styles.botonEditar} onClick={() => setEditando(c.id)}>Editar</button>

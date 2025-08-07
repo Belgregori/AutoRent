@@ -189,5 +189,31 @@
   font-weight: 500;
 }
 
+.botonArchivo {
+  background-color: var(--color-secundario);
+  border: none;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 0.9rem;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(80, 227, 194, 0.4);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.botonArchivo:hover {
+  background-color: var(--color-boton-hover);
+  box-shadow: 0 4px 10px rgba(53, 122, 189, 0.6);
+}
+
+.thumbnail {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
 
 

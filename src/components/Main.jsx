@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Main.module.css';
 import { useNavigate } from 'react-router-dom';
+import { Footer } from './Footer';
 
 export const Main = () => {
   const navigate = useNavigate();
@@ -213,5 +214,6 @@ export const Main = () => {
 
       </div>
     </main>
+    
   )
 }
