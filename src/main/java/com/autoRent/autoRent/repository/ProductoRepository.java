@@ -1,5 +1,9 @@
 package com.autoRent.autoRent.repository;
 
-public interface ProductoRepository extends org.springframework.data.jpa.repository.JpaRepository<com.autoRent.autoRent.model.Producto, Long> {
+import com.autoRent.autoRent.model.Producto;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 
+public interface ProductoRepository extends JpaRepository<Producto, Long> {
+    List<Producto> findByCaracteristicas_Id(Long caracteristicaId);
 }

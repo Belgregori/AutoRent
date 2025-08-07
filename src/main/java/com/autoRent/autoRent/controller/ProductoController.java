@@ -6,7 +6,7 @@ import com.autoRent.autoRent.model.Caracteristica;
 import com.autoRent.autoRent.repository.CategoriaRepository;
 import com.autoRent.autoRent.repository.ProductoRepository;
 import com.autoRent.autoRent.repository.CaracteristicaRepository;
-
+import com.autoRent.autoRent.service.ProductoService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +20,18 @@ import java.util.*;
 @RequestMapping("/api/productos")
 public class ProductoController {
 
+    private final ProductoService productoService;
+
+
     @Autowired
     private ProductoRepository productoRepository;
 
     @Autowired
     private CaracteristicaRepository caracteristicaRepository;
 
+    public ProductoController(ProductoService productoService) {
+        this.productoService = productoService;
+    }
 
 
     @PostMapping
@@ -78,13 +84,18 @@ public class ProductoController {
         }).toList();
     }
 
-
+    @GetMapping("/por-caracteristica/{caractId}")
+    public List<Producto> buscarPorCaracteristica(@PathVariable Long caractId) {
+        return productoService.productosPorCaracteristica(caractId);
+    }
 
 
     @GetMapping
     public List<Producto> listarProductos() {
         return productoRepository.findAll();
     }
+
+
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizarProducto(
             @PathVariable Long id,
@@ -133,6 +144,7 @@ public class ProductoController {
 
         return ResponseEntity.ok().body("Característica asociada con éxito.");
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerProductoPorId(@PathVariable Long id) {
