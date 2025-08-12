@@ -1,15 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import styles from './administrarCaract.module.css';
 
 export const AdministrarCaracteristicas = () => {
   const [caracteristicas, setCaracteristicas] = useState([]);
   const [nuevaCaracteristica, setNuevaCaracteristica] = useState('');
   const [editando, setEditando] = useState(null);
+  const [editNombre, setEditNombre] = useState('');
   const [productos, setProductos] = useState([]);
   const [productoId, setProductoId] = useState('');
   const [caracteristicaId, setCaracteristicaId] = useState('');
   const [isMobile, setIsMobile] = useState(false);
   const [imagenCaracteristica, setImagenCaracteristica] = useState(null);
+  const [imagenPreview, setImagenPreview] = useState('');
+  const fileInputRef = useRef(null);
+  const [mensaje, setMensaje] = useState({ texto: '', tipo: '' });
+
+  const [isLoadingCaract, setIsLoadingCaract] = useState(true);
+  const [isLoadingProd, setIsLoadingProd] = useState(true);
+  const [isSubmittingCreate, setIsSubmittingCreate] = useState(false);
+  const [isAssociating, setIsAssociating] = useState(false);
+  const [isDeletingId, setIsDeletingId] = useState(null);
+  const [isEditingId, setIsEditingId] = useState(null);
 
 
   useEffect(() => {
@@ -27,99 +38,156 @@ export const AdministrarCaracteristicas = () => {
     cargarProductos();
   }, []);
 
-  const cargarCaracteristicas = async () => {
+  const apiFetch = useCallback(async (url, options = {}) => {
     const token = localStorage.getItem('token');
-
-    const res = await fetch(`/api/caracteristicas`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+    const mergedHeaders = {
+      ...(options.headers || {}),
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+    };
+    const response = await fetch(url, { ...options, headers: mergedHeaders });
+    if (!response.ok) {
+      let errorMessage = '';
+      try {
+        const asJson = await response.json();
+        errorMessage = asJson?.message || asJson?.error || '';
+      } catch {
+        try {
+          errorMessage = await response.text();
+        } catch {
+          errorMessage = '';
+        }
       }
-    });
-    const data = await res.json();
-    setCaracteristicas(data);
-  };
+      throw new Error(errorMessage || `Error HTTP ${response.status}`);
+    }
+    const contentType = response.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) return response.json();
+    return response.text();
+  }, []);
 
+  const cargarCaracteristicas = useCallback(async () => {
+    setIsLoadingCaract(true);
+    try {
+      const data = await apiFetch(`/api/caracteristicas`, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      setCaracteristicas(Array.isArray(data) ? data : []);
+    } catch (error) {
+      setMensaje({ texto: 'Error al cargar características.', tipo: 'error' });
+    } finally {
+      setIsLoadingCaract(false);
+    }
+  }, [apiFetch]);
 
-  const cargarProductos = async () => {
-    const token = localStorage.getItem('token');
-
-    const res = await fetch('/api/productos', {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    });
-    const data = await res.json();
-    setProductos(data);
-  };
+  const cargarProductos = useCallback(async () => {
+    setIsLoadingProd(true);
+    try {
+      const data = await apiFetch('/api/productos', {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      setProductos(Array.isArray(data) ? data : []);
+    } catch (error) {
+      setMensaje({ texto: 'Error al cargar productos.', tipo: 'error' });
+    } finally {
+      setIsLoadingProd(false);
+    }
+  }, [apiFetch]);
 
   const crearCaracteristica = async () => {
     if (!nuevaCaracteristica.trim()) return;
-    const token = localStorage.getItem('token');
+    setIsSubmittingCreate(true);
+    try {
+      const formData = new FormData();
+      formData.append('nombre', nuevaCaracteristica);
+      if (imagenCaracteristica) {
+        formData.append('imagen', imagenCaracteristica);
+      }
 
-    const formData = new FormData();
-    formData.append('nombre', nuevaCaracteristica);
-    if (imagenCaracteristica) {
-      formData.append('imagen', imagenCaracteristica);
+      await apiFetch('/api/caracteristicas', {
+      
+        method: 'POST',
+        body: formData,
+      });
+      setMensaje({ texto: '¡Característica creada con éxito!', tipo: 'exito' });
+    } catch {
+      setMensaje({ texto: 'Error al crear característica.', tipo: 'error' });
+    } finally {
+      setNuevaCaracteristica('');
+      setImagenCaracteristica(null);
+      setImagenPreview('');
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      cargarCaracteristicas();
+      setTimeout(() => setMensaje({ texto: '', tipo: '' }), 3000);
+      setIsSubmittingCreate(false);
     }
-
-    await fetch('/api/caracteristicas', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-
-      },
-      body: formData
-    });
-
-    setNuevaCaracteristica('');
-    setImagenCaracteristica(null);
-    cargarCaracteristicas();
   };
 
   const eliminarCaracteristica = async (id) => {
-    const token = localStorage.getItem('token');
-    await fetch(`/api/caracteristicas/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    cargarCaracteristicas();
+    const confirmado = window.confirm('¿Seguro que deseas eliminar esta característica?');
+    if (!confirmado) return;
+    setIsDeletingId(id);
+    try {
+      await apiFetch(`/api/caracteristicas/${id}`, { method: 'DELETE' });
+      setMensaje({ texto: 'Característica eliminada.', tipo: 'exito' });
+    } catch {
+      setMensaje({ texto: 'Error al eliminar característica.', tipo: 'error' });
+    } finally {
+      setIsDeletingId(null);
+      cargarCaracteristicas();
+      setTimeout(() => setMensaje({ texto: '', tipo: '' }), 3000);
+    }
   };
 
 
   const editarCaracteristica = async (id, nombre) => {
-    const token = localStorage.getItem('token');
-    await fetch(`/api/caracteristicas/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ nombre })
-    });
-    setEditando(null);
-    cargarCaracteristicas();
+    setIsEditingId(id);
+    try {
+      await apiFetch(`/api/caracteristicas/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre }),
+      });
+      setMensaje({ texto: '¡Característica actualizada!', tipo: 'exito' });
+      setEditando(null);
+      setEditNombre('');
+      cargarCaracteristicas();
+    } catch {
+      setMensaje({ texto: 'Error al editar característica.', tipo: 'error' });
+    } finally {
+      setIsEditingId(null);
+      setTimeout(() => setMensaje({ texto: '', tipo: '' }), 3000);
+    }
   };
 
   const asociarCaracteristica = async () => {
     if (!productoId || !caracteristicaId) return;
-    const token = localStorage.getItem('token');
-    await fetch(`/api/productos/${productoId}/caracteristicas`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ id: caracteristicaId })
-    });
-    alert('¡Asociada con éxito!');
-    setProductoId('');
-    setCaracteristicaId('');
-    cargarProductos();
+    setIsAssociating(true);
+    try {
+      await apiFetch(`/api/productos/${Number(productoId)}/caracteristicas`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: Number(caracteristicaId) }),
+      });
+      setMensaje({ texto: '¡Asociada con éxito!', tipo: 'exito' });
+    } catch {
+      setMensaje({ texto: 'Error al asociar característica.', tipo: 'error' });
+    } finally {
+      setProductoId('');
+      setCaracteristicaId('');
+      cargarProductos();
+      setTimeout(() => setMensaje({ texto: '', tipo: '' }), 3000);
+      setIsAssociating(false);
+    }
   };
+
+  useEffect(() => {
+    if (!imagenCaracteristica) {
+      setImagenPreview('');
+      return;
+    }
+    const objectUrl = URL.createObjectURL(imagenCaracteristica);
+    setImagenPreview(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [imagenCaracteristica]);
 
   if (isMobile) {
     return (
@@ -133,6 +201,11 @@ export const AdministrarCaracteristicas = () => {
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Administrar Características</h2>
+      {mensaje.texto && (
+        <div className={`${styles.notificacion} ${styles[mensaje.tipo]}`} aria-live="polite" role="status">
+          {mensaje.texto}
+        </div>
+      )}
 
       <div className={styles.nuevaCaracteristicaWrapper}>
         <input
@@ -146,24 +219,58 @@ export const AdministrarCaracteristicas = () => {
           <input
             type="file"
             accept="image/*"
-            onChange={e => setImagenCaracteristica(e.target.files[0])}
+            ref={fileInputRef}
+            onChange={e => setImagenCaracteristica(e.target.files[0] || null)}
             style={{ display: 'none' }}
           />
         </label>
+        {imagenPreview && (
+          <img src={imagenPreview} alt="Previsualización" className={styles.thumbnail} />
+        )}
 
-        <button className={styles.botonAgregar} onClick={crearCaracteristica}>Agregar</button>
+        <button type="button" className={styles.botonAgregar} onClick={crearCaracteristica} disabled={isSubmittingCreate}>
+          {isSubmittingCreate ? 'Agregando…' : 'Agregar'}
+        </button>
       </div>
 
       <ul className={styles.listaCaracteristicas}>
-        {caracteristicas.map(c => (
+        {isLoadingCaract && <li className={styles.caracteristicaItem}>Cargando características…</li>}
+        {!isLoadingCaract && caracteristicas.length === 0 && (
+          <li className={styles.caracteristicaItem}>No hay características</li>
+        )}
+        {!isLoadingCaract && caracteristicas.map(c => (
           <li key={c.id} className={styles.caracteristicaItem}>
             {editando === c.id ? (
-              <input
-                className={styles.inputEditar}
-                defaultValue={c.nombre}
-                onBlur={e => editarCaracteristica(c.id, e.target.value)}
-                autoFocus
-              />
+              <>
+                <input
+                  className={styles.inputEditar}
+                  value={editNombre}
+                  onChange={e => setEditNombre(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') editarCaracteristica(c.id, editNombre.trim());
+                    if (e.key === 'Escape') { setEditando(null); setEditNombre(''); }
+                  }}
+                  autoFocus
+                />
+                <div className={styles.botones}>
+                  <button
+                    type="button"
+                    className={styles.botonEditar}
+                    onClick={() => editarCaracteristica(c.id, editNombre.trim())}
+                    disabled={isEditingId === c.id || !editNombre.trim()}
+                  >
+                    {isEditingId === c.id ? 'Guardando…' : 'Guardar'}
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.botonEliminar}
+                    onClick={() => { setEditando(null); setEditNombre(''); }}
+                    disabled={isEditingId === c.id}
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </>
             ) : (
               <>
                 {c.imagenUrl && (
@@ -175,8 +282,10 @@ export const AdministrarCaracteristicas = () => {
                 )}
                 <span>{c.nombre}</span>
                 <div className={styles.botones}>
-                  <button className={styles.botonEditar} onClick={() => setEditando(c.id)}>Editar</button>
-                  <button className={styles.botonEliminar} onClick={() => eliminarCaracteristica(c.id)}>Eliminar</button>
+                  <button type="button" className={styles.botonEditar} onClick={() => { setEditando(c.id); setEditNombre(c.nombre); }}>Editar</button>
+                  <button type="button" className={styles.botonEliminar} onClick={() => eliminarCaracteristica(c.id)} disabled={isDeletingId === c.id}>
+                    {isDeletingId === c.id ? 'Eliminando…' : 'Eliminar'}
+                  </button>
                 </div>
               </>
             )}
@@ -188,23 +297,29 @@ export const AdministrarCaracteristicas = () => {
 
       <select className={styles.select} value={productoId} onChange={e => setProductoId(e.target.value)}>
         <option value="">-- Seleccionar producto --</option>
-        {productos.map(p => (
+        {!isLoadingProd && productos.map(p => (
           <option key={p.id} value={p.id}>{p.nombre}</option>
         ))}
       </select>
 
       <select className={styles.select} value={caracteristicaId} onChange={e => setCaracteristicaId(e.target.value)}>
         <option value="">-- Seleccionar característica --</option>
-        {caracteristicas.map(c => (
+        {!isLoadingCaract && caracteristicas.map(c => (
           <option key={c.id} value={c.id}>{c.nombre}</option>
         ))}
       </select>
 
-      <button className={styles.botonAsociar} onClick={asociarCaracteristica}>Asociar</button>
+      <button type="button" className={styles.botonAsociar} onClick={asociarCaracteristica} disabled={isAssociating || !productoId || !caracteristicaId}>
+        {isAssociating ? 'Asociando…' : 'Asociar'}
+      </button>
 
       <h3 className={styles.title}>Productos y sus características</h3>
       <ul className={styles.listaProductos}>
-        {productos.map(p => (
+        {isLoadingProd && <li className={styles.productoItem}>Cargando productos…</li>}
+        {!isLoadingProd && productos.length === 0 && (
+          <li className={styles.productoItem}>No hay productos</li>
+        )}
+        {!isLoadingProd && productos.map(p => (
           <li key={p.id} className={styles.productoItem}>
             <strong>{p.nombre}</strong>
             <small className={styles.caracteristicasAsignadas}>

@@ -182,7 +182,7 @@ export const AgregarCategoria = ({ productoId }) => {
               <div className={styles.categoriaInfo}>
                 {cat.imagenUrl && (
                   <img
-                    src={`/api${cat.imagenUrl}`}
+                    src={cat.imagenUrl}
                     alt={cat.nombre}
                     className={styles.categoriaImagen}
                   />

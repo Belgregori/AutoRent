@@ -8,20 +8,43 @@ export const DetalleProducto = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [producto, setProducto] = useState(null);
+  const [caracteristicas, setCaracteristicas] = useState([]);
   const [imagenes, setImagenes] = useState([]);
   const [imagenPrincipal, setImagenPrincipal] = useState(null);
   const [modalAbierto, setModalAbierto] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/productos/${id}`)
+    const token = localStorage.getItem('token');
+    fetch(`/api/productos/${id}`, {
+      headers: token ? { 'Authorization': `Bearer ${token}` } : undefined,
+    })
       .then(res => res.json())
       .then(data => {
         setProducto(data);
+        setCaracteristicas(Array.isArray(data.caracteristicas) ? data.caracteristicas : []);
         const imagenesFinal = data.imagenesData?.map(img => `data:image/jpeg;base64,${img}`) || [];
         setImagenes(imagenesFinal);
         setImagenPrincipal(imagenesFinal[0]);
       });
   }, [id]);
+
+  useEffect(() => {
+    // Si no llegaron características con el producto, intenta cargarlas por endpoint dedicado
+    if (!producto) return;
+    if (caracteristicas && caracteristicas.length > 0) return;
+    const controller = new AbortController();
+    const token = localStorage.getItem('token');
+    fetch(`/api/productos/${id}/caracteristicas`, {
+      signal: controller.signal,
+      headers: token ? { 'Authorization': `Bearer ${token}` } : undefined,
+    })
+      .then(res => (res.ok ? res.json() : []))
+      .then(list => {
+        if (Array.isArray(list) && list.length > 0) setCaracteristicas(list);
+      })
+      .catch(() => { /* silencioso: fallback opcional */ });
+    return () => controller.abort();
+  }, [id, producto, caracteristicas]);
 
   if (!producto) {
     return (
@@ -79,6 +102,30 @@ export const DetalleProducto = () => {
             </div>
           </div>
         )}
+
+        <section className={styles.caracteristicasSection}>
+          <h2 className={styles.subtitulo}>Características</h2>
+          {caracteristicas && caracteristicas.length > 0 ? (
+            <div className={styles.caracteristicasGrid}>
+              {caracteristicas.map((car) => (
+                <div key={car.id} className={styles.caracteristicaItem}>
+                  {car.imagenUrl ? (
+                    <img
+                      src={car.imagenUrl}
+                      alt={car.nombre}
+                      className={styles.caracteristicaIcon}
+                    />
+                  ) : (
+                    <div className={styles.caracteristicaIconFallback} aria-hidden="true">⭐</div>
+                  )}
+                  <span className={styles.caracteristicaNombre}>{car.nombre}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className={styles.sinCaracteristicas}>Sin características</p>
+          )}
+        </section>
       </div>
       <Footer />
     </>

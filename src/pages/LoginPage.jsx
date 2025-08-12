@@ -13,7 +13,7 @@ export const LoginPage = () => {
 
         try {
 
-            const response = await fetch("http://localhost:61673/usuarios/login", {
+            const response = await fetch("/api/usuarios/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
