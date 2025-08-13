@@ -13,22 +13,44 @@ export const Main = () => {
   const [aleatorios, setAleatorios] = useState([]);
   const [categoriaActiva, setCategoriaActiva] = useState(null);
 
+  // Buscador
+  const [busquedaTexto, setBusquedaTexto] = useState('');
+  const [fechaDesde, setFechaDesde] = useState('');
+  const [fechaHasta, setFechaHasta] = useState('');
+  const [sugerencias, setSugerencias] = useState([]);
+  const [resultados, setResultados] = useState([]);
+  const [isBuscando, setIsBuscando] = useState(false);
+
+
 
   useEffect(() => {
-    fetch('/api/categorias')
-      .then(res => res.json())
+    const token = localStorage.getItem('token');
+    fetch('/api/categorias', {
+      headers: token ? { 'Authorization': `Bearer ${token}` } : undefined,
+    })
+      .then(async res => {
+        if (!res.ok) return [];
+        try { return await res.json(); } catch { return []; }
+      })
       .then(data => {
-        setCategorias(data);
+        setCategorias(Array.isArray(data) ? data : []);
       })
       .catch(err => console.error('Error cargando categorías:', err));
   }, []);
 
 
   useEffect(() => {
-    fetch('/api/productos')
-      .then(res => res.json())
+    const token = localStorage.getItem('token');
+    fetch('/api/productos', {
+      headers: token ? { 'Authorization': `Bearer ${token}` } : undefined,
+    })
+      .then(async res => {
+        if (!res.ok) return [];
+        try { return await res.json(); } catch { return []; }
+      })
       .then(data => {
-        const productosTransformados = data.map(transformProducto).filter(p => p !== null)
+        const lista = Array.isArray(data) ? data : [];
+        const productosTransformados = lista.map(transformProducto).filter(p => p !== null)
         setProductos(productosTransformados);
         setRecomendaciones(productosTransformados.slice(0, 5));
       })
@@ -49,13 +71,16 @@ export const Main = () => {
       const parsed =
         JSON.parse(productosGuardados).map(transformProducto);
       setAleatorios(parsed);
-      sessionStorage.getItem('primerCargaAleatorios', 'true');
+      sessionStorage.setItem('primerCargaAleatorios', 'true');
       return;
     }
 
     const fetchProductosAleatorios = async () => {
       try {
-        const response = await fetch('/api/productos/random?cantidad=10');
+        const token = localStorage.getItem('token');
+        const response = await fetch('/api/productos/random?cantidad=10', {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : undefined,
+        });
         if (!response.ok) throw new Error('Error al obtener productos aleatorios');
 
         const data = await response.json();
@@ -120,6 +145,61 @@ export const Main = () => {
     };
   };
 
+  useEffect(() => {
+    const texto = busquedaTexto.trim().toLowerCase();
+    if (!texto) { setSugerencias([]); return; }
+    const matches = productos.filter(p => {
+      const nombre = (p.nombre || '').toLowerCase();
+      const cat = (p.categoria?.nombre || p.categoria || '').toLowerCase();
+      return nombre.includes(texto) || cat.includes(texto);
+    }).slice(0, 8);
+    setSugerencias(matches);
+  }, [busquedaTexto, productos]);
+
+  const ejecutarBusqueda = async (e) => {
+    if (e) e.preventDefault();
+    setIsBuscando(true);
+    try {
+      const texto = busquedaTexto.trim().toLowerCase();
+      if (fechaDesde && fechaHasta) {
+        try {
+          const qs = new URLSearchParams({
+            desde: fechaDesde,
+            hasta: fechaHasta,
+            texto: busquedaTexto.trim(),
+          }).toString();
+          const res = await fetch(`/api/productos/disponibles?${qs}`);
+          if (res.ok) {
+            const data = await res.json();
+            const tx = data.map(transformProducto).filter(Boolean);
+            setResultados(tx);
+            setIsBuscando(false);
+            return;
+          }
+        } catch {
+          
+        }
+      }
+      const filtrados = productos.filter(p => {
+        if (!texto) return true;
+        const nombre = (p.nombre || '').toLowerCase();
+        const cat = (p.categoria?.nombre || p.categoria || '').toLowerCase();
+        return nombre.includes(texto) || cat.includes(texto);
+      });
+      setResultados(filtrados);
+    } finally {
+      setIsBuscando(false);
+    }
+  };
+
+  const seleccionarSugerencia = (p) => {
+    setBusquedaTexto(p.nombre);
+    setSugerencias([]);
+    setResultados([p]);
+  };
+
+  
+
 
   const ProductoCard = ({ producto }) => (
     <div key={producto.id} className={styles.productoCard}>
@@ -156,18 +236,84 @@ export const Main = () => {
     </div>
   );
 
+  const resolveCategoriaImagenUrl = (cat) => {
+    const raw = (cat && (cat.imagenUrl || cat.imagen || cat.imagenPath)) || '';
+    if (!raw || typeof raw !== 'string') return '';
+    if (/^data:|^https?:\/\//i.test(raw)) return raw;
+    let path = raw.startsWith('/') ? raw : `/${raw}`;
+    path = encodeURI(path);
+    
+    return path;
+  };
+
   return (
     <main className={styles.main}>
 
       
-      <section className={styles.aleatorios}>
-       
-        <div className={styles.productosGrid}>
-          {aleatorios.map(producto => (
-            <ProductoCard key={producto.id} producto={producto} />
-          ))}
-        </div>
+      <section className={styles.searchSection}>
+        <h2 className={styles.searchTitle}>Buscá tu próximo auto</h2>
+        <p className={styles.searchDesc}>Ingresá un término y un rango de fechas para ver resultados relevantes.</p>
+        <form className={styles.searchForm} onSubmit={ejecutarBusqueda}>
+          <input
+            type="text"
+            className={styles.searchInput}
+            placeholder="Marca, modelo o categoría"
+            value={busquedaTexto}
+            onChange={(e) => setBusquedaTexto(e.target.value)}
+            aria-label="Buscar por texto"
+          />
+          <div className={styles.dateInputs}>
+            <input
+              type="date"
+              className={styles.dateInput}
+              value={fechaDesde}
+              onChange={(e) => setFechaDesde(e.target.value)}
+              aria-label="Fecha desde"
+            />
+            <input
+              type="date"
+              className={styles.dateInput}
+              value={fechaHasta}
+              onChange={(e) => setFechaHasta(e.target.value)}
+              aria-label="Fecha hasta"
+              min={fechaDesde || undefined}
+            />
+          </div>
+          <button type="submit" className={styles.searchButton} disabled={isBuscando}>
+            {isBuscando ? 'Buscando…' : 'Realizar búsqueda'}
+          </button>
+        </form>
+        {sugerencias.length > 0 && (
+          <ul className={styles.suggestions} role="listbox">
+            {sugerencias.map(s => (
+              <li key={s.id} className={styles.suggestionItem} role="option" onClick={() => seleccionarSugerencia(s)}>
+                {s.nombre} {s.categoria?.nombre ? `— ${s.categoria.nombre}` : ''}
+              </li>
+            ))}
+          </ul>
+        )}
+        {resultados.length > 0 && (
+          <div className={styles.resultsGrid}>
+            {resultados.map(prod => (
+              <ProductoCard key={prod.id} producto={prod} />
+            ))}
+          </div>
+        )}
       </section>
+
+      
+      {aleatorios.length > 0 && (
+        <section className={styles.aleatoriosSection}>
+          <div className={styles.sectionHeader}>
+            <h2>Descubrí autos</h2>
+          </div>
+          <div className={styles.aleatoriosGrid}>
+            {aleatorios.slice(0, 10).map(prod => (
+              <ProductoCard key={prod.id} producto={prod} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className={styles.sectionsWrapper}>
 
@@ -178,17 +324,30 @@ export const Main = () => {
               className={styles.categoria}
               onMouseEnter={() => setCategoriaActiva(cat.id)}
               onMouseLeave={() => setCategoriaActiva(null)}>
-              <img
-                src={cat.imagenUrl}
-                alt={cat.nombre}
-                className={styles.categoriaImagen}
-              />
+              {(() => {
+                const url = resolveCategoriaImagenUrl(cat);
+                return url ? (
+                  <img
+                    src={url}
+                    alt={cat.nombre}
+                    className={styles.categoriaImagen}
+                    onError={(e) => { e.currentTarget.src = '/logo.png'; }}
+                  />
+                ) : null;
+              })()}
               <h3>{cat.nombre}</h3>
 
               {categoriaActiva === cat.id && (
                 <div className={styles.popupProductos}>
                   {productos
-                    .filter(p => p.categoria.id === cat.id)
+                    .filter(p => {
+                      if (!p) return false;
+                      const c = p.categoria;
+                      if (!c) return false;
+                      if (typeof c === 'object' && c !== null) return c.id === cat.id;
+                      
+                      return c === cat.id || c === cat.nombre;
+                    })
                     .map(p => (
                       <div key={p.id} className={styles.miniProducto}>
                         <img src={p.imagenUrl} alt={p.nombre} />

@@ -52,7 +52,7 @@
 }
 
 
-.button {
+.Button {
     display: flex;
     justify-content: flex-end;
     color: #fff;
@@ -64,7 +64,7 @@
 
 }
 
-.button:hover {
+.Button:hover {
     background: #3b82f6;
     color: #fff;
     text-decoration: underline;
@@ -117,3 +117,14 @@
         margin-left: 10px;
     }
   }
+
+.userArea { display: flex; align-items: center; gap: 10px; }
+.avatar {
+  width: 36px; height: 36px; border-radius: 50%; background: #3b82f6; color: #fff;
+  display: flex; align-items: center; justify-content: center; font-weight: 700;
+  cursor: pointer;
+}
+.userInfo { display: flex; flex-direction: column; }
+.userName { color: #fff; font-size: 0.9rem; line-height: 1; }
+.logoutButton { background: transparent; border: 1px solid #fff; color: #fff; padding: 4px 8px; border-radius: 6px; cursor: pointer; margin-top: 4px; }
+.logoutButton:hover { background: #fff; color: #06113f; }

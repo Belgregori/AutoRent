@@ -8,7 +8,8 @@ import { AgregarCategoria } from './pages/AgregarCategoria.jsx';
 import { AdministrarCaracteristicas } from './pages/AdministrarCaracteristicas.jsx';
 import { EditarProducto } from './pages/EditarProducto.jsx';
 import { LoginPage } from './pages/LoginPage.jsx';
-
+import { RegisterPage } from './pages/RegisterPage.jsx';
+import { ProfilePage } from './pages/ProfilePage.jsx';
 import { PrivateRoute } from './pages/PrivateRoute.jsx';
 
 function App() {
@@ -19,6 +20,9 @@ function App() {
         {/* Rutas públicas */}
         <Route path="/" element={<Home />} />
         <Route path="/Login" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
         <Route path="/producto/:id" element={<DetalleProducto />} />
         <Route path="/EditarProducto/:id" element={<EditarProducto />} />
 
@@ -26,7 +30,7 @@ function App() {
         <Route
           path="/admin"
           element={
-            <PrivateRoute>
+            <PrivateRoute requiredRole="ADMIN">
               <Adminpage />
             </PrivateRoute>
           }
@@ -34,7 +38,7 @@ function App() {
         <Route
           path="/AgregarProductos"
           element={
-            <PrivateRoute>
+            <PrivateRoute requiredRole="ADMIN">
               <AgregarProductos />
             </PrivateRoute>
           }
@@ -42,7 +46,7 @@ function App() {
         <Route
           path="/ListaProductos"
           element={
-            <PrivateRoute>
+            <PrivateRoute requiredRole="ADMIN">
               <ListaProductos />
             </PrivateRoute>
           }
@@ -50,7 +54,7 @@ function App() {
         <Route
           path="/AgregarCategoria"
           element={
-            <PrivateRoute>
+            <PrivateRoute requiredRole="ADMIN">
               <AgregarCategoria />
             </PrivateRoute>
           }
@@ -58,7 +62,7 @@ function App() {
         <Route
           path="/AdministrarCaracteristicas"
           element={
-            <PrivateRoute>
+            <PrivateRoute requiredRole="ADMIN">
               <AdministrarCaracteristicas />
             </PrivateRoute>
           }

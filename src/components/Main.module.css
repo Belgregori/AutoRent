@@ -10,15 +10,37 @@
 }
 
 
-.aleatorios {
+.aleatoriosSection {
   max-width: 1200px;
-  margin: 0 auto 40px;
+  margin: 0 auto 32px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
-.aleatorios h2 {
-  margin-bottom: 16px;
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.sectionHeader h2 {
+  margin: 0;
   color: #0d6efd;
-  border-bottom: 2px solid #0d6efd;
-  padding-bottom: 6px;
+}
+.ctaButton {
+  background-color: #0d6efd;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+.aleatoriosGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
 }
 
 
@@ -57,6 +79,15 @@
   color: #0d6efd;
   border-bottom: 2px solid #0d6efd;
   padding-bottom: 6px;
+}
+
+/* Responsividad para Main */
+@media (max-width: 1024px) {
+  .sectionsWrapper { gap: 16px; }
+}
+@media (max-width: 900px) {
+  .sectionsWrapper { flex-direction: column; }
+  .categorias, .recomendaciones { width: 100%; }
 }
 
 
@@ -182,5 +213,149 @@
 .verDetalleButton:hover {
   background-color: #0b5ed7;
   transform: translateY(-2px);
+}
+
+/* --- Buscador --- */
+.searchSection {
+  max-width: 1200px;
+  margin: 0 auto 24px;
+  background: #fff;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+.searchTitle {
+  margin: 0 0 8px 0;
+  color: #0d6efd;
+}
+.searchDesc {
+  margin: 0 0 12px 0;
+  color: #444;
+}
+.searchForm {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+.searchInput {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+.dateInputs {
+  display: flex;
+  gap: 8px;
+}
+.dateInput {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+.searchButton {
+  background: #0d6efd;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+.suggestions {
+  list-style: none;
+  margin: 8px 0 0 0;
+  padding: 0;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  max-height: 220px;
+  overflow: auto;
+}
+.suggestionItem {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.suggestionItem:hover {
+  background: #f7f7f7;
+}
+.resultsGrid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* --- Carrusel aleatorios --- */
+/* carrusel eliminado */
+
+/* --- Tarjetas de producto (base) --- */
+.productoCard {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.productoImagen {
+  position: relative;
+  height: 180px;
+  background: #eaeaea;
+}
+.productoImagenImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.productoIconPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 2rem;
+}
+.productoIcon { font-size: 2rem; }
+.disponibilidadBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+}
+.disponible {
+  background: #e7f7ee;
+  color: #107c41;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+}
+.noDisponible {
+  background: #fdecec;
+  color: #cc3030;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+}
+.productoInfo {
+  padding: 12px;
+}
+.productoNombre { margin: 0 0 4px 0; }
+.productoCategoria { margin: 0 0 8px 0; color: #666; font-size: 0.9rem; }
+.productoPrecio { display: flex; align-items: baseline; gap: 6px; }
+.precio { font-weight: 700; color: #0d6efd; }
+.periodo { color: #666; font-size: 0.9rem; }
+.productoAcciones { display: flex; gap: 8px; margin-top: 10px; }
+.reservarButton {
+  background: #10b981;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.reservarButton:disabled {
+  background: #cbd5e1;
+  color: #475569;
+  cursor: not-allowed;
 }
 

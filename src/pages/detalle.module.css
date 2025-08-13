@@ -72,11 +72,16 @@
 }
 
 .imagenPrincipal img {
-  width: 100%;
+  width: 90%;
+  max-width: 900px;
   border-radius: 8px;
   object-fit: cover;
   cursor: zoom-in;
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  transition: transform 0.35s ease;
+}
+.imagenPrincipal img:hover {
+  transform: scale(1.03);
 }
 
 .imagenesSecundarias {

@@ -20,8 +20,8 @@ export const EditarProducto = () => {
         'Authorization': `Bearer ${token}`
       }
     });
-    const data = await res.json();
-    setProductos(data);
+    const data = res.ok ? await res.json().catch(() => []) : [];
+    setProductos(Array.isArray(data) ? data : []);
   };
 
   const cargarCategorias = async () => {
@@ -31,8 +31,8 @@ export const EditarProducto = () => {
         'Authorization': `Bearer ${token}`
       }
     });
-    const data = await res.json();
-    setCategorias(data);
+    const data = res.ok ? await res.json().catch(() => []) : [];
+    setCategorias(Array.isArray(data) ? data : []);
   };
 
   const seleccionarProducto = (id) => {
@@ -68,7 +68,7 @@ export const EditarProducto = () => {
     <div className={styles.container}>
       <h2 className={styles.title}>Editar Producto</h2>
 
-      {/* Listado de productos y su categoría asignada */}
+      
       <div className={styles.listadoProductos}>
         <h3 className={styles.subtituloListado}>Listado de productos y su categoría</h3>
         <ul className={styles.listaProductos}>

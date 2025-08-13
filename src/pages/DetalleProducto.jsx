@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import styles from './detalle.module.css';
 import Header from '../components/Header.jsx';
 import { Footer } from '../components/Footer.jsx';
+import { UserNavControls } from '../components/UserNavControls.jsx';
 
 export const DetalleProducto = () => {
   const { id } = useParams();
@@ -22,7 +23,22 @@ export const DetalleProducto = () => {
       .then(data => {
         setProducto(data);
         setCaracteristicas(Array.isArray(data.caracteristicas) ? data.caracteristicas : []);
-        const imagenesFinal = data.imagenesData?.map(img => `data:image/jpeg;base64,${img}`) || [];
+        // Preferir URLs completas si están disponibles
+        let urls = [];
+        if (Array.isArray(data.imagenesUrls)) {
+          urls = data.imagenesUrls.filter(Boolean);
+        } else if (Array.isArray(data.imagenes)) {
+          urls = data.imagenes
+            .map(x => {
+              if (!x) return null;
+              if (typeof x === 'string') return x;
+              return x.url || x.imagenUrl || null;
+            })
+            .filter(Boolean);
+        }
+        const imagenesFinal = urls.length > 0
+          ? urls
+          : (data.imagenesData?.map(img => `data:image/jpeg;base64,${img}`) || []);
         setImagenes(imagenesFinal);
         setImagenPrincipal(imagenesFinal[0]);
       });
@@ -42,7 +58,7 @@ export const DetalleProducto = () => {
       .then(list => {
         if (Array.isArray(list) && list.length > 0) setCaracteristicas(list);
       })
-      .catch(() => { /* silencioso: fallback opcional */ });
+      .catch(() => { });
     return () => controller.abort();
   }, [id, producto, caracteristicas]);
 
@@ -65,7 +81,7 @@ export const DetalleProducto = () => {
         <div className={styles.galeria}>
 
           <div className={styles.imagenPrincipal}>
-            <img src={imagenPrincipal} alt={`Imagen principal de ${producto.nombre}`} />
+            <img src={imagenPrincipal} alt={`Imagen principal de ${producto.nombre}`} loading="eager" decoding="async" />
           </div>
           <div className={styles.imagenesSecundarias}>
             {imagenes.slice(1, 5).map((img, idx) => (
@@ -127,6 +143,7 @@ export const DetalleProducto = () => {
           )}
         </section>
       </div>
+      <UserNavControls />
       <Footer />
     </>
   );

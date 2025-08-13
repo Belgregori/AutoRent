@@ -152,7 +152,7 @@ export const AgregarProductos = () => {
           )}
         </div>
 
-        {/* Sección Imagen */}
+        
         <div className={styles.bloque}>
           <button
             type="button"
@@ -181,7 +181,7 @@ export const AgregarProductos = () => {
           )}
         </div>
 
-        {/* Sección Descripción */}
+        
         <div className={styles.bloque}>
           <button
             type="button"

@@ -26,8 +26,11 @@ export const AgregarCategoria = ({ productoId }) => {
         'Authorization': `Bearer ${token}`
       }
     })
-      .then(res => res.json())
-      .then(data => setCategorias(data))
+      .then(async res => {
+        if (!res.ok) return [];
+        try { return await res.json(); } catch { return []; }
+      })
+      .then(data => setCategorias(Array.isArray(data) ? data : []))
       .catch(err => console.error(err));
   }, []);
 

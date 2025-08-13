@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserNavControls } from "../components/UserNavControls";
 
 export const LoginPage = () => {
     const navigate = useNavigate();
@@ -28,14 +29,18 @@ export const LoginPage = () => {
 
 
             const data = await response.json();
-            // Verifiar el rol del usuario
+            // Guardar datos para cualquier usuario autenticado
+            if (data?.token) localStorage.setItem("token", data.token);
+            if (data?.rol) localStorage.setItem("rol", data.rol);
+            if (data?.email) localStorage.setItem("email", data.email);
+            if (data?.nombre) localStorage.setItem("nombre", data.nombre);
+            if (data?.apellido) localStorage.setItem("apellido", data.apellido);
+
+            // Redirección por rol: admin al panel, usuario al home
             if (data.rol === "ADMIN") {
-                localStorage.setItem("rol", data.rol);
-                localStorage.setItem("token", data.token);
-                localStorage.setItem("email", data.email);
                 navigate("/admin");
             } else {
-                setError("No tenés permisos de administrador.");
+                navigate("/");
             }
         } catch (err) {
             console.error(err);
@@ -44,7 +49,9 @@ export const LoginPage = () => {
     };
 
     return (
-        <div style={{ maxWidth: "400px", margin: "3rem auto", padding: "2rem", border: "1px solid #ccc", borderRadius: "8px" }}>
+        <>
+            <UserNavControls />
+            <div style={{ maxWidth: "400px", margin: "3rem auto", padding: "2rem", border: "1px solid #ccc", borderRadius: "8px", background: "#fff" }}>
             <h2>🔑 Iniciar sesión</h2>
             <form onSubmit={handleLogin}>
                 <div style={{ marginBottom: "1rem" }}>
@@ -72,6 +79,7 @@ export const LoginPage = () => {
                     Ingresar
                 </button>
             </form>
-        </div>
+            </div>
+        </>
     );
 };
