@@ -36,7 +36,7 @@ export const RegisterPage = () => {
 
     try {
       setEnviando(true);
-      const resp = await fetch("/api/usuarios/register", {
+      const resp = await fetch("/usuarios/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nombre, apellido, email, contraseña: password })
@@ -46,6 +46,13 @@ export const RegisterPage = () => {
         setError(data?.error || "No se pudo registrar.");
         return;
       }
+      
+      // Guardar usuario en localStorage para el avatar
+      localStorage.setItem('nombre', nombre);
+      localStorage.setItem('apellido', apellido);
+      localStorage.setItem('email', email);
+      localStorage.setItem('token', data?.token || ''); // si tu API devuelve token
+      
       setOk("Registro exitoso");
     } catch (err) {
       setError("Ocurrió un error. Intentá nuevamente.");
@@ -60,7 +67,7 @@ export const RegisterPage = () => {
     if (!validarEmail(email)) { setError("Email inválido para reenvío."); return; }
     try {
       setReenviando(true);
-      const resp = await fetch("/api/usuarios/resend-confirmation", {
+      const resp = await fetch("/usuarios/resend-confirmation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email })

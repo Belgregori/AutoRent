@@ -11,42 +11,63 @@ export const LoginPage = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         setError("");
-
+      
         try {
-
-            const response = await fetch("/api/usuarios/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, contraseña }),
-            });
-            if (!response.ok) {
-                const errorData = await response.json(); // leer el JSON de error
-                setError(errorData.error || "Credenciales incorrectas.");
-                return;
+          const response = await fetch("/usuarios/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, contraseña }), 
+          });
+      
+       
+          const text = await response.text();
+      
+         
+          let data = {};
+          const contentType = response.headers.get("content-type") || "";
+          if (text && contentType.includes("application/json")) {
+            try {
+              data = JSON.parse(text);
+            } catch (parseErr) {
+              console.warn("Respuesta no JSON:", text);
+              data = {};
             }
-
-
-            const data = await response.json();
-            // Guardar datos para cualquier usuario autenticado
-            if (data?.token) localStorage.setItem("token", data.token);
-            if (data?.rol) localStorage.setItem("rol", data.rol);
-            if (data?.email) localStorage.setItem("email", data.email);
-            if (data?.nombre) localStorage.setItem("nombre", data.nombre);
-            if (data?.apellido) localStorage.setItem("apellido", data.apellido);
-
-            // Redirección por rol: admin al panel, usuario al home
-            if (data.rol === "ADMIN") {
-                navigate("/admin");
-            } else {
-                navigate("/");
-            }
+          } else if (text) {
+            // Si hay texto pero no es JSON, lo deja en data.raw 
+            data.raw = text;
+          }
+      
+          if (!response.ok) {
+            // manejar caso error 
+            setError(data.error || data.message || `Error ${response.status}: ${response.statusText}`);
+            return;
+          }
+      
+          
+          if (!data || Object.keys(data).length === 0) {
+           
+            setError("Respuesta vacía del servidor. Verificá el backend.");
+            return;
+          }
+      
+          // Guardar datos y redirigir
+          if (data?.token) localStorage.setItem("token", data.token);
+          if (data?.rol) localStorage.setItem("rol", data.rol);
+          if (data?.email) localStorage.setItem("email", data.email);
+          if (data?.nombre) localStorage.setItem("nombre", data.nombre);
+          if (data?.apellido) localStorage.setItem("apellido", data.apellido);
+      
+          if (data.rol === "ADMIN") {
+            navigate("/admin");
+          } else {
+            navigate("/");
+          }
         } catch (err) {
-            console.error(err);
-            setError("Ocurrió un error, intentá de nuevo.");
+          console.error("handleLogin error:", err);
+          setError("Ocurrió un error, intentá de nuevo.");
         }
-    };
+      };
+      
 
     return (
         <>
