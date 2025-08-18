@@ -44,6 +44,10 @@ export const Adminpage = () => {
     navigate('/AdministrarCaracteristicas');
   }
 
+  const handleAdministrarPermisos = () => {
+    navigate('/AdministrarPermisos');
+  }
+
   return (
     <>
       <h1>Panel del Administrador</h1>
@@ -75,6 +79,13 @@ export const Adminpage = () => {
         onClick={handleAdministarCaracteristicas}>
         Administrar Caracteristicas
       </button>
+ 
+      <button type="button"
+        className={styles.AdministrarPermisos}  
+        onClick={handleAdministrarPermisos}>
+        Administrar Permisos
+      </button>
+
     </>
   )
 }

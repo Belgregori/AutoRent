@@ -7,6 +7,7 @@ export const ProfilePage = () => {
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [email, setEmail] = useState("");
+  const [contraseña, setContraseña] = useState("");
   const [ok, setOk] = useState("");
   const [error, setError] = useState("");
   const [guardando, setGuardando] = useState(false);
@@ -15,9 +16,11 @@ export const ProfilePage = () => {
     const storedEmail = localStorage.getItem('email') || "";
     const storedNombre = localStorage.getItem('nombre') || "";
     const storedApellido = localStorage.getItem('apellido') || "";
+    const storedContraseña = localStorage.getItem('contraseña') || "";
     setEmail(storedEmail);
     setNombre(storedNombre);
     setApellido(storedApellido);
+    setContraseña(storedContraseña);
   }, []);
 
   const handleSave = async (e) => {
@@ -25,12 +28,13 @@ export const ProfilePage = () => {
     setError("");
     setOk("");
     if (!email) { setError("Email inválido"); return; }
+    if (!contraseña) { setError("Contraseña inválida"); return; }
     try {
       setGuardando(true);
       const resp = await fetch('/api/usuarios/me', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token') || ''}` },
-        body: JSON.stringify({ nombre, apellido })
+        body: JSON.stringify({ nombre, apellido, contraseña })
       });
       const data = await resp.json().catch(() => ({}));
       if (!resp.ok) {
@@ -40,6 +44,7 @@ export const ProfilePage = () => {
       localStorage.setItem('nombre', nombre || '');
       localStorage.setItem('apellido', apellido || '');
       setOk('Datos actualizados');
+      localStorage.setItem('contraseña', contraseña || '');
     } catch (e) {
       setError('Error de red');
     } finally {
@@ -61,7 +66,11 @@ export const ProfilePage = () => {
             <label>Apellido</label>
             <input value={apellido} onChange={(e) => setApellido(e.target.value)} style={{ width: '100%', padding: '0.5rem', marginTop: 6 }} />
           </div>
-        </div>
+          <div>
+            <label>Contraseña</label>
+            <input value={contraseña} onChange={(e) => setContraseña(e.target.value)} style={{ width: '100%', padding: '0.5rem', marginTop: 6 }} />
+          </div>
+          </div>
         <div style={{ marginTop: 12 }}>
           <label>Email</label>
           <input value={email} disabled style={{ width: '100%', padding: '0.5rem', marginTop: 6, background: '#f7f7f7' }} />

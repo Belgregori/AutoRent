@@ -1,16 +1,17 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Adminpage } from './pages/Adminpage.jsx';
-import Home from './pages/Home.jsx';
+import Home from './pagesUser/Home.jsx';
 import { AgregarProductos } from './pages/AgregarProductos.jsx';
-import { DetalleProducto } from './pages/DetalleProducto.jsx';
+import { DetalleProducto } from './pagesUser/DetalleProducto.jsx';
 import { ListaProductos } from './pages/ListaProductos.jsx';
 import { AgregarCategoria } from './pages/AgregarCategoria.jsx';
 import { AdministrarCaracteristicas } from './pages/AdministrarCaracteristicas.jsx';
 import { EditarProducto } from './pages/EditarProducto.jsx';
 import { LoginPage } from './pages/LoginPage.jsx';
-import { RegisterPage } from './pages/RegisterPage.jsx';
-import { ProfilePage } from './pages/ProfilePage.jsx';
+import { RegisterPage } from './pagesUser/RegisterPage.jsx';
+import { ProfilePage } from './pagesUser/ProfilePage.jsx';
 import { PrivateRoute } from './pages/PrivateRoute.jsx';
+import { AdministrarPermisos } from './pages/AdministrarPermisos.jsx';
 
 function App() {
   return (
@@ -64,6 +65,14 @@ function App() {
           element={
             <PrivateRoute requiredRole="ADMIN">
               <AdministrarCaracteristicas />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/AdministrarPermisos"
+          element={
+            <PrivateRoute requiredRole="ADMIN">
+              <AdministrarPermisos />
             </PrivateRoute>
           }
         />
