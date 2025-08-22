@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './Main.module.css';
 import { useNavigate } from 'react-router-dom';
 import { Footer } from './Footer';
 
 export const Main = () => {
   const navigate = useNavigate();
-
+  const searchInputRef = useRef(null);
 
   const [categorias, setCategorias] = useState([]);
   const [productos, setProductos] = useState([]);
@@ -13,14 +13,14 @@ export const Main = () => {
   const [aleatorios, setAleatorios] = useState([]);
   const [categoriaActiva, setCategoriaActiva] = useState(null);
 
-  // Buscador
+  // Buscador mejorado
   const [busquedaTexto, setBusquedaTexto] = useState('');
   const [fechaDesde, setFechaDesde] = useState('');
   const [fechaHasta, setFechaHasta] = useState('');
   const [sugerencias, setSugerencias] = useState([]);
   const [resultados, setResultados] = useState([]);
   const [isBuscando, setIsBuscando] = useState(false);
-
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
 
   useEffect(() => {
@@ -147,18 +147,27 @@ export const Main = () => {
 
   useEffect(() => {
     const texto = busquedaTexto.trim().toLowerCase();
-    if (!texto) { setSugerencias([]); return; }
+    if (!texto) { 
+      setSugerencias([]); 
+      setShowSuggestions(false);
+      return; 
+    }
+    
     const matches = productos.filter(p => {
       const nombre = (p.nombre || '').toLowerCase();
       const cat = (p.categoria?.nombre || p.categoria || '').toLowerCase();
       return nombre.includes(texto) || cat.includes(texto);
-    }).slice(0, 8);
+    }).slice(0, 6);
+    
     setSugerencias(matches);
+    setShowSuggestions(matches.length > 0);
   }, [busquedaTexto, productos]);
 
   const ejecutarBusqueda = async (e) => {
     if (e) e.preventDefault();
     setIsBuscando(true);
+    setShowSuggestions(false);
+    
     try {
       const texto = busquedaTexto.trim().toLowerCase();
       if (fechaDesde && fechaHasta) {
@@ -177,9 +186,10 @@ export const Main = () => {
             return;
           }
         } catch {
-          
+          // Fallback a búsqueda local
         }
       }
+      
       const filtrados = productos.filter(p => {
         if (!texto) return true;
         const nombre = (p.nombre || '').toLowerCase();
@@ -195,7 +205,26 @@ export const Main = () => {
   const seleccionarSugerencia = (p) => {
     setBusquedaTexto(p.nombre);
     setSugerencias([]);
+    setShowSuggestions(false);
     setResultados([p]);
+  };
+
+  const handleInputFocus = () => {
+    if (sugerencias.length > 0) {
+      setShowSuggestions(true);
+    }
+  };
+
+  const handleInputBlur = () => {
+    // Delay para permitir click en sugerencias
+    setTimeout(() => setShowSuggestions(false), 200);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      setShowSuggestions(false);
+      searchInputRef.current?.blur();
+    }
   };
 
   
@@ -248,55 +277,112 @@ export const Main = () => {
 
   return (
     <main className={styles.main}>
-
       
+      {/* Bloque de búsqueda mejorado */}
       <section className={styles.searchSection}>
-        <h2 className={styles.searchTitle}>Buscá tu próximo auto</h2>
-        <p className={styles.searchDesc}>Ingresá un término y un rango de fechas para ver resultados relevantes.</p>
+        <div className={styles.searchHeader}>
+          <h1 className={styles.searchTitle}>Encuentra tu auto ideal</h1>
+          <p className={styles.searchSubtitle}>Descubre la libertad de movilidad con nuestra amplia flota de vehículos</p>
+          <p className={styles.searchDesc}>
+            Busca por marca, modelo o categoría y selecciona las fechas de tu viaje. 
+            Encuentra las mejores opciones disponibles para tu próxima aventura.
+          </p>
+        </div>
+        
         <form className={styles.searchForm} onSubmit={ejecutarBusqueda}>
-          <input
-            type="text"
-            className={styles.searchInput}
-            placeholder="Marca, modelo o categoría"
-            value={busquedaTexto}
-            onChange={(e) => setBusquedaTexto(e.target.value)}
-            aria-label="Buscar por texto"
-          />
-          <div className={styles.dateInputs}>
+          <div className={styles.searchInputContainer}>
             <input
-              type="date"
-              className={styles.dateInput}
-              value={fechaDesde}
-              onChange={(e) => setFechaDesde(e.target.value)}
-              aria-label="Fecha desde"
+              ref={searchInputRef}
+              type="text"
+              className={styles.searchInput}
+              placeholder="¿Qué auto buscas? (ej: Toyota Corolla, SUV, deportivo...)"
+              value={busquedaTexto}
+              onChange={(e) => setBusquedaTexto(e.target.value)}
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
+              onKeyDown={handleKeyDown}
+              aria-label="Buscar vehículo"
             />
-            <input
-              type="date"
-              className={styles.dateInput}
-              value={fechaHasta}
-              onChange={(e) => setFechaHasta(e.target.value)}
-              aria-label="Fecha hasta"
-              min={fechaDesde || undefined}
-            />
+            
+            {/* Sugerencias autocompletadas */}
+            {showSuggestions && sugerencias.length > 0 && (
+              <ul className={styles.suggestions} role="listbox">
+                {sugerencias.map(s => (
+                  <li 
+                    key={s.id} 
+                    className={styles.suggestionItem} 
+                    role="option" 
+                    onClick={() => seleccionarSugerencia(s)}
+                  >
+                    <div className={styles.suggestionContent}>
+                      <span className={styles.suggestionName}>{s.nombre}</span>
+                      {s.categoria?.nombre && (
+                        <span className={styles.suggestionCategory}>— {s.categoria.nombre}</span>
+                      )}
+                    </div>
+                    <span className={styles.suggestionPrice}>${s.precio}/día</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
-          <button type="submit" className={styles.searchButton} disabled={isBuscando}>
-            {isBuscando ? 'Buscando…' : 'Realizar búsqueda'}
-          </button>
+
+          <div className={styles.dateSection}>
+            <div className={styles.dateInputs}>
+              <div className={styles.dateField}>
+                <label htmlFor="fechaDesde" className={styles.dateLabel}>Fecha de inicio</label>
+                <input
+                  id="fechaDesde"
+                  type="date"
+                  className={styles.dateInput}
+                  value={fechaDesde}
+                  onChange={(e) => setFechaDesde(e.target.value)}
+                  aria-label="Fecha desde"
+                />
+              </div>
+              <div className={styles.dateField}>
+                <label htmlFor="fechaHasta" className={styles.dateLabel}>Fecha de fin</label>
+                <input
+                  id="fechaHasta"
+                  type="date"
+                  className={styles.dateInput}
+                  value={fechaHasta}
+                  onChange={(e) => setFechaHasta(e.target.value)}
+                  aria-label="Fecha hasta"
+                  min={fechaDesde || undefined}
+                />
+              </div>
+            </div>
+            <button 
+              type="submit" 
+              className={styles.searchButton} 
+              disabled={isBuscando}
+            >
+              {isBuscando ? (
+                <span className={styles.searchButtonContent}>
+                  <span className={styles.spinner}></span>
+                  Buscando...
+                </span>
+              ) : (
+                <span className={styles.searchButtonContent}>
+                  🔍 Buscar autos disponibles
+                </span>
+              )}
+            </button>
+          </div>
         </form>
-        {sugerencias.length > 0 && (
-          <ul className={styles.suggestions} role="listbox">
-            {sugerencias.map(s => (
-              <li key={s.id} className={styles.suggestionItem} role="option" onClick={() => seleccionarSugerencia(s)}>
-                {s.nombre} {s.categoria?.nombre ? `— ${s.categoria.nombre}` : ''}
-              </li>
-            ))}
-          </ul>
-        )}
+
+        {/* Resultados de búsqueda */}
         {resultados.length > 0 && (
-          <div className={styles.resultsGrid}>
-            {resultados.map(prod => (
-              <ProductoCard key={prod.id} producto={prod} />
-            ))}
+          <div className={styles.resultsSection}>
+            <h3 className={styles.resultsTitle}>
+              {resultados.length} {resultados.length === 1 ? 'auto encontrado' : 'autos encontrados'}
+            </h3>
+            <div className={styles.resultsGrid}>
+              {resultados.map(prod => (
+                <ProductoCard key={prod.id} producto={prod} />
+              ))}
+            </div>
           </div>
         )}
       </section>
