@@ -10,6 +10,7 @@ import { EditarProducto } from './pages/EditarProducto.jsx';
 import { LoginPage } from './pages/LoginPage.jsx';
 import { RegisterPage } from './pagesUser/RegisterPage.jsx';
 import { ProfilePage } from './pagesUser/ProfilePage.jsx';
+import { FavoritosPage } from './pagesUser/FavoritosPage.jsx';
 import { PrivateRoute } from './pages/PrivateRoute.jsx';
 import { AdministrarPermisos } from './pages/AdministrarPermisos.jsx';
 
@@ -24,6 +25,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+        <Route path="/favoritos" element={<PrivateRoute><FavoritosPage /></PrivateRoute>} />
         <Route path="/producto/:id" element={<DetalleProducto />} />
         <Route path="/EditarProducto/:id" element={<EditarProducto />} />
 

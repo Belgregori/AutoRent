@@ -1,0 +1,225 @@
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.dialog {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  width: 90%;
+  max-height: 90vh;
+  overflow: hidden;
+  animation: slideIn 0.3s ease-out;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 24px 16px 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.content {
+  padding: 20px 24px;
+}
+
+.message {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #666;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  padding: 16px 24px 24px 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.button {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 44px;
+}
+
+.cancelButton {
+  background: #f8f9fa;
+  color: #666;
+  border: 1px solid #dee2e6;
+}
+
+.cancelButton:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+}
+
+.confirmButton {
+  background: #007bff;
+  color: white;
+}
+
+.confirmButton:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+/* Tipos de diálogo */
+.warning .icon {
+  color: #ffc107;
+}
+
+.warning .confirmButton {
+  background: #ffc107;
+  color: #212529;
+}
+
+.warning .confirmButton:hover {
+  background: #e0a800;
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+}
+
+.danger .icon {
+  color: #dc3545;
+}
+
+.danger .confirmButton {
+  background: #dc3545;
+  color: white;
+}
+
+.danger .confirmButton:hover {
+  background: #c82333;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.info .icon {
+  color: #17a2b8;
+}
+
+.info .confirmButton {
+  background: #17a2b8;
+  color: white;
+}
+
+.info .confirmButton:hover {
+  background: #138496;
+  box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dialog {
+    width: 95%;
+    max-width: none;
+  }
+  
+  .header {
+    padding: 20px 20px 12px 20px;
+  }
+  
+  .content {
+    padding: 16px 20px;
+  }
+  
+  .actions {
+    padding: 12px 20px 20px 20px;
+    flex-direction: column;
+  }
+  
+  .button {
+    width: 100%;
+  }
+  
+  .title {
+    font-size: 1.2rem;
+  }
+  
+  .message {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .backdrop {
+    padding: 16px;
+  }
+  
+  .dialog {
+    width: 100%;
+  }
+  
+  .header {
+    padding: 16px 16px 12px 16px;
+  }
+  
+  .content {
+    padding: 12px 16px;
+  }
+  
+  .actions {
+    padding: 12px 16px 16px 16px;
+  }
+  
+  .title {
+    font-size: 1.1rem;
+  }
+  
+  .message {
+    font-size: 0.9rem;
+  }
+}

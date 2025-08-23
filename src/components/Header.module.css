@@ -119,12 +119,55 @@
   }
 
 .userArea { display: flex; align-items: center; gap: 10px; }
+
+.favoritosButton {
+  background: transparent;
+  border: 1px solid #3b82f6;
+  color: #3b82f6;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.favoritosButton:hover {
+  background: #3b82f6;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
 .avatar {
-  width: 36px; height: 36px; border-radius: 50%; background: #3b82f6; color: #fff;
-  display: flex; align-items: center; justify-content: center; font-weight: 700;
+  width: 36px; 
+  height: 36px; 
+  border-radius: 50%; 
+  background: #3b82f6; 
+  color: #fff;
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  font-weight: 700;
   cursor: pointer;
 }
+
 .userInfo { display: flex; flex-direction: column; }
 .userName { color: #fff; font-size: 0.9rem; line-height: 1; }
 .logoutButton { background: transparent; border: 1px solid #fff; color: #fff; padding: 4px 8px; border-radius: 6px; cursor: pointer; margin-top: 4px; }
 .logoutButton:hover { background: #fff; color: #06113f; }
+
+/* Responsive para el botón de favoritos */
+@media (max-width: 768px) {
+  .favoritosButton {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .userArea {
+    flex-direction: column;
+    gap: 8px;
+  }
+}

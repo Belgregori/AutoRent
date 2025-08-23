@@ -53,6 +53,13 @@ function Header() {
         )}
         {user && (
           <div className={styles.userArea}>
+            <button 
+              className={styles.favoritosButton} 
+              onClick={() => navigate('/favoritos')}
+              title="Mis Favoritos"
+            >
+              🤍 Favoritos
+            </button>
             <div className={styles.avatar} onClick={() => navigate('/profile')} title={`${user.nombre || ''} ${user.apellido || ''}`}>
               {initials}
             </div>

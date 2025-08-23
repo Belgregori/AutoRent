@@ -2,9 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import styles from './Main.module.css';
 import { useNavigate } from 'react-router-dom';
 import { Footer } from './Footer';
+import { useNotifications } from '../hooks/useNotifications';
+import { NotificationContainer } from './Notification';
 
 export const Main = () => {
   const navigate = useNavigate();
+  const { notifications, showSuccess, showError, showWarning, showInfo, removeNotification } = useNotifications();
   const searchInputRef = useRef(null);
 
   const [categorias, setCategorias] = useState([]);
@@ -21,6 +24,182 @@ export const Main = () => {
   const [resultados, setResultados] = useState([]);
   const [isBuscando, setIsBuscando] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+
+ 
+  const [favoritos, setFavoritos] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoadingFavoritos, setIsLoadingFavoritos] = useState(false);
+
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const isLoggedInUser = !!token;
+    setIsLoggedIn(isLoggedInUser);
+    
+    
+  }, []);
+
+  
+  useEffect(() => {
+    const handleFavoritosUpdate = () => {
+      const token = localStorage.getItem('token');
+      if (token && favoritos.length > 0) {
+        showInfo('Sincronizando favoritos desde otra página');
+      }
+    };
+
+    window.addEventListener('favoritosUpdated', handleFavoritosUpdate);
+    return () => window.removeEventListener('favoritosUpdated', handleFavoritosUpdate);
+  }, [favoritos, showInfo]);
+
+ 
+  const cargarFavoritosSiEsNecesario = async () => {
+    const token = localStorage.getItem('token');
+    if (!token || favoritos.length > 0) return; 
+
+    try {
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); 
+      
+      const response = await fetch('http://localhost:63634/api/favoritos', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      
+      if (response.ok) {
+        const data = await response.json();
+        setFavoritos(data);
+        showSuccess(`Favoritos cargados: ${data.length} productos`);
+      } else if (response.status === 401) {
+        showWarning('Token expirado, redirigiendo al login');
+        localStorage.removeItem('token');
+        localStorage.removeItem('rol');
+        localStorage.removeItem('email');
+        localStorage.removeItem('nombre');
+        localStorage.removeItem('apellido');
+        setIsLoggedIn(false);
+        setFavoritos([]);
+        navigate('/login');
+      } else if (response.status === 403) {
+        showWarning('Usuario no autorizado para acceder a favoritos');
+      } else if (response.status === 404) {
+        showWarning('Servicio de favoritos no disponible');
+      } else if (response.status === 500) {
+        showError('Error interno del servidor');
+      } else if (response.status === 502 || response.status === 503 || response.status === 504) {
+        showError(`Error del servidor: ${response.status}`);
+      } else {
+        showWarning(`Código de error inesperado: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error cargando favoritos en Main:', error);
+      
+      if (error.name === 'AbortError') {
+        showWarning('Timeout al cargar favoritos');
+      } else if (error.message.includes('ERR_INCOMPLETE_CHUNKED_ENCODING')) {
+        showError('Error de conexión con el servidor al cargar favoritos');
+      } else if (error.message.includes('Failed to fetch')) {
+        showError('No se pudo conectar con el servidor');
+      } else if (error.message.includes('NetworkError')) {
+        showError('Error de red');
+      }
+    }
+  };
+
+  
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token && favoritos.length === 0) {
+      cargarFavoritosSiEsNecesario();
+    }
+  }, [isLoggedIn]);
+
+
+  const toggleFavorito = async (productoId) => {
+    if (isLoadingFavoritos) return;
+    
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    setIsLoadingFavoritos(true);
+    
+    try {
+      const isFavorito = favoritos.some(fav => fav.productoId === Number(productoId));
+      const method = isFavorito ? 'DELETE' : 'POST';
+      
+      let url;
+      if (isFavorito) {
+        const favorito = favoritos.find(fav => fav.productoId === Number(productoId));
+        if (!favorito || !favorito.id) {
+          console.error('No se encontró el favorito para eliminar');
+          setIsLoadingFavoritos(false);
+          return;
+        }
+        url = `http://localhost:63634/api/favoritos/${favorito.id}`;
+      } else {
+        url = 'http://localhost:63634/api/favoritos';
+      }
+
+      showInfo(`Enviando petición: ${method} ${url}`);
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: method === 'POST' ? JSON.stringify({ productoId: Number(productoId) }) : undefined
+      });
+
+      showInfo(`Respuesta del backend: ${response.status} ${response.statusText}`);
+
+      if (response.ok) {
+        if (isFavorito) {
+          setFavoritos(prev => prev.filter(fav => fav.productoId !== Number(productoId)));
+        } else {
+          await cargarFavoritosSiEsNecesario();
+        }
+        
+        localStorage.setItem('favoritosUpdated', Date.now().toString());
+        window.dispatchEvent(new Event('favoritosUpdated'));
+        
+        showSuccess('Favorito actualizado correctamente');
+      } else if (response.status === 401) {
+        showWarning('Token expirado, limpiando sesión');
+        localStorage.removeItem('token');
+        localStorage.removeItem('rol');
+        localStorage.removeItem('email');
+        localStorage.removeItem('nombre');
+        localStorage.removeItem('apellido');
+        setIsLoggedIn(false);
+        setFavoritos([]);
+        navigate('/login');
+      } else if (response.status === 400) {
+        const errorData = await response.json().catch(() => ({}));
+        showError(`Error en la petición: ${errorData.error || 'Datos inválidos'}`);
+      } else {
+        showError(`Error del servidor: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error gestionando favorito:', error);
+    } finally {
+      setIsLoadingFavoritos(false);
+    }
+  };
+
+  
+  const esFavorito = (productoId) => {
+    return favoritos.some(fav => fav.productoId === Number(productoId));
+  };
 
 
   useEffect(() => {
@@ -186,7 +365,8 @@ export const Main = () => {
             return;
           }
         } catch {
-          // Fallback a búsqueda local
+         
+          
         }
       }
       
@@ -216,7 +396,7 @@ export const Main = () => {
   };
 
   const handleInputBlur = () => {
-    // Delay para permitir click en sugerencias
+ 
     setTimeout(() => setShowSuggestions(false), 200);
   };
 
@@ -240,12 +420,25 @@ export const Main = () => {
             <span className={styles.productoIcon}>🚗</span>
           </div>
         )}
+        
+        {/* Badge de disponibilidad */}
         <div className={styles.disponibilidadBadge}>
           <span className={producto.disponible ? styles.disponible : styles.noDisponible}>
             {producto.disponible ? 'Disponible' : 'No disponible'}
           </span>
         </div>
+
+        {/* Botón de favorito */}
+        <button
+          className={`${styles.favoritoButton} ${esFavorito(producto.id) ? styles.favoritoActivo : ''}`}
+          onClick={() => toggleFavorito(producto.id)}
+          title={esFavorito(producto.id) ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+          disabled={isLoadingFavoritos}
+        >
+          {esFavorito(producto.id) ? '❤️' : '🤍'}
+        </button>
       </div>
+      
       <div className={styles.productoInfo}>
         <h3 className={styles.productoNombre}>{producto.nombre}</h3>
         <p className={styles.productoCategoria}>{producto.categoria ? producto.categoria.nombre || producto.categoria : 'Sin categoría'}</p>
@@ -276,189 +469,195 @@ export const Main = () => {
   };
 
   return (
-    <main className={styles.main}>
-      
-      {/* Bloque de búsqueda mejorado */}
-      <section className={styles.searchSection}>
-        <div className={styles.searchHeader}>
-          <h1 className={styles.searchTitle}>Encuentra tu auto ideal</h1>
-          <p className={styles.searchSubtitle}>Descubre la libertad de movilidad con nuestra amplia flota de vehículos</p>
-          <p className={styles.searchDesc}>
-            Busca por marca, modelo o categoría y selecciona las fechas de tu viaje. 
-            Encuentra las mejores opciones disponibles para tu próxima aventura.
-          </p>
-        </div>
+    <>
+      <main className={styles.main}>
         
-        <form className={styles.searchForm} onSubmit={ejecutarBusqueda}>
-          <div className={styles.searchInputContainer}>
-            <input
-              ref={searchInputRef}
-              type="text"
-              className={styles.searchInput}
-              placeholder="¿Qué auto buscas? (ej: Toyota Corolla, SUV, deportivo...)"
-              value={busquedaTexto}
-              onChange={(e) => setBusquedaTexto(e.target.value)}
-              onFocus={handleInputFocus}
-              onBlur={handleInputBlur}
-              onKeyDown={handleKeyDown}
-              aria-label="Buscar vehículo"
-            />
-            
-            {/* Sugerencias autocompletadas */}
-            {showSuggestions && sugerencias.length > 0 && (
-              <ul className={styles.suggestions} role="listbox">
-                {sugerencias.map(s => (
-                  <li 
-                    key={s.id} 
-                    className={styles.suggestionItem} 
-                    role="option" 
-                    onClick={() => seleccionarSugerencia(s)}
-                  >
-                    <div className={styles.suggestionContent}>
-                      <span className={styles.suggestionName}>{s.nombre}</span>
-                      {s.categoria?.nombre && (
-                        <span className={styles.suggestionCategory}>— {s.categoria.nombre}</span>
-                      )}
-                    </div>
-                    <span className={styles.suggestionPrice}>${s.precio}/día</span>
-                  </li>
-                ))}
-              </ul>
-            )}
+        {/* Bloque de búsqueda mejorado */}
+        <section className={styles.searchSection}>
+          <div className={styles.searchHeader}>
+            <h1 className={styles.searchTitle}>Encuentra tu auto ideal</h1>
+            <p className={styles.searchSubtitle}>Descubre la libertad de movilidad con nuestra amplia flota de vehículos</p>
+            <p className={styles.searchDesc}>
+              Busca por marca, modelo o categoría y selecciona las fechas de tu viaje. 
+              Encuentra las mejores opciones disponibles para tu próxima aventura.
+            </p>
           </div>
+          
+          <form className={styles.searchForm} onSubmit={ejecutarBusqueda}>
+            <div className={styles.searchInputContainer}>
+              <input
+                ref={searchInputRef}
+                type="text"
+                className={styles.searchInput}
+                placeholder="¿Qué auto buscas? (ej: Toyota Corolla, SUV, deportivo...)"
+                value={busquedaTexto}
+                onChange={(e) => setBusquedaTexto(e.target.value)}
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
+                onKeyDown={handleKeyDown}
+                aria-label="Buscar vehículo"
+              />
+              
+              {/* Sugerencias autocompletadas */}
+              {showSuggestions && sugerencias.length > 0 && (
+                <ul className={styles.suggestions} role="listbox">
+                  {sugerencias.map(s => (
+                    <li 
+                      key={s.id} 
+                      className={styles.suggestionItem} 
+                      role="option" 
+                      onClick={() => seleccionarSugerencia(s)}
+                    >
+                      <div className={styles.suggestionContent}>
+                        <span className={styles.suggestionName}>{s.nombre}</span>
+                        {s.categoria?.nombre && (
+                          <span className={styles.suggestionCategory}>— {s.categoria.nombre}</span>
+                        )}
+                      </div>
+                      <span className={styles.suggestionPrice}>${s.precio}/día</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
 
-          <div className={styles.dateSection}>
-            <div className={styles.dateInputs}>
-              <div className={styles.dateField}>
-                <label htmlFor="fechaDesde" className={styles.dateLabel}>Fecha de inicio</label>
-                <input
-                  id="fechaDesde"
-                  type="date"
-                  className={styles.dateInput}
-                  value={fechaDesde}
-                  onChange={(e) => setFechaDesde(e.target.value)}
-                  aria-label="Fecha desde"
-                />
+            <div className={styles.dateSection}>
+              <div className={styles.dateInputs}>
+                <div className={styles.dateField}>
+                  <label htmlFor="fechaDesde" className={styles.dateLabel}>Fecha de inicio</label>
+                  <input
+                    id="fechaDesde"
+                    type="date"
+                    className={styles.dateInput}
+                    value={fechaDesde}
+                    onChange={(e) => setFechaDesde(e.target.value)}
+                    aria-label="Fecha desde"
+                  />
+                </div>
+                <div className={styles.dateField}>
+                  <label htmlFor="fechaHasta" className={styles.dateLabel}>Fecha de fin</label>
+                  <input
+                    id="fechaHasta"
+                    type="date"
+                    className={styles.dateInput}
+                    value={fechaHasta}
+                    onChange={(e) => setFechaHasta(e.target.value)}
+                    aria-label="Fecha hasta"
+                    min={fechaDesde || undefined}
+                  />
+                </div>
               </div>
-              <div className={styles.dateField}>
-                <label htmlFor="fechaHasta" className={styles.dateLabel}>Fecha de fin</label>
-                <input
-                  id="fechaHasta"
-                  type="date"
-                  className={styles.dateInput}
-                  value={fechaHasta}
-                  onChange={(e) => setFechaHasta(e.target.value)}
-                  aria-label="Fecha hasta"
-                  min={fechaDesde || undefined}
-                />
+              <button 
+                type="submit" 
+                className={styles.searchButton} 
+                disabled={isBuscando}
+              >
+                {isBuscando ? (
+                  <span className={styles.searchButtonContent}>
+                    <span className={styles.spinner}></span>
+                    Buscando...
+                  </span>
+                ) : (
+                  <span className={styles.searchButtonContent}>
+                    🔍 Buscar autos disponibles
+                  </span>
+                )}
+              </button>
+            </div>
+          </form>
+
+          {/* Resultados de búsqueda */}
+          {resultados.length > 0 && (
+            <div className={styles.resultsSection}>
+              <h3 className={styles.resultsTitle}>
+                {resultados.length} {resultados.length === 1 ? 'auto encontrado' : 'autos encontrados'}
+              </h3>
+              <div className={styles.resultsGrid}>
+                {resultados.map(prod => (
+                  <ProductoCard key={prod.id} producto={prod} />
+                ))}
               </div>
             </div>
-            <button 
-              type="submit" 
-              className={styles.searchButton} 
-              disabled={isBuscando}
-            >
-              {isBuscando ? (
-                <span className={styles.searchButtonContent}>
-                  <span className={styles.spinner}></span>
-                  Buscando...
-                </span>
-              ) : (
-                <span className={styles.searchButtonContent}>
-                  🔍 Buscar autos disponibles
-                </span>
-              )}
-            </button>
-          </div>
-        </form>
+          )}
+        </section>
 
-        {/* Resultados de búsqueda */}
-        {resultados.length > 0 && (
-          <div className={styles.resultsSection}>
-            <h3 className={styles.resultsTitle}>
-              {resultados.length} {resultados.length === 1 ? 'auto encontrado' : 'autos encontrados'}
-            </h3>
-            <div className={styles.resultsGrid}>
-              {resultados.map(prod => (
+        
+        {aleatorios.length > 0 && (
+          <section className={styles.aleatoriosSection}>
+            <div className={styles.sectionHeader}>
+              <h2>Descubrí autos</h2>
+            </div>
+            <div className={styles.aleatoriosGrid}>
+              {aleatorios.slice(0, 10).map(prod => (
                 <ProductoCard key={prod.id} producto={prod} />
               ))}
             </div>
-          </div>
+          </section>
         )}
-      </section>
 
-      
-      {aleatorios.length > 0 && (
-        <section className={styles.aleatoriosSection}>
-          <div className={styles.sectionHeader}>
-            <h2>Descubrí autos</h2>
-          </div>
-          <div className={styles.aleatoriosGrid}>
-            {aleatorios.slice(0, 10).map(prod => (
-              <ProductoCard key={prod.id} producto={prod} />
+        <div className={styles.sectionsWrapper}>
+
+          <section className={styles.categorias}>
+            <h2>Categorías</h2>
+            {categorias.map(cat => (
+              <div key={cat.id}
+                className={styles.categoria}
+                onMouseEnter={() => setCategoriaActiva(cat.id)}
+                onMouseLeave={() => setCategoriaActiva(null)}>
+                {(() => {
+                  const url = resolveCategoriaImagenUrl(cat);
+                  return url ? (
+                    <img
+                      src={url}
+                      alt={cat.nombre}
+                      className={styles.categoriaImagen}
+                      onError={(e) => { e.currentTarget.src = '/logo.png'; }}
+                    />
+                  ) : null;
+                })()}
+                <h3>{cat.nombre}</h3>
+
+                {categoriaActiva === cat.id && (
+                  <div className={styles.popupProductos}>
+                    {productos
+                      .filter(p => {
+                        if (!p) return false;
+                        const c = p.categoria;
+                        if (!c) return false;
+                        if (typeof c === 'object' && c !== null) return c.id === cat.id;
+                        
+                        return c === cat.id || c === cat.nombre;
+                      })
+                      .map(p => (
+                        <div key={p.id} className={styles.miniProducto}>
+                          <img src={p.imagenUrl} alt={p.nombre} />
+                          <p>{p.nombre}</p>
+                        </div>
+                      ))
+                    }
+                  </div>
+                )}
+              </div>
             ))}
-          </div>
-        </section>
-      )}
+          </section>
 
-      <div className={styles.sectionsWrapper}>
-
-        <section className={styles.categorias}>
-          <h2>Categorías</h2>
-          {categorias.map(cat => (
-            <div key={cat.id}
-              className={styles.categoria}
-              onMouseEnter={() => setCategoriaActiva(cat.id)}
-              onMouseLeave={() => setCategoriaActiva(null)}>
-              {(() => {
-                const url = resolveCategoriaImagenUrl(cat);
-                return url ? (
-                  <img
-                    src={url}
-                    alt={cat.nombre}
-                    className={styles.categoriaImagen}
-                    onError={(e) => { e.currentTarget.src = '/logo.png'; }}
-                  />
-                ) : null;
-              })()}
-              <h3>{cat.nombre}</h3>
-
-              {categoriaActiva === cat.id && (
-                <div className={styles.popupProductos}>
-                  {productos
-                    .filter(p => {
-                      if (!p) return false;
-                      const c = p.categoria;
-                      if (!c) return false;
-                      if (typeof c === 'object' && c !== null) return c.id === cat.id;
-                      
-                      return c === cat.id || c === cat.nombre;
-                    })
-                    .map(p => (
-                      <div key={p.id} className={styles.miniProducto}>
-                        <img src={p.imagenUrl} alt={p.nombre} />
-                        <p>{p.nombre}</p>
-                      </div>
-                    ))
-                  }
-                </div>
-              )}
+         
+          <section className={styles.recomendaciones}>
+            <h2>Recomendaciones</h2>
+            <div className={styles.productosGrid}>
+              {recomendaciones.map(prod => (
+                <ProductoCard key={prod.id} producto={prod} />
+              ))}
             </div>
-          ))}
-        </section>
+          </section>
 
-       
-        <section className={styles.recomendaciones}>
-          <h2>Recomendaciones</h2>
-          <div className={styles.productosGrid}>
-            {recomendaciones.map(prod => (
-              <ProductoCard key={prod.id} producto={prod} />
-            ))}
-          </div>
-        </section>
-
-      </div>
-    </main>
-    
-  )
+        </div>
+      </main>
+      
+      <NotificationContainer 
+        notifications={notifications} 
+        removeNotification={removeNotification} 
+      />
+    </>
+    )
 }

@@ -1,0 +1,703 @@
+.container {
+  min-height: calc(100vh - 64px);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 32px 16px;
+  box-sizing: border-box;
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.title {
+  margin: 0 0 12px 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.subtitle {
+  margin: 0;
+  color: rgba(255,255,255,0.9);
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+/* Estado vacío */
+.emptyState {
+  text-align: center;
+  background: rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 48px 24px;
+  max-width: 500px;
+  margin: 0 auto;
+  backdrop-filter: blur(10px);
+}
+
+.emptyIcon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.emptyState h2 {
+  margin: 0 0 12px 0;
+  color: white;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.emptyState p {
+  margin: 0 0 24px 0;
+  color: rgba(255,255,255,0.8);
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+.explorarButton {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 32px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.explorarButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+/* Grid de favoritos */
+.favoritosGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Tarjetas de producto */
+.productoCard {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255,255,255,0.2);
+  position: relative;
+}
+
+.productoCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+}
+
+.productoImagen {
+  position: relative;
+  height: 200px;
+  background: #f8f9fa;
+  overflow: hidden;
+}
+
+.productoImagenImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.productoCard:hover .productoImagenImg {
+  transform: scale(1.05);
+}
+
+.productoIconPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #adb5bd;
+  font-size: 3rem;
+}
+
+.productoIcon { 
+  font-size: 3rem; 
+}
+
+/* Badges y botones */
+.disponibilidadBadge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+}
+
+.disponible {
+  background: #d4edda;
+  color: #155724;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.noDisponible {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.eliminarFavoritoButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255,255,255,0.9);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.eliminarFavoritoButton:hover {
+  background: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Información del producto */
+.productoInfo {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.productoNombre { 
+  margin: 0 0 8px 0; 
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.3;
+}
+
+.productoCategoria { 
+  margin: 0 0 12px 0; 
+  color: #666; 
+  font-size: 1rem; 
+  font-weight: 500;
+}
+
+.productoPrecio { 
+  display: flex; 
+  align-items: baseline; 
+  gap: 6px; 
+  margin-bottom: 20px;
+}
+
+.precio { 
+  font-weight: 700; 
+  color: #0d6efd; 
+  font-size: 1.4rem;
+}
+
+.periodo { 
+  color: #666; 
+  font-size: 1rem; 
+}
+
+.productoAcciones { 
+  display: flex; 
+  gap: 12px; 
+  margin-top: auto;
+}
+
+.verDetalleButton {
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 18px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.verDetalleButton:hover {
+  background-color: #0b5ed7;
+  transform: translateY(-2px);
+}
+
+.reservarButton {
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 18px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.reservarButton:hover:not(:disabled) {
+  background: #218838;
+  transform: translateY(-2px);
+}
+
+.reservarButton:disabled {
+  background: #6c757d;
+  color: #adb5bd;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Estados de carga y error */
+.loadingContainer,
+.errorContainer {
+  text-align: center;
+  background: rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 48px 24px;
+  max-width: 500px;
+  margin: 0 auto;
+  backdrop-filter: blur(10px);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255,255,255,0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+.miniSpinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0,0,0,0.1);
+  border-top: 2px solid #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.errorMessage {
+  color: #ff6b6b;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+.retryButton {
+  background: rgba(255,255,255,0.2);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.retryButton:hover {
+  background: rgba(255,255,255,0.3);
+  border-color: rgba(255,255,255,0.5);
+}
+
+/* Mensaje de éxito */
+.successMessage {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #28a745;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+  font-weight: 500;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Estado de eliminación */
+.eliminando {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.eliminarFavoritoButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Mejoras en las tarjetas */
+.productoCard {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255,255,255,0.2);
+  position: relative;
+}
+
+.productoCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+}
+
+.productoCard:hover .productoImagenImg {
+  transform: scale(1.05);
+}
+
+/* Mejoras en botones */
+.verDetalleButton,
+.reservarButton {
+  border: none;
+  border-radius: 8px;
+  padding: 12px 18px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.verDetalleButton {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.verDetalleButton:hover {
+  background-color: #0b5ed7;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+
+.reservarButton {
+  background: #28a745;
+  color: white;
+}
+
+.reservarButton:hover:not(:disabled) {
+  background: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.reservarButton:disabled {
+  background: #6c757d;
+  color: #adb5bd;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Mejoras en el botón de eliminar */
+.eliminarFavoritoButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255,255,255,0.9);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.eliminarFavoritoButton:hover:not(:disabled) {
+  background: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.eliminarFavoritoButton:active {
+  transform: scale(0.95);
+}
+
+/* Mejoras en la imagen */
+.productoImagen {
+  position: relative;
+  height: 200px;
+  background: #f8f9fa;
+  overflow: hidden;
+}
+
+.productoImagenImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+/* Mejoras en el estado vacío */
+.emptyState {
+  text-align: center;
+  background: rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 48px 24px;
+  max-width: 500px;
+  margin: 0 auto;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.explorarButton {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 32px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.explorarButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.explorarButton:active {
+  transform: translateY(-1px);
+}
+
+/* Mejoras en badges */
+.disponible,
+.noDisponible {
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.disponible {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.noDisponible {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 24px 12px;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .favoritosGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .productoImagen {
+    height: 180px;
+  }
+  
+  .productoInfo {
+    padding: 16px;
+  }
+  
+  .productoNombre {
+    font-size: 1.2rem;
+  }
+  
+  .precio {
+    font-size: 1.3rem;
+  }
+  
+  .successMessage {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.8rem;
+  }
+  
+  .emptyState {
+    padding: 32px 16px;
+  }
+  
+  .emptyIcon {
+    font-size: 3rem;
+  }
+  
+  .emptyState h2 {
+    font-size: 1.5rem;
+  }
+  
+  .emptyState p {
+    font-size: 1rem;
+  }
+  
+  .productoAcciones {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .verDetalleButton,
+  .reservarButton {
+    width: 100%;
+  }
+}
+
+.errorContainer {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+.errorIcon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.errorTitle {
+  color: #dc3545;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.errorMessage {
+  color: #6c757d;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+.errorDetails {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.errorDetails p {
+  margin: 0.5rem 0;
+  color: #495057;
+  font-size: 0.95rem;
+}
+
+.errorDetails strong {
+  color: #343a40;
+}
+
+.errorActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.retryButton, .reloadButton {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+}
+
+.retryButton {
+  background: #007bff;
+  color: white;
+}
+
+.retryButton:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+}
+
+.reloadButton {
+  background: #6c757d;
+  color: white;
+}
+
+.reloadButton:hover {
+  background: #545b62;
+  transform: translateY(-1px);
+}

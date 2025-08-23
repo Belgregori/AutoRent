@@ -1,0 +1,211 @@
+.container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.notification {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  padding: 16px 20px;
+  min-width: 300px;
+  max-width: 400px;
+  position: relative;
+  overflow: hidden;
+  pointer-events: auto;
+  animation: slideIn 0.3s ease-out;
+  border-left: 4px solid;
+}
+
+.notification.exiting {
+  animation: slideOut 0.3s ease-in forwards;
+}
+
+/* Posiciones */
+.top-right {
+  transform: translateX(0);
+}
+
+.top-left {
+  transform: translateX(0);
+}
+
+.bottom-right {
+  transform: translateX(0);
+}
+
+.bottom-left {
+  transform: translateX(0);
+}
+
+/* Tipos de notificación */
+.success {
+  border-left-color: #28a745;
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+}
+
+.error {
+  border-left-color: #dc3545;
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+}
+
+.warning {
+  border-left-color: #ffc107;
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+}
+
+.info {
+  border-left-color: #17a2b8;
+  background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  z-index: 2;
+}
+
+.icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.message {
+  flex: 1;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.4;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.closeButton:hover {
+  background: rgba(0,0,0,0.1);
+  color: #333;
+}
+
+.progressBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: rgba(0,0,0,0.1);
+  animation: progress 3s linear;
+}
+
+.success .progressBar {
+  background: #28a745;
+}
+
+.error .progressBar {
+  background: #dc3545;
+}
+
+.warning .progressBar {
+  background: #ffc107;
+}
+
+.info .progressBar {
+  background: #17a2b8;
+}
+
+/* Animaciones */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes progress {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+  }
+  
+  .notification {
+    min-width: auto;
+    max-width: none;
+    width: 100%;
+  }
+  
+  .message {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    top: 5px;
+    right: 5px;
+    left: 5px;
+  }
+  
+  .notification {
+    padding: 12px 16px;
+  }
+  
+  .icon {
+    font-size: 1rem;
+  }
+  
+  .message {
+    font-size: 0.85rem;
+  }
+  
+  .closeButton {
+    font-size: 1.3rem;
+    width: 20px;
+    height: 20px;
+  }
+}
