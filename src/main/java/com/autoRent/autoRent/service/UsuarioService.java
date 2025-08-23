@@ -45,6 +45,17 @@ public class UsuarioService {
         return repo.findByEmail(email)
                 .filter(u -> encoder.matches(pass, u.getContraseña()));
     }
+
+    public Long obtenerUsuarioIdPorUsername(String username) {
+
+        Usuario usuario = repo.findByEmail(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + username));
+        return usuario.getId();
+    }
+
+
+
+
 }
 
 

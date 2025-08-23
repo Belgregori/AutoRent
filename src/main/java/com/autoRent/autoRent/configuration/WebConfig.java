@@ -48,6 +48,9 @@ public class WebConfig {
                         .requestMatchers(HttpMethod.GET, "/api/categorias/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/caracteristicas/**").permitAll()
 
+                        .requestMatchers("/api/favoritos/**").permitAll()
+
+
                         // ❌ Proteger lo demás (POST, PUT, DELETE, etc.)
                         .requestMatchers(
                                 "/usuarios/**",
