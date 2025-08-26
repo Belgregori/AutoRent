@@ -20,7 +20,7 @@ export const useFavoritos = () => {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); 
-      const response = await fetch('http://localhost:63634/api/favoritos', {
+      const response = await fetch('/api/favoritos', {
         headers: {
           'Authorization': `Bearer ${token}`
         },
@@ -30,13 +30,10 @@ export const useFavoritos = () => {
       clearTimeout(timeoutId);
       
 
-      if (response.ok) {
-        const data = await response.json();
-        setFavoritos(data);
-        if (process.env.NODE_ENV === 'development') {
-          console.info(`[useFavoritos] Favoritos cargados exitosamente: ${data.length} productos`);
-        }
-      } else if (response.status === 401) {
+              if (response.ok) {
+          const data = await response.json();
+          setFavoritos(data);
+        } else if (response.status === 401) {
         if (process.env.NODE_ENV === 'development') {
           console.warn('[useFavoritos] Token expirado (401), redirigiendo al login');
         }
@@ -99,7 +96,7 @@ export const useFavoritos = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:63634/api/favoritos', {
+      const response = await fetch('/api/favoritos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -161,18 +158,20 @@ export const useFavoritos = () => {
     }
   }, [navigate, cargarFavoritos]);
 
-  const eliminarFavorito = useCallback(async (favoritoId) => {
+    const eliminarFavorito = useCallback(async (favoritoId) => {
     const token = localStorage.getItem('token');
     if (!token) return false;
 
     try {
       const favorito = favoritos.find(fav => fav.id === favoritoId);
-      if (!favorito || !favorito.productoId) {
-        setError('No se pudo identificar el producto a eliminar');
+      if (!favorito) {
+        setError('No se pudo identificar el favorito a eliminar');
         return false;
       }
 
-      const response = await fetch(`http://localhost:63634/api/favoritos/${favorito.productoId}`, {
+    
+      
+      const response = await fetch(`/api/favoritos/${favorito.producto.id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

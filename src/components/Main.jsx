@@ -62,7 +62,7 @@ export const Main = () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); 
       
-      const response = await fetch('http://localhost:63634/api/favoritos', {
+      const response = await fetch('/api/favoritos', {
         headers: {
           'Authorization': `Bearer ${token}`
         },
@@ -144,12 +144,10 @@ export const Main = () => {
           setIsLoadingFavoritos(false);
           return;
         }
-        url = `http://localhost:63634/api/favoritos/${favorito.id}`;
+        url = `/api/favoritos/${favorito.id}`;
       } else {
-        url = 'http://localhost:63634/api/favoritos';
+                  url = '/api/favoritos';
       }
-
-      showInfo(`Enviando petición: ${method} ${url}`);
 
       const response = await fetch(url, {
         method,
@@ -159,8 +157,6 @@ export const Main = () => {
         },
         body: method === 'POST' ? JSON.stringify({ productoId: Number(productoId) }) : undefined
       });
-
-      showInfo(`Respuesta del backend: ${response.status} ${response.statusText}`);
 
       if (response.ok) {
         if (isFavorito) {
