@@ -1,11 +1,123 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// Constantes para manejo de errores
+const ERROR_MESSAGES = {
+  UNAUTHORIZED: 'No tienes permisos para acceder a esta funcionalidad',
+  NOT_FOUND: 'Servicio de favoritos no disponible',
+  SERVER_ERROR: 'Error interno del servidor. Inténtalo más tarde',
+  SERVER_UNAVAILABLE: 'Servidor temporalmente no disponible',
+  TIMEOUT: 'El servidor tardó demasiado en responder',
+  NETWORK_ERROR: 'No se pudo conectar con el servidor. Verifica tu conexión',
+  CONNECTION_ERROR: 'Error de conexión. Verifica tu conexión a internet',
+  INVALID_DATA: 'Datos inválidos para la operación',
+  FAVORITE_NOT_FOUND: 'El favorito no fue encontrado',
+  ALREADY_FAVORITE: 'Este producto ya está en tus favoritos',
+  FAVORITE_ID_ERROR: 'No se pudo identificar el favorito a eliminar'
+};
+
+// Constantes para reintentos
+const RETRY_CONFIG = {
+  MAX_ATTEMPTS: 3,
+  DELAY: 2000,
+  TIMEOUT: 10000
+};
+
 export const useFavoritos = () => {
   const navigate = useNavigate();
   const [favoritos, setFavoritos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Función auxiliar para limpiar datos de sesión
+  const clearSessionData = useCallback(() => {
+    const sessionKeys = ['token', 'rol', 'email', 'nombre', 'apellido'];
+    sessionKeys.forEach(key => localStorage.removeItem(key));
+  }, []);
+
+  // Función auxiliar para manejar errores de autenticación
+  const handleAuthError = useCallback(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('[useFavoritos] Token expirado (401), redirigiendo al login');
+    }
+    clearSessionData();
+    navigate('/login');
+  }, [clearSessionData, navigate]);
+
+  // Función auxiliar para manejar respuestas HTTP
+  const handleHttpResponse = useCallback(async (response, operation) => {
+    if (response.ok || response.status === 201 || response.status === 204) {
+      return { success: true, data: response.status !== 204 ? await response.json() : null };
+    }
+
+    // Manejar errores específicos por código de estado
+    switch (response.status) {
+      case 400:
+        const errorData = await response.json().catch(() => ({}));
+        return { 
+          success: false, 
+          error: errorData.message || errorData.error || ERROR_MESSAGES.INVALID_DATA 
+        };
+      
+      case 401:
+        handleAuthError();
+        return { success: false, error: 'Sesión expirada' };
+      
+      case 403:
+        return { success: false, error: ERROR_MESSAGES.UNAUTHORIZED };
+      
+      case 404:
+        return { 
+          success: false, 
+          error: operation === 'delete' ? ERROR_MESSAGES.FAVORITE_NOT_FOUND : ERROR_MESSAGES.NOT_FOUND 
+        };
+      
+      case 409:
+        return { success: false, error: ERROR_MESSAGES.ALREADY_FAVORITE };
+      
+      case 500:
+        return { success: false, error: ERROR_MESSAGES.SERVER_ERROR };
+      
+      case 502:
+      case 503:
+        return { success: false, error: ERROR_MESSAGES.SERVER_UNAVAILABLE };
+      
+      case 504:
+        return { success: false, error: ERROR_MESSAGES.TIMEOUT };
+      
+      default:
+        const fallbackErrorData = await response.json().catch(() => ({}));
+        return { 
+          success: false, 
+          error: fallbackErrorData.message || fallbackErrorData.error || `Error del servidor: ${response.status}` 
+        };
+    }
+  }, [handleAuthError]);
+
+  // Función auxiliar para manejar errores de red
+  const handleNetworkError = useCallback((error, intentos = 0) => {
+    if (error.name === 'AbortError') {
+      return ERROR_MESSAGES.TIMEOUT;
+    }
+    
+    if (error.message.includes('ERR_INCOMPLETE_CHUNKED_ENCODING')) {
+      return intentos < RETRY_CONFIG.MAX_ATTEMPTS 
+        ? null // Retornar null para indicar que se debe reintentar
+        : 'Error de conexión con el servidor después de 3 intentos. Inténtalo manualmente.';
+    }
+    
+    if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+      return ERROR_MESSAGES.NETWORK_ERROR;
+    }
+    
+    return ERROR_MESSAGES.CONNECTION_ERROR;
+  }, []);
+
+  // Función auxiliar para disparar eventos de actualización
+  const triggerFavoritosUpdate = useCallback(() => {
+    localStorage.setItem('favoritosUpdated', Date.now().toString());
+    window.dispatchEvent(new Event('favoritosUpdated'));
+  }, []);
 
   const cargarFavoritos = useCallback(async (intentos = 0) => {
     const token = localStorage.getItem('token');
@@ -19,74 +131,42 @@ export const useFavoritos = () => {
     
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); 
+      const timeoutId = setTimeout(() => controller.abort(), RETRY_CONFIG.TIMEOUT);
+      
       const response = await fetch('/api/favoritos', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
+        headers: { 'Authorization': `Bearer ${token}` },
         signal: controller.signal
       });
       
       clearTimeout(timeoutId);
       
-
-              if (response.ok) {
-          const data = await response.json();
-          setFavoritos(data);
-        } else if (response.status === 401) {
-        if (process.env.NODE_ENV === 'development') {
-          console.warn('[useFavoritos] Token expirado (401), redirigiendo al login');
-        }
-        localStorage.removeItem('token');
-        localStorage.removeItem('rol');
-        localStorage.removeItem('email');
-        localStorage.removeItem('nombre');
-        localStorage.removeItem('apellido');
-        navigate('/login');
-      } else if (response.status === 403) {
-        setError('No tienes permisos para acceder a esta funcionalidad');
-      } else if (response.status === 404) {
-        setError('Servicio de favoritos no disponible');
-      } else if (response.status === 500) {
-        setError('Error interno del servidor. Inténtalo más tarde');
-      } else if (response.status === 502) {
-        setError('Servidor temporalmente no disponible');
-      } else if (response.status === 503) {
-        setError('Servicio temporalmente no disponible');
-      } else if (response.status === 504) {
-        setError('El servidor tardó demasiado en responder');
+      const result = await handleHttpResponse(response, 'get');
+      
+      if (result.success) {
+        setFavoritos(result.data);
       } else {
-        const errorData = await response.json().catch(() => ({}));
-        const errorMessage = errorData.message || errorData.error || `Error del servidor: ${response.status}`;
-        setError(errorMessage);
+        setError(result.error);
       }
+      
     } catch (error) {
       console.error('Error cargando favoritos:', error);
       
-      if (error.name === 'AbortError') {
-        setError('Timeout: La petición tardó demasiado. Inténtalo de nuevo.');
-      } else if (error.message.includes('ERR_INCOMPLETE_CHUNKED_ENCODING')) {
-        if (intentos < 3) {
-          if (process.env.NODE_ENV === 'development') {
-            console.warn(`[useFavoritos] Reintentando cargar favoritos (intento ${intentos + 1}/3)...`);
-          }
-          setTimeout(() => cargarFavoritos(intentos + 1), 2000);
-          return;
-        } else {
-          setError('Error de conexión con el servidor después de 3 intentos. Inténtalo manualmente.');
+      const errorMessage = handleNetworkError(error, intentos);
+      
+      if (errorMessage === null && intentos < RETRY_CONFIG.MAX_ATTEMPTS) {
+        // Reintentar automáticamente
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(`[useFavoritos] Reintentando cargar favoritos (intento ${intentos + 1}/${RETRY_CONFIG.MAX_ATTEMPTS})...`);
         }
-      } else if (error.message.includes('Failed to fetch')) {
-        
-        setError('No se pudo conectar con el servidor. Verifica tu conexión.');
-      } else if (error.message.includes('NetworkError')) {
-        setError('Error de red. Verifica tu conexión a internet.');
-      } else {
-        setError('Error de conexión. Verifica tu conexión a internet.');
+        setTimeout(() => cargarFavoritos(intentos + 1), RETRY_CONFIG.DELAY);
+        return;
       }
+      
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
-  }, [navigate]);
+  }, [navigate, handleHttpResponse, handleNetworkError]);
 
   const agregarFavorito = useCallback(async (productoId) => {
     const token = localStorage.getItem('token');
@@ -105,130 +185,59 @@ export const useFavoritos = () => {
         body: JSON.stringify({ productoId: Number(productoId) })
       });
 
+      const result = await handleHttpResponse(response, 'add');
       
-      if (response.ok || response.status === 201) {
+      if (result.success) {
         await cargarFavoritos();
-        
-        localStorage.setItem('favoritosUpdated', Date.now().toString());
-        window.dispatchEvent(new Event('favoritosUpdated'));
-        
+        triggerFavoritosUpdate();
         return true;
-      } else if (response.status === 400) {
-        const errorData = await response.json().catch(() => ({}));
-        const errorMessage = errorData.message || errorData.error || 'Datos inválidos para agregar favorito';
-        setError(errorMessage);
-        return false;
-      } else if (response.status === 401) {
-        if (process.env.NODE_ENV === 'development') {
-          console.warn('[useFavoritos] Token expirado (401) al agregar favorito, redirigiendo al login');
-        }
-        localStorage.removeItem('token');
-        localStorage.removeItem('rol');
-        localStorage.removeItem('email');
-        localStorage.removeItem('nombre');
-        localStorage.removeItem('apellido');
-        navigate('/login');
-        return false;
-      } else if (response.status === 403) {
-        setError('No tienes permisos para agregar favoritos');
-        return false;
-      } else if (response.status === 409) {
-        setError('Este producto ya está en tus favoritos');
-        return false;
-      } else if (response.status === 500) {
-        setError('Error interno del servidor. Inténtalo más tarde');
-        return false;
       } else {
-        const errorData = await response.json().catch(() => ({}));
-        const errorMessage = errorData.message || errorData.error || `Error del servidor: ${response.status}`;
-        setError(errorMessage);
+        setError(result.error);
         return false;
       }
+      
     } catch (error) {
       console.error('Error agregando favorito:', error);
-      
-      if (error.message.includes('Failed to fetch')) {
-        setError('No se pudo conectar con el servidor. Verifica tu conexión.');
-      } else if (error.message.includes('NetworkError')) {
-        setError('Error de red. Verifica tu conexión a internet.');
-      } else {
-        setError('Error de conexión al agregar favorito');
-      }
+      const errorMessage = handleNetworkError(error);
+      setError(errorMessage);
       return false;
     }
-  }, [navigate, cargarFavoritos]);
+  }, [navigate, cargarFavoritos, handleHttpResponse, handleNetworkError, triggerFavoritosUpdate]);
 
-    const eliminarFavorito = useCallback(async (favoritoId) => {
+  const eliminarFavorito = useCallback(async (favoritoId) => {
     const token = localStorage.getItem('token');
     if (!token) return false;
 
     try {
       const favorito = favoritos.find(fav => fav.id === favoritoId);
       if (!favorito) {
-        setError('No se pudo identificar el favorito a eliminar');
+        setError(ERROR_MESSAGES.FAVORITE_ID_ERROR);
         return false;
       }
 
-    
-      
       const response = await fetch(`/api/favoritos/${favorito.producto.id}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
 
-      if (response.ok || response.status === 204) {
+      const result = await handleHttpResponse(response, 'delete');
+      
+      if (result.success) {
         setFavoritos(prev => prev.filter(fav => fav.id !== favoritoId));
-        
-        localStorage.setItem('favoritosUpdated', Date.now().toString());
-        window.dispatchEvent(new Event('favoritosUpdated'));
-        
+        triggerFavoritosUpdate();
         return true;
-      } else if (response.status === 400) {
-        const errorData = await response.json().catch(() => ({}));
-        const errorMessage = errorData.message || errorData.error || 'Datos inválidos para eliminar favorito';
-        setError(errorMessage);
-        return false;
-      } else if (response.status === 401) {
-        if (process.env.NODE_ENV === 'development') {
-          console.warn('[useFavoritos] Token expirado (401) al eliminar favorito, redirigiendo al login');
-        }
-        localStorage.removeItem('token');
-        localStorage.removeItem('rol');
-        localStorage.removeItem('email');
-        localStorage.removeItem('nombre');
-        localStorage.removeItem('apellido');
-        navigate('/login');
-        return false;
-      } else if (response.status === 403) {
-        setError('No tienes permisos para eliminar favoritos');
-        return false;
-      } else if (response.status === 404) {
-        setError('El favorito no fue encontrado');
-        return false;
-      } else if (response.status === 500) {
-        setError('Error interno del servidor. Inténtalo más tarde');
-        return false;
       } else {
-        const errorData = await response.json().catch(() => ({}));
-        const errorMessage = errorData.message || errorData.error || `Error del servidor: ${response.status}`;
-        setError(errorMessage);
+        setError(result.error);
         return false;
       }
+      
     } catch (error) {
       console.error('Error eliminando favorito:', error);
-      
-      if (error.message.includes('Failed to fetch')) {
-        setError('No se pudo conectar con el servidor.');
-      } else if (error.message.includes('NetworkError')) {
-        setError('Error de red.');
-      } else {
-        setError('Error de conexión al eliminar favorito');
-      }
+      const errorMessage = handleNetworkError(error);
+      setError(errorMessage);
       return false;
     }
-  }, [navigate, favoritos]);
+  }, [navigate, favoritos, handleHttpResponse, handleNetworkError, triggerFavoritosUpdate]);
 
   const esFavorito = useCallback((productoId) => {
     return favoritos.some(fav => String(fav.productoId) === String(productoId));

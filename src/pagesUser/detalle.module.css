@@ -129,6 +129,290 @@
   background-color: #2563eb;
 }
 
+/* --- Calendario de Disponibilidad --- */
+.calendarioContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.calendarioWrapper {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.calendario {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 1rem;
+  min-width: 280px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.calendarioHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.calendarioHeader h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: capitalize;
+}
+
+.navButton {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.diasSemana {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.diaSemana {
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #ffd700;
+  padding: 0.5rem 0;
+  text-transform: uppercase;
+}
+
+.fechasGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.fecha {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.fecha:hover {
+  transform: scale(1.1);
+  z-index: 1;
+}
+
+/* Estados de las fechas */
+.fecha.disponible {
+  background: #10b981;
+  color: white;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+.fecha.disponible:hover {
+  background: #059669;
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.5);
+}
+
+.fecha.ocupada {
+  background: #ef4444;
+  color: white;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+}
+
+.fecha.ocupada:hover {
+  background: #dc2626;
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.5);
+}
+
+.fecha.indefinida {
+  background: #6b7280;
+  color: #e5e7eb;
+  box-shadow: 0 2px 4px rgba(107, 114, 128, 0.3);
+}
+
+.fecha.indefinida:hover {
+  background: #4b5563;
+  box-shadow: 0 4px 8px rgba(107, 114, 128, 0.5);
+}
+
+.fecha.otro-mes {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.4);
+  cursor: default;
+}
+
+.fecha.otro-mes:hover {
+  transform: none;
+}
+
+/* Fecha seleccionada */
+.fecha.seleccionada {
+  border: 3px solid #ffd700;
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.5);
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+/* Botón de reserva rápida */
+.reservaRapida {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btnReservar {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btnReservar:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+}
+
+.btnReservar:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.4);
+}
+
+/* Leyenda */
+.leyenda {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.leyendaItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #e0e0e0;
+}
+
+.leyendaColor {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.leyendaColor.disponible {
+  background: #10b981;
+}
+
+.leyendaColor.ocupada {
+  background: #ef4444;
+}
+
+.leyendaColor.indefinida {
+  background: #6b7280;
+}
+
+/* Estados de carga y error */
+.calendarioLoading,
+.calendarioError {
+  text-align: center;
+  padding: 2rem;
+}
+
+.calendarioLoading p {
+  margin-top: 1rem;
+  color: #e0e0e0;
+  font-size: 1rem;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.calendarioError {
+  color: #fca5a5;
+}
+
+.errorIcon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.errorMessage {
+  margin: 1rem 0;
+  color: #fca5a5;
+  font-size: 1rem;
+}
+
+.retryButton {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+}
+
+.retryButton:hover {
+  background: #dc2626;
+}
+
 /* --- Características --- */
 .caracteristicasSection {
   width: 100%;
@@ -211,5 +495,48 @@
 
   .caracteristicasGrid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Calendario responsive */
+  .calendarioWrapper {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .calendario {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .leyenda {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .fecha {
+    font-size: 0.75rem;
+  }
+
+  .diasSemana {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendario {
+    padding: 0.75rem;
+  }
+
+  .fecha {
+    font-size: 0.7rem;
+  }
+
+  .diasSemana {
+    font-size: 0.65rem;
+  }
+
+  .calendarioHeader h3 {
+    font-size: 1rem;
   }
 }

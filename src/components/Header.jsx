@@ -60,6 +60,13 @@ function Header() {
             >
               🤍 Favoritos
             </button>
+            <button 
+              className={styles.reservasButton} 
+              onClick={() => navigate('/mis-reservas')}
+              title="Mis Reservas"
+            >
+              🗓️ Mis Reservas
+            </button>
             <div className={styles.avatar} onClick={() => navigate('/profile')} title={`${user.nombre || ''} ${user.apellido || ''}`}>
               {initials}
             </div>
