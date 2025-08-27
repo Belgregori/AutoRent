@@ -53,8 +53,10 @@ public class UsuarioService {
         return usuario.getId();
     }
 
-
-
+    public Usuario findByEmail(String email) {
+        return repo.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + email));
+    }
 
 }
 

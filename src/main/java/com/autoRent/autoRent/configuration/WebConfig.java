@@ -37,6 +37,9 @@ public class WebConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
+
+
+                        .requestMatchers("/api/reservas/**").authenticated()
                         // Endpoints públicos
                         .requestMatchers("/usuarios/register", "/usuarios/login").permitAll()
                         .requestMatchers("/error").permitAll()
@@ -47,6 +50,8 @@ public class WebConfig {
                         .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/categorias/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/caracteristicas/**").permitAll()
+
+
 
                         .requestMatchers("/api/favoritos/**").permitAll()
 

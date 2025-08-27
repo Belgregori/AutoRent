@@ -5,6 +5,7 @@ import com.autoRent.autoRent.repository.ProductoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductoService {
@@ -20,5 +21,13 @@ public class ProductoService {
         return productoRepo.findByCaracteristicas_Id(caractId);
     }
 
+    public Optional<Producto> obtenerProductoPorId(Long productoId) {
+        return productoRepo.findById(productoId);
+    }
 
+
+    public Producto findById(Long productoId) {
+        return productoRepo.findById(productoId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con id: " + productoId));
+    }
 }

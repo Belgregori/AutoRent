@@ -1,6 +1,7 @@
 package com.autoRent.autoRent.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Producto {
 
     @Id
@@ -108,5 +110,9 @@ public class Producto {
         this.descripcion = descripcion;
         this.precio = precio;
 
+    }
+
+    public boolean isDisponible() {
+        return true; // Implementa la lógica real de disponibilidad según tus necesidades
     }
 }

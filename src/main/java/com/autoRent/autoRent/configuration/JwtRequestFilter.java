@@ -4,7 +4,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +19,7 @@ import java.util.Collections;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtRequestFilter.class);
     private final JwtUtil jwtUtil;
 
     public JwtRequestFilter(JwtUtil jwtUtil) {
@@ -31,6 +33,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
+        logger.info("AUTH HEADER: {}", authHeader); // imprime el token que llega
+
         String username = null;
         String jwt = null;
 
@@ -43,7 +47,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             String role = jwtUtil.extractRole(jwt);
-
 
             String authority = "ROLE_" + role;
             UsernamePasswordAuthenticationToken authToken =
