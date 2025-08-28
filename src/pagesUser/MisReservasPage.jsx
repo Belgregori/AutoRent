@@ -8,7 +8,7 @@ import { useReservas } from '../hooks/useReservas.js';
 
 export const MisReservasPage = () => {
   const navigate = useNavigate();
-  const { reservas, obtenerReservasUsuario, isLoading, error } = useReservas();
+  const { reservas, obtenerReservasUsuario, eliminarReserva, isLoading, error } = useReservas();
   const [reservasFiltradas, setReservasFiltradas] = useState([]);
   const [filtroEstado, setFiltroEstado] = useState('TODAS');
   const [showConfirmMessage, setShowConfirmMessage] = useState(false);
@@ -26,7 +26,7 @@ export const MisReservasPage = () => {
   }, [reservas, filtroEstado]);
 
   const handleConfirmarReserva = (reservaId) => {
-    
+    // Cambiar el estado de la reserva de PENDIENTE a CONFIRMADA
     setReservasFiltradas(prev => 
       prev.map(reserva => 
         reserva.id === reservaId 
@@ -35,11 +35,26 @@ export const MisReservasPage = () => {
       )
     );
     
-  
+    // Mostrar mensaje de confirmación
     setShowConfirmMessage(true);
     setTimeout(() => {
       setShowConfirmMessage(false);
     }, 3000);
+  };
+
+  const handleEliminarReserva = async (reservaId) => {
+    const confirmacion = window.confirm('¿Estás seguro de que quieres eliminar esta reserva? Esta acción no se puede deshacer.');
+    
+    if (confirmacion) {
+      const eliminada = await eliminarReserva(reservaId);
+      
+      if (eliminada) {
+        // La reserva se eliminó exitosamente del estado local
+        setReservasFiltradas(prev => prev.filter(r => r.id !== reservaId));
+      } else {
+        alert('Error al eliminar la reserva. Por favor, inténtalo de nuevo.');
+      }
+    }
   };
 
   const formatearFecha = (fecha) => {
@@ -245,6 +260,13 @@ export const MisReservasPage = () => {
                     className={styles.btnConfirmarReserva}
                   >
                     ✅ Confirmar Reserva
+                  </button>
+                  
+                  <button 
+                    onClick={() => handleEliminarReserva(reserva.id)}
+                    className={styles.btnEliminarReserva}
+                  >
+                    🗑️ Eliminar Reserva
                   </button>
                   
                   <button 

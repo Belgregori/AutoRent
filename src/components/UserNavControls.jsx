@@ -36,8 +36,6 @@ export const UserNavControls = () => {
       <div className={styles.counter} aria-live="polite">Página {index} de {max}</div>
       <div className={styles.actions}>
         <button type="button" className={styles.btn} onClick={() => navigate('/')}>Inicio</button>
-        <button type="button" className={styles.btn} onClick={() => navigate('/mis-reservas')}>Mis Reservas</button>
-        <button type="button" className={styles.btn} onClick={() => navigate('/favoritos')}>Favoritos</button>
         <button type="button" className={styles.btn} onClick={() => navigate(-1)}>Atrás</button>
         <button type="button" className={styles.btn} onClick={() => navigate(1)}>Adelante</button>
       </div>

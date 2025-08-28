@@ -90,13 +90,45 @@ export const useReservas = () => {
     }
   }, [navigate]);
 
+  const eliminarReserva = useCallback(async (reservaId) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return false;
+    }
 
+    try {
+      const response = await fetch(`/api/reservas/usuario/${reservaId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.status === 401) {
+        navigate('/login');
+        return false;
+      }
+
+      if (response.ok) {
+        setReservas(prev => prev.filter(r => r.id !== reservaId));
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error('Error eliminando reserva:', error);
+      return false;
+    }
+  }, [navigate]);
 
   return {
     reservas,
     obtenerDisponibilidad,
     obtenerReservasUsuario,
     cancelarReserva,
+    eliminarReserva,
     isLoading,
     error,
     clearError: () => setError(null)
