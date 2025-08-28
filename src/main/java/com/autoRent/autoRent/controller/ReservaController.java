@@ -307,15 +307,44 @@ public class ReservaController {
         }
     }
 
-    @DeleteMapping("/{reservaId}")
-    @PreAuthorize("hasRole('ADMIN')") // Solo administradores pueden eliminar
-    public ResponseEntity<?> eliminarReserva(@PathVariable Long reservaId) {
+    @DeleteMapping("/usuario/{reservaId}")
+    public ResponseEntity<?> eliminarReservaUsuario(@PathVariable Long reservaId,
+                                                    Authentication authentication) {
         try {
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            String username = authentication.getName();
+            Usuario usuario = usuarioService.findByEmail(username);
+            if (usuario == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            Reserva reserva = reservaService.findById(reservaId);
+            if (reserva == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reserva no encontrada");
+            }
+
+            // Validar que la reserva pertenece al usuario autenticado
+            if (!reserva.getUsuario().getId().equals(usuario.getId())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("No tienes permiso para eliminar esta reserva");
+            }
+
+            // (Opcional) Verificar si se puede eliminar: por ejemplo, solo si está pendiente o confirmada
+            if (reserva.getFechaInicio().isBefore(LocalDate.now())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("No se puede eliminar una reserva ya iniciada o pasada");
+            }
+
             reservaService.eliminarReserva(reservaId);
             return ResponseEntity.ok("Reserva eliminada correctamente");
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error al eliminar la reserva: " + e.getMessage());
         }
     }
+
 }

@@ -59,7 +59,7 @@ public class WebConfig {
                         // ❌ Proteger lo demás (POST, PUT, DELETE, etc.)
                         .requestMatchers(
                                 "/usuarios/**",
-                                "/productos/**",         // acá asumimos que son endpoints internos de admin
+                                "/productos/**",
                                 "/api/categorias/**",    // POST/PUT/DELETE quedan bloqueados
                                 "/caracteristicas/**"
                         ).hasRole("ADMIN")
