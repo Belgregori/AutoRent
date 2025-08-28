@@ -8,14 +8,17 @@
   box-sizing: border-box;
   color: white;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin-top: 64px; 
+  padding-top: 48px; 
 }
 
 /* Header */
 .header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem; 
   width: 100%;
   max-width: 1200px;
+  padding-top: 1rem; 
 }
 
 .titulo {
@@ -32,6 +35,118 @@
   color: #e0e0e0;
   margin: 0;
   opacity: 0.9;
+}
+
+
+.confirmMessage {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(145deg, #ffffff, #f8fafc);
+  border: 2px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 3rem 2.5rem;
+  text-align: center;
+  max-width: 500px;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  animation: slideInDown 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 9999;
+  width: 90%;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+
+.confirmMessage::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(14, 106, 199, 0.15);
+  backdrop-filter: blur(8px);
+  z-index: -1;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.confirmIcon {
+  font-size: 5rem;
+  margin-bottom: 2rem;
+  animation: successBounce 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), successGlow 3s ease-in-out infinite;
+  filter: drop-shadow(0 8px 16px rgba(16, 185, 129, 0.3));
+  background: linear-gradient(135deg, #10b981, #059669);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+
+.confirmMessage h3 {
+  color: #1e293b;
+  font-size: 2.2rem;
+  margin: 0 0 1.5rem 0;
+  font-weight: 800;
+  text-shadow: none;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #0e6ac7, #1e3a8a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.confirmMessage p {
+  color: #64748b;
+  font-size: 1.3rem;
+  margin: 0;
+  font-weight: 500;
+  line-height: 1.7;
+  opacity: 0.9;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -70%) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes successBounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  40% {
+    transform: translateY(-20px) scale(1.15);
+  }
+  60% {
+    transform: translateY(-10px) scale(1.08);
+  }
+}
+
+@keyframes successGlow {
+  0%, 100% {
+    filter: drop-shadow(0 8px 16px rgba(16, 185, 129, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 12px 24px rgba(16, 185, 129, 0.6));
+  }
 }
 
 /* Filtros */
@@ -150,20 +265,33 @@
   margin-bottom: 2rem;
 }
 
-/* Tarjeta de reserva */
+
 .reservaCard {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   padding: 1.5rem;
   box-shadow: 0 4px 15px rgba(0,0,0,0.2);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
 }
 
 .reservaCard:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 25px rgba(0,0,0,0.3);
   border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Transición suave para cambios de estado */
+.estadoBadge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
 }
 
 /* Header de la reserva */
@@ -174,17 +302,6 @@
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.estadoBadge {
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: white;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 .fechaCreacion {
@@ -273,7 +390,8 @@
 }
 
 .btnVerProducto,
-.btnReservarNuevamente {
+.btnReservarNuevamente,
+.btnConfirmarReserva {
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 8px;
@@ -294,6 +412,18 @@
 .btnVerProducto:hover {
   background: #2563eb;
   transform: translateY(-1px);
+}
+
+.btnConfirmarReserva {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btnConfirmarReserva:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
 }
 
 .btnReservarNuevamente {
@@ -398,6 +528,8 @@
 @media (max-width: 768px) {
   .container {
     padding: 20px 12px;
+    margin-top: 64px; /* Mantener el margen superior en móviles */
+    padding-top: 32px; /* Reducir un poco el padding superior en móviles */
   }
 
   .titulo {
