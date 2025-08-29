@@ -494,6 +494,59 @@ export const DetalleProducto = () => {
             <p className={styles.sinCaracteristicas}>Sin características</p>
           )}
         </section>
+
+        <section className={styles.politicasSection}>
+          <h2 className={styles.subtitulo}>📋 Políticas del Producto</h2>
+          <div className={styles.politicasGrid}>
+            <div className={styles.politicaItem}>
+              <div className={styles.politicaIcon}>🎂</div>
+              <div className={styles.politicaContenido}>
+                <h3>Edad Mínima</h3>
+                <p>Solo mayores de 21 años pueden alquilar vehículos. Se requiere presentar documento de identidad válido.</p>
+              </div>
+            </div>
+
+            <div className={styles.politicaItem}>
+              <div className={styles.politicaIcon}>🚗</div>
+              <div className={styles.politicaContenido}>
+                <h3>Licencia de Conducir</h3>
+                <p>Es obligatorio presentar licencia de conducir vigente y en buen estado. No se aceptan licencias vencidas o dañadas.</p>
+              </div>
+            </div>
+
+            <div className={styles.politicaItem}>
+              <div className={styles.politicaIcon}>⚖️</div>
+              <div className={styles.politicaContenido}>
+                <h3>Condiciones de Uso</h3>
+                <p>El vehículo debe ser utilizado de acuerdo a las leyes locales de tránsito. El cliente es responsable de cualquier infracción cometida durante el período de alquiler.</p>
+              </div>
+            </div>
+
+            <div className={styles.politicaItem}>
+              <div className={styles.politicaIcon}>⏰</div>
+              <div className={styles.politicaContenido}>
+                <h3>Devolución Puntual</h3>
+                <p>Las devoluciones deben realizarse en el horario acordado. Las devoluciones tardías pueden generar cargos adicionales e intereses.</p>
+              </div>
+            </div>
+
+            <div className={styles.politicaItem}>
+              <div className={styles.politicaIcon}>🔄</div>
+              <div className={styles.politicaContenido}>
+                <h3>Cancelaciones y Modificaciones</h3>
+                <p>Se requiere un aviso previo de 48 horas para cancelaciones o modificaciones de reserva. Las cancelaciones tardías pueden incurrir en cargos.</p>
+              </div>
+            </div>
+
+            <div className={styles.politicaItem}>
+              <div className={styles.politicaIcon}>🔍</div>
+              <div className={styles.politicaContenido}>
+                <h3>Inspección del Vehículo</h3>
+                <p>Se realiza una inspección completa del vehículo al momento de la entrega y al momento de la devolución. El cliente debe verificar el estado antes de recibirlo.</p>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
       <UserNavControls />
       <Footer />

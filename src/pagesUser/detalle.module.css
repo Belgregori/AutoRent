@@ -474,6 +474,9 @@
   font-size: 1.5rem;
   font-weight: 800;
   color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 0.5rem;
+  text-decoration-thickness: 2px;
 }
 
 .caracteristicasGrid {
@@ -519,6 +522,75 @@
   margin: 0.5rem 0 0 0;
 }
 
+.politicasSection {
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.politicasGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.politicaItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.politicaItem:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.politicaIcon {
+  font-size: 2rem;
+  min-width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.politicaContenido {
+  flex: 1;
+}
+
+.politicaContenido h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.politicaContenido p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #e0e0e0;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
 /* Responsive para móviles */
 @media (max-width: 768px) {
   .galeria {
@@ -540,6 +612,21 @@
 
   .caracteristicasGrid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .politicasGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .politicaItem {
+    padding: 1rem;
+  }
+
+  .politicaIcon {
+    min-width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
   }
 
   /* Calendario responsive */
