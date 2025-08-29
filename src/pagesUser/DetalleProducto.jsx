@@ -16,6 +16,7 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
   const [mesActual, setMesActual] = useState(new Date());
   const [modalReservaAbierto, setModalReservaAbierto] = useState(false);
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
+  const [fechasSeleccionadas, setFechasSeleccionadas] = useState({ fechaInicio: null, fechaFin: null });
 
   const generarFechasMes = (fecha) => {
     const año = fecha.getFullYear();
@@ -58,14 +59,52 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
   const obtenerEstadoFecha = (fecha) => {
     if (!fecha.esMesActual) return 'otro-mes';
     if (esFechaOcupada(fecha.fecha)) return 'ocupada';
+    
+    // Verificar si es fecha de inicio seleccionada
+    if (fechasSeleccionadas.fechaInicio && 
+        fecha.fecha.toISOString().split('T')[0] === fechasSeleccionadas.fechaInicio.toISOString().split('T')[0]) {
+      return 'seleccionada-inicio';
+    }
+    
+    // Verificar si es fecha de fin seleccionada
+    if (fechasSeleccionadas.fechaFin && 
+        fecha.fecha.toISOString().split('T')[0] === fechasSeleccionadas.fechaFin.toISOString().split('T')[0]) {
+      return 'seleccionada-fin';
+    }
+    
+    // Verificar si está en el rango seleccionado
+    if (fechasSeleccionadas.fechaInicio && fechasSeleccionadas.fechaFin) {
+      const fechaStr = fecha.fecha.toISOString().split('T')[0];
+      const inicioStr = fechasSeleccionadas.fechaInicio.toISOString().split('T')[0];
+      const finStr = fechasSeleccionadas.fechaFin.toISOString().split('T')[0];
+      
+      if (fechaStr >= inicioStr && fechaStr <= finStr) {
+        return 'en-rango';
+      }
+    }
+    
     if (esFechaDisponible(fecha.fecha)) return 'disponible';
     return 'indefinida';
   };
 
   const handleFechaClick = (fecha) => {
     if (fecha.esMesActual && !esFechaOcupada(fecha.fecha)) {
-      setFechaSeleccionada(fecha.fecha);
-      setModalReservaAbierto(true);
+      if (!fechasSeleccionadas.fechaInicio) {
+        // Primera fecha seleccionada - fecha de inicio
+        setFechasSeleccionadas({ fechaInicio: fecha.fecha, fechaFin: null });
+      } else if (!fechasSeleccionadas.fechaFin) {
+        // Segunda fecha seleccionada - fecha de fin
+        if (fecha.fecha > fechasSeleccionadas.fechaInicio) {
+          setFechasSeleccionadas(prev => ({ ...prev, fechaFin: fecha.fecha }));
+          setModalReservaAbierto(true);
+        } else {
+          // Si la segunda fecha es anterior, reiniciar selección
+          setFechasSeleccionadas({ fechaInicio: fecha.fecha, fechaFin: null });
+        }
+      } else {
+        // Reiniciar selección
+        setFechasSeleccionadas({ fechaInicio: fecha.fecha, fechaFin: null });
+      }
     }
   };
 
@@ -176,6 +215,10 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
       <div className={styles.calendarioContainer}>
         <h2 className={styles.subtitulo}>Calendario de Disponibilidad</h2>
         
+        <div className={styles.instrucciones}>
+          <p>💡 <strong>Instrucciones:</strong> Haz clic en una fecha para seleccionar el inicio, luego en otra fecha para seleccionar el fin. El formulario se abrirá automáticamente.</p>
+        </div>
+        
         <div className={styles.calendarioWrapper}>
           {/* Calendario izquierdo */}
           <div className={styles.calendario}>
@@ -269,6 +312,30 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
         </div>
       </div>
 
+      {/* Leyenda del calendario */}
+      <div className={styles.leyenda}>
+        <div className={styles.leyendaItem}>
+          <div className={styles.leyendaColor} style={{ backgroundColor: '#10b981' }}></div>
+          <span>Disponible</span>
+        </div>
+        <div className={styles.leyendaItem}>
+          <div className={styles.leyendaColor} style={{ backgroundColor: '#ef4444' }}></div>
+          <span>Ocupada</span>
+        </div>
+        <div className={styles.leyendaItem}>
+          <div className={styles.leyendaColor} style={{ backgroundColor: '#3b82f6' }}></div>
+          <span>Inicio</span>
+        </div>
+        <div className={styles.leyendaItem}>
+          <div className={styles.leyendaColor} style={{ backgroundColor: '#8b5cf6' }}></div>
+          <span>Fin</span>
+        </div>
+        <div className={styles.leyendaItem}>
+          <div className={styles.leyendaColor} style={{ backgroundColor: '#f59e0b' }}></div>
+          <span>Rango</span>
+        </div>
+      </div>
+
       {/* Formulario de reserva */}
       <FormularioReserva
         producto={producto}
@@ -276,9 +343,11 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
         onClose={() => {
           setModalReservaAbierto(false);
           setFechaSeleccionada(null);
+          setFechasSeleccionadas({ fechaInicio: null, fechaFin: null });
         }}
         onReservaExitosa={handleReservaExitosa}
         fechasOcupadas={fechasOcupadas}
+        fechasPreseleccionadas={fechasSeleccionadas}
       />
     </>
   );

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './FormularioReserva.module.css';
 import { Notification } from './Notification';
 
-export const FormularioReserva = ({ producto, isOpen, onClose, onReservaExitosa, fechasOcupadas = [] }) => {
+export const FormularioReserva = ({ producto, isOpen, onClose, onReservaExitosa, fechasOcupadas = [], fechasPreseleccionadas = null }) => {
   // Campos obligatorios
   const [fechaInicio, setFechaInicio] = useState('');
   const [fechaFin, setFechaFin] = useState('');
@@ -36,10 +36,18 @@ export const FormularioReserva = ({ producto, isOpen, onClose, onReservaExitosa,
   fechaMaxima.setMonth(fechaMaxima.getMonth() + 6);
   const fechaMaximaStr = fechaMaxima.toISOString().split('T')[0];
 
+  // Establecer fechas preseleccionadas cuando se abra el modal
+  useEffect(() => {
+    if (isOpen && fechasPreseleccionadas?.fechaInicio && fechasPreseleccionadas?.fechaFin) {
+      setFechaInicio(fechasPreseleccionadas.fechaInicio.toISOString().split('T')[0]);
+      setFechaFin(fechasPreseleccionadas.fechaFin.toISOString().split('T')[0]);
+    }
+  }, [isOpen, fechasPreseleccionadas]);
+
   // Calcular precio total
   const calcularPrecioTotal = () => {
     if (!fechaInicio || !fechaFin) return 0;
-    const dias = Math.ceil((new Date(fechaFin) - new Date(fechaInicio)) / (1000 * 60 * 60 * 24));
+    const dias = Math.floor((new Date(fechaFin) - new Date(fechaInicio)) / (1000 * 60 * 60 * 24)) + 1;
     return (producto.precio * dias).toFixed(2);
   };
 
@@ -49,7 +57,7 @@ export const FormularioReserva = ({ producto, isOpen, onClose, onReservaExitosa,
     
     const inicio = new Date(fechaInicio);
     const fin = new Date(fechaFin);
-    const dias = Math.ceil((fin - inicio) / (1000 * 60 * 60 * 24));
+    const dias = Math.floor((fin - inicio) / (1000 * 60 * 60 * 24)) + 1;
     
     const opcionesFecha = { 
       weekday: 'long', 
@@ -122,7 +130,7 @@ export const FormularioReserva = ({ producto, isOpen, onClose, onReservaExitosa,
   // Actualizar cantidad de días cuando cambien las fechas
   useEffect(() => {
     if (fechaInicio && fechaFin) {
-      const dias = Math.ceil((new Date(fechaFin) - new Date(fechaInicio)) / (1000 * 60 * 60 * 24));
+      const dias = Math.floor((new Date(fechaFin) - new Date(fechaInicio)) / (1000 * 60 * 60 * 24)) + 1;
       setCantidadDias(dias);
     }
   }, [fechaInicio, fechaFin]);

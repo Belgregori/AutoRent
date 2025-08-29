@@ -37,6 +37,18 @@
   opacity: 0.9;
 }
 
+.estadoReserva {
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 
 .confirmMessage {
   position: fixed;
@@ -308,6 +320,19 @@
   font-size: 0.85rem;
   color: #e0e0e0;
   opacity: 0.8;
+}
+
+.estadoReserva {
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 /* Información del producto */

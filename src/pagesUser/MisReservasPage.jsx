@@ -8,7 +8,7 @@ import { useReservas } from '../hooks/useReservas.js';
 
 export const MisReservasPage = () => {
   const navigate = useNavigate();
-  const { reservas, obtenerReservasUsuario, eliminarReserva, isLoading, error } = useReservas();
+  const { reservas, obtenerReservasUsuario, eliminarReserva, confirmarReserva, isLoading, error } = useReservas();
   const [reservasFiltradas, setReservasFiltradas] = useState([]);
   const [filtroEstado, setFiltroEstado] = useState('TODAS');
   const [showConfirmMessage, setShowConfirmMessage] = useState(false);
@@ -21,25 +21,26 @@ export const MisReservasPage = () => {
     if (filtroEstado === 'TODAS') {
       setReservasFiltradas(reservas);
     } else {
-      setReservasFiltradas(reservas.filter(reserva => reserva.estado === filtroEstado));
+      setReservasFiltradas(reservas.filter(reserva => 
+        filtroEstado === 'PENDIENTE' 
+          ? (reserva.estado === 'PENDIENTE' || !reserva.estado)
+          : reserva.estado === filtroEstado
+      ));
     }
   }, [reservas, filtroEstado]);
 
-  const handleConfirmarReserva = (reservaId) => {
-    // Cambiar el estado de la reserva de PENDIENTE a CONFIRMADA
-    setReservasFiltradas(prev => 
-      prev.map(reserva => 
-        reserva.id === reservaId 
-          ? { ...reserva, estado: 'CONFIRMADA' }
-          : reserva
-      )
-    );
+  const handleConfirmarReserva = async (reservaId) => {
+    const confirmada = await confirmarReserva(reservaId);
     
-    // Mostrar mensaje de confirmación
-    setShowConfirmMessage(true);
-    setTimeout(() => {
-      setShowConfirmMessage(false);
-    }, 3000);
+    if (confirmada) {
+      // Mostrar mensaje de confirmación
+      setShowConfirmMessage(true);
+      setTimeout(() => {
+        setShowConfirmMessage(false);
+      }, 3000);
+    } else {
+      alert('Error al confirmar la reserva. Por favor, inténtalo de nuevo.');
+    }
   };
 
   const handleEliminarReserva = async (reservaId) => {
@@ -72,6 +73,7 @@ export const MisReservasPage = () => {
 
   const obtenerColorEstado = (estado) => {
     switch (estado) {
+      case 'PENDIENTE': return '#f59e0b';
       case 'CONFIRMADA': return '#10b981';
       case 'CANCELADA': return '#ef4444';
       case 'COMPLETADA': return '#6b7280';
@@ -83,7 +85,7 @@ export const MisReservasPage = () => {
     const inicio = new Date(fechaInicio);
     const fin = new Date(fechaFin);
     const diferencia = fin.getTime() - inicio.getTime();
-    return Math.ceil(diferencia / (1000 * 60 * 60 * 24));
+    return Math.floor(diferencia / (1000 * 60 * 60 * 24)) + 1;
   };
 
   if (isLoading) {
@@ -128,7 +130,7 @@ export const MisReservasPage = () => {
           <div className={styles.confirmMessage}>
             <div className={styles.confirmIcon}>🎉</div>
             <h3>¡Reserva Confirmada!</h3>
-            <p>Tu reserva ha sido confirmada exitosamente. ¡Disfruta de tu experiencia!</p>
+            <p>Tu reserva ha sido confirmada exitosamente en el sistema. ¡Disfruta de tu experiencia!</p>
           </div>
         )}
 
@@ -143,6 +145,7 @@ export const MisReservasPage = () => {
               className={styles.selectFiltro}
             >
               <option value="TODAS">Todas las reservas</option>
+              <option value="PENDIENTE">Pendientes</option>
               <option value="CONFIRMADA">Confirmadas</option>
               <option value="CANCELADA">Canceladas</option>
               <option value="COMPLETADA">Completadas</option>
@@ -162,7 +165,7 @@ export const MisReservasPage = () => {
             <p>
               {filtroEstado === 'TODAS' 
                 ? 'Aún no has hecho ninguna reserva. ¡Explora nuestros productos y haz tu primera reserva!'
-                : `No tienes reservas en estado "${obtenerColorEstado(filtroEstado)}"`
+                : `No tienes reservas en estado "${filtroEstado}"`
               }
             </p>
             <button 
@@ -180,6 +183,9 @@ export const MisReservasPage = () => {
                 <div className={styles.reservaHeader}>
                   <div className={styles.fechaCreacion}>
                     Creada: {formatearFechaCorta(reserva.fechaCreacion)}
+                  </div>
+                  <div className={styles.estadoReserva} style={{ color: obtenerColorEstado(reserva.estado || 'PENDIENTE') }}>
+                    {reserva.estado || 'PENDIENTE'}
                   </div>
                 </div>
 
@@ -255,13 +261,17 @@ export const MisReservasPage = () => {
                     Ver Producto
                   </button>
                   
-                  <button 
-                    onClick={() => handleConfirmarReserva(reserva.id)}
-                    className={styles.btnConfirmarReserva}
-                  >
-                    ✅ Confirmar Reserva
-                  </button>
+                  {/* Botón Confirmar solo para reservas PENDIENTES */}
+                  {(reserva.estado === 'PENDIENTE' || !reserva.estado) && (
+                    <button 
+                      onClick={() => handleConfirmarReserva(reserva.id)}
+                      className={styles.btnConfirmarReserva}
+                    >
+                      ✅ Confirmar Reserva
+                    </button>
+                  )}
                   
+                  {/* Botón Eliminar para todas las reservas */}
                   <button 
                     onClick={() => handleEliminarReserva(reserva.id)}
                     className={styles.btnEliminarReserva}

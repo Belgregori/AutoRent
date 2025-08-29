@@ -6,22 +6,22 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:53781',
+        target: 'http://localhost:61620',
         changeOrigin: true,
         secure: false,
       },
       '/imagenes': {
-        target: 'http://localhost:53781',
+        target: 'http://localhost:61620',
         changeOrigin: true,
         secure: false,
       },
       '/usuarios': {                     
-        target: 'http://localhost:53781',
+        target: 'http://localhost:61620',
         changeOrigin: true,
         secure: false,
       },
       '/uploads': {
-        target: 'http://localhost:53781',
+        target: 'http://localhost:61620',
         changeOrigin: true,
         secure: false,
       },

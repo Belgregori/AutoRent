@@ -123,12 +123,53 @@ export const useReservas = () => {
     }
   }, [navigate]);
 
+  const confirmarReserva = useCallback(async (reservaId) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return false;
+    }
+
+    try {
+      const response = await fetch(`/api/reservas/usuario/${reservaId}/confirmar`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.status === 401) {
+        navigate('/login');
+        return false;
+      }
+
+      if (response.ok) {
+        // Actualizar estado local
+        setReservas(prev => 
+          prev.map(r => 
+            r.id === reservaId 
+              ? { ...r, estado: 'CONFIRMADA' }
+              : r
+          )
+        );
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error('Error confirmando reserva:', error);
+      return false;
+    }
+  }, [navigate]);
+
   return {
     reservas,
     obtenerDisponibilidad,
     obtenerReservasUsuario,
     cancelarReserva,
     eliminarReserva,
+    confirmarReserva,
     isLoading,
     error,
     clearError: () => setError(null)
