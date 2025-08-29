@@ -123,6 +123,15 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin: 0 0.5rem;
+}
+
+.btnCompartir {
+  background-color: #10b981 !important;
+}
+
+.btnCompartir:hover {
+  background-color: #059669 !important;
 }
 
 .verMas button:hover {

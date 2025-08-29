@@ -6,6 +6,7 @@ import { Footer } from '../components/Footer.jsx';
 import { UserNavControls } from '../components/UserNavControls.jsx';
 import { FormularioReserva } from '../components/FormularioReserva.jsx';
 import { useReservas } from '../hooks/useReservas.js';
+import { ModalCompartir } from '../components/ModalCompartir.jsx';
 
 const CalendarioDisponibilidad = ({ productoId, producto }) => {
   const { obtenerDisponibilidad } = useReservas();
@@ -361,6 +362,7 @@ export const DetalleProducto = () => {
   const [imagenes, setImagenes] = useState([]);
   const [imagenPrincipal, setImagenPrincipal] = useState(null);
   const [modalAbierto, setModalAbierto] = useState(false);
+  const [modalCompartirAbierto, setModalCompartirAbierto] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -446,6 +448,9 @@ export const DetalleProducto = () => {
         
         <div className={styles.verMas}>
           <button onClick={() => setModalAbierto(true)}>Ver Más Imágenes</button>
+          <button onClick={() => setModalCompartirAbierto(true)} className={styles.btnCompartir}>
+            📤 Compartir
+          </button>
         </div>
         
         {modalAbierto && (
@@ -548,6 +553,14 @@ export const DetalleProducto = () => {
           </div>
         </section>
       </div>
+
+      <ModalCompartir
+        isOpen={modalCompartirAbierto}
+        onClose={() => setModalCompartirAbierto(false)}
+        producto={producto}
+        urlProducto={window.location.href}
+      />
+
       <UserNavControls />
       <Footer />
     </>
