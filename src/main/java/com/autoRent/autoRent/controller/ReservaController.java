@@ -254,14 +254,49 @@ public class ReservaController {
     }
 
 
-    @PutMapping("/{reservaId}/confirmar")
-    @PreAuthorize("hasRole('ADMIN')") // Solo administradores pueden confirmar
-    public ResponseEntity<Reserva> confirmarReserva(@PathVariable Long reservaId) {
+    @PutMapping("/usuario/{reservaId}/confirmar")
+    public ResponseEntity<?> confirmarReservaUsuario(@PathVariable Long reservaId,
+                                                     Authentication authentication) {
         try {
-            Reserva reserva = reservaService.confirmarReserva(reservaId);
-            return ResponseEntity.ok(reserva);
+            // Validar autenticación
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("Debes iniciar sesión para confirmar reservas");
+            }
+
+            String username = authentication.getName();
+            Usuario usuario = usuarioService.findByEmail(username);
+            if (usuario == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("Usuario no encontrado");
+            }
+
+            // Obtener la reserva
+            Reserva reserva = reservaService.findById(reservaId);
+            if (reserva == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Verificar que la reserva pertenece al usuario logueado
+            if (!reserva.getUsuario().getId().equals(usuario.getId())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("No tienes permiso para confirmar esta reserva");
+            }
+
+            // Verificar que la reserva esté en estado PENDIENTE
+            if (reserva.getEstado() != Reserva.EstadoReserva.PENDIENTE) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Solo se pueden confirmar reservas en estado PENDIENTE");
+            }
+
+            // Confirmar la reserva
+            Reserva reservaConfirmada = reservaService.confirmarReserva(reservaId);
+            return ResponseEntity.ok(reservaConfirmada);
+
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al confirmar la reserva: " + e.getMessage());
         }
     }
 
@@ -332,11 +367,7 @@ public class ReservaController {
                         .body("No tienes permiso para eliminar esta reserva");
             }
 
-            // (Opcional) Verificar si se puede eliminar: por ejemplo, solo si está pendiente o confirmada
-            if (reserva.getFechaInicio().isBefore(LocalDate.now())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("No se puede eliminar una reserva ya iniciada o pasada");
-            }
+
 
             reservaService.eliminarReserva(reservaId);
             return ResponseEntity.ok("Reserva eliminada correctamente");
