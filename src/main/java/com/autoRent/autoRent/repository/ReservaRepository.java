@@ -31,4 +31,6 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
     // 4) Reservas por usuario ordenadas por fecha creacion
     List<Reserva> findByUsuarioIdOrderByFechaCreacionDesc(Long usuarioId);
+
+    List<Reserva> findByUsuarioIdAndProductoId(Long usuarioId, Long productoId);
 }

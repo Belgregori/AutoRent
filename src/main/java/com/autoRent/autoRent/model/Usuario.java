@@ -26,6 +26,8 @@ public class Usuario {
 
     private String contraseña;
 
+    private String apellido;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "usuario_roles", joinColumns = @JoinColumn(name = "usuario_id"))
     @Column(name = "rol")
@@ -59,6 +61,11 @@ public class Usuario {
     }
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+
+    public String getApellido() {
+        return apellido;
     }
 }
 

@@ -1,6 +1,10 @@
 package com.autoRent.autoRent.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -39,6 +43,8 @@ public class WebConfig {
                 .authorizeHttpRequests(auth -> auth
 
 
+                        .requestMatchers(HttpMethod.GET, "/api/resenas/**").permitAll()
+                        .requestMatchers("/api/resenas/**").authenticated()
                         .requestMatchers("/api/reservas/**").authenticated()
                         // Endpoints públicos
                         .requestMatchers("/usuarios/register", "/usuarios/login").permitAll()
@@ -96,4 +102,13 @@ public class WebConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer jacksonCustomizer() {
+        return builder -> {
+            builder.modules(new JavaTimeModule());
+            builder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        };
+    }
+
 }
