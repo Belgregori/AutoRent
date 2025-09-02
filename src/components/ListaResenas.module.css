@@ -1,0 +1,107 @@
+.listaResenas {
+    margin-top: 2rem;
+  }
+  
+  .titulo {
+    margin: 0 0 1rem 0;
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-align: center;
+  }
+  
+  .resenasContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .resenaItem {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .resenaItem:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+  }
+  
+  .resenaHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    gap: 1rem;
+  }
+  
+  .usuarioInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .nombreUsuario {
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+  
+  .fecha {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+  }
+  
+  .puntuacionContainer {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .puntuacionNumero {
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+  }
+  
+  .comentario {
+    color: #e0e0e0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+  
+  .sinResenas {
+    text-align: center;
+    padding: 2rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .sinResenas p {
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
+  }
+  
+  .sinResenas p:first-child {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  @media (max-width: 768px) {
+    .resenaHeader {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    
+    .resenaItem {
+      padding: 1rem;
+    }
+  }

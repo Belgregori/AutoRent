@@ -600,6 +600,33 @@
   opacity: 0.9;
 }
 
+/* --- Valoraciones y Reseñas --- */
+.valoracionesSection {
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.loadingResenas {
+  text-align: center;
+  padding: 2rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.errorResenas {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  margin-top: 1rem;
+}
+
 /* Responsive para móviles */
 @media (max-width: 768px) {
   .galeria {

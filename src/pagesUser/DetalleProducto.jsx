@@ -7,6 +7,10 @@ import { UserNavControls } from '../components/UserNavControls.jsx';
 import { FormularioReserva } from '../components/FormularioReserva.jsx';
 import { useReservas } from '../hooks/useReservas.js';
 import { ModalCompartir } from '../components/ModalCompartir.jsx';
+import { SistemaValoracion } from '../components/SistemaValoracion.jsx';
+import { ListaResenas } from '../components/ListaResenas.jsx';
+import { ResumenValoraciones } from '../components/ResumenValoraciones.jsx';
+import { useResenas } from '../hooks/useResenas.js';
 
 const CalendarioDisponibilidad = ({ productoId, producto }) => {
   const { obtenerDisponibilidad } = useReservas();
@@ -149,14 +153,7 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
         
         setFechasDisponibles(fechasDisponiblesTemp);
         setFechasOcupadas(fechasOcupadasTemp);
-        
-        // TODO: Cuando el backend esté funcionando, usar esto:
-        // const disponibilidad = await obtenerDisponibilidad(productoId, 6);
-        // if (disponibilidad) {
-        //   setFechasDisponibles(disponibilidad.fechasDisponibles || []);
-        //   setFechasOcupadas(disponibilidad.fechasOcupadas || []);
-        // }
-        
+       
       } catch (error) {
         console.error('Error cargando disponibilidad:', error);
         setError('Error al cargar la disponibilidad de fechas. Inténtalo más tarde.');
@@ -364,6 +361,16 @@ export const DetalleProducto = () => {
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modalCompartirAbierto, setModalCompartirAbierto] = useState(false);
 
+  // Hook para manejar reseñas
+  const { 
+    resenas, 
+    resumenValoraciones, 
+    isLoading, 
+    error, 
+    obtenerResenas, 
+    obtenerResumenValoraciones 
+  } = useResenas();
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     fetch(`/api/productos/${id}`, {
@@ -410,6 +417,22 @@ export const DetalleProducto = () => {
       .catch(() => { });
     return () => controller.abort();
   }, [id, producto, caracteristicas]);
+
+  // Cargar reseñas cuando el producto esté disponible
+  useEffect(() => {
+    if (producto?.id) {
+      obtenerResenas(producto.id);
+      obtenerResumenValoraciones(producto.id);
+    }
+  }, [producto, obtenerResenas, obtenerResumenValoraciones]);
+
+  // Función para manejar cuando se crea una reseña
+  const handleResenaCreada = () => {
+    if (producto?.id) {
+      obtenerResenas(producto.id);
+      obtenerResumenValoraciones(producto.id);
+    }
+  };
 
   if (!producto) {
     return (
@@ -551,6 +574,34 @@ export const DetalleProducto = () => {
               </div>
             </div>
           </div>
+        </section>
+
+        {/* Sección de Valoraciones y Reseñas */}
+        <section className={styles.valoracionesSection}>
+          <h2 className={styles.subtitulo}>⭐ Valoraciones y Reseñas</h2>
+          
+          {resumenValoraciones && (
+            <ResumenValoraciones resumen={resumenValoraciones} />
+          )}
+          
+          <SistemaValoracion 
+            producto={producto} 
+            onResenaCreada={handleResenaCreada}
+          />
+          
+          {isLoading ? (
+            <div className={styles.loadingResenas}>
+              <p>Cargando reseñas...</p>
+            </div>
+          ) : (
+            <ListaResenas resenas={resenas} />
+          )}
+          
+          {error && (
+            <div className={styles.errorResenas}>
+              <p>Error al cargar las reseñas: {error}</p>
+            </div>
+          )}
         </section>
       </div>
 
