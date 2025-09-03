@@ -566,8 +566,8 @@
 @media (max-width: 768px) {
   .container {
     padding: 20px 12px;
-    margin-top: 64px; /* Mantener el margen superior en móviles */
-    padding-top: 32px; /* Reducir un poco el padding superior en móviles */
+    margin-top: 64px;
+    padding-top: 32px;
   }
 
   .titulo {

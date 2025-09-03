@@ -1,7 +1,7 @@
 
 .main {
   height: 100vh;
-  padding: 80px 20px 20px;
+  padding: 100px 20px 20px;
   background-color: #f9f9f9;
   box-sizing: border-box;
   overflow-y: auto;
@@ -81,7 +81,7 @@
   padding-bottom: 6px;
 }
 
-/* Responsividad para Main */
+
 @media (max-width: 1024px) {
   .sectionsWrapper { gap: 16px; }
 }
@@ -175,7 +175,7 @@
 
 
 .recomendaciones .productoImagen {
-  height: 140px; /* Imagen más pequeña para mejor calidad */
+  height: 140px;
   overflow: hidden;
   background: #f8f9fa;
 }
@@ -215,15 +215,16 @@
   transform: translateY(-2px);
 }
 
-/* --- Buscador mejorado --- */
+
 .searchSection {
   max-width: 1200px;
   margin: 0 auto 32px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-azul-oscuro) 0%, var(--color-azul-medio) 100%);
   padding: 32px 24px;
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
   color: white;
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
 .searchHeader {
@@ -336,7 +337,7 @@
 }
 
 .searchButton {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  background: linear-gradient(135deg, var(--color-verde-exito) 0%, #059669 100%);
   color: white;
   border: none;
   border-radius: 12px;
@@ -345,13 +346,13 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
   min-width: 200px;
 }
 
 .searchButton:hover:not(:disabled) {
   transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
 }
 
 .searchButton:disabled {
@@ -381,7 +382,7 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Sugerencias mejoradas */
+
 .suggestions {
   position: absolute;
   top: 100%;
@@ -468,15 +469,17 @@
 .resultsGrid .productoImagenImg {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
   transition: transform 0.3s ease;
+  background: #f8f9fa;
 }
 
 .resultsGrid .productoCard:hover .productoImagenImg {
   transform: scale(1.05);
 }
 
-/* --- Tarjetas de producto mejoradas (imágenes más pequeñas) --- */
+
 .productoCard {
   background: white;
   border-radius: 12px;
@@ -494,7 +497,7 @@
 
 .productoImagen {
   position: relative;
-  height: 140px; /* Imagen más pequeña */
+  height: 140px;
   background: #f8f9fa;
   overflow: hidden;
 }
@@ -502,8 +505,10 @@
 .productoImagenImg {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
   transition: transform 0.3s ease;
+  background: #f8f9fa;
 }
 
 .productoCard:hover .productoImagenImg {
@@ -639,7 +644,7 @@
   transform: none;
 }
 
-/* Responsive para el buscador */
+
 @media (max-width: 768px) {
   .searchSection {
     padding: 24px 16px;
@@ -683,12 +688,12 @@
   }
 }
 
-/* Estilos adicionales para mejorar la experiencia */
+
 .searchInput:focus + .suggestions {
   display: block;
 }
 
-/* Mejoras en las tarjetas de producto */
+
 .productoCard {
   background: white;
   border-radius: 12px;
@@ -706,7 +711,7 @@
   border-color: rgba(13, 110, 253, 0.2);
 }
 
-/* Mejoras en el grid de productos */
+
 .productosGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -714,7 +719,7 @@
   width: 100%;
 }
 
-/* Mejoras en las secciones */
+
 .categorias,
 .recomendaciones {
   width: 48%;
@@ -734,7 +739,7 @@
   font-size: 1.5rem;
 }
 
-/* Mejoras en las categorías */
+
 .categoria {
   display: flex;
   align-items: center;
@@ -773,7 +778,7 @@
   color: #0d6efd;
 }
 
-/* Mejoras en el popup de productos */
+
 .popupProductos {
   position: absolute;
   top: 0;
@@ -827,7 +832,7 @@
   font-weight: 500;
 }
 
-/* Mejoras en la sección de aleatorios */
+
 .aleatoriosSection {
   max-width: 1200px;
   margin: 0 auto 32px;
@@ -853,7 +858,7 @@
   font-weight: 600;
 }
 
-/* Mejoras en la responsividad */
+
 @media (max-width: 1024px) {
   .sectionsWrapper { 
     gap: 20px; 
@@ -896,7 +901,7 @@
   }
 }
 
-/* Botón de favorito */
+
 .favoritoButton {
   position: absolute;
   top: 12px;
@@ -938,7 +943,7 @@
   box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
 }
 
-/* Responsive para botones de favorito */
+
 @media (max-width: 768px) {
   .favoritoButton {
     width: 36px;

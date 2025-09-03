@@ -1,9 +1,26 @@
+:root {
+  --color-primario: #4a90e2;
+  --color-secundario: #50e3c2;
+  --color-azul-oscuro: #1e3a8a;
+  --color-azul-medio: #3b82f6;
+  --color-verde-exito: #10b981;
+  --color-rojo-error: #ef4444;
+  --color-amarillo-advertencia: #f59e0b;
+  --color-blanco: #ffffff;
+  --color-gris-claro: #f3f4f6;
+  --color-texto: #333333;
+  --color-fondo: #f9f9f9;
+  --color-boton-hover: #357ABD;
+  --transicion-suave: all 0.3s ease;
+  --transicion-rapida: all 0.2s ease;
+}
+
 .body{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-
 }
+
 .bodoni-moda {
   font-family: "Bodoni Moda", serif;
   font-optical-sizing: auto;

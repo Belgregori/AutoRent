@@ -1,12 +1,12 @@
 .container {
   min-height: calc(100vh - 64px);
-  background: #0e6ac7;
+  background: var(--color-primario);
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 32px 16px;
   box-sizing: border-box;
-  color: white;
+  color: var(--color-blanco);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   position: relative;
 }
@@ -14,10 +14,10 @@
 .flechaVolver {
   cursor: pointer;
   font-size: 1.3rem;
-  color: #fff;
+  color: var(--color-blanco);
   font-weight: bold;
-  transition: color 0.3s;
-  margin-left: auto; /* empuja la flecha hacia la derecha en un contenedor flex */
+  transition: var(--transicion-suave);
+  margin-left: auto;
   padding: 8px 12px;
   border-radius: 6px;
   background-color: rgba(255, 255, 255, 0.15);
@@ -25,7 +25,7 @@
 }
 
 .flechaVolver:hover {
-  color: #ccc;
+  color: var(--color-gris-claro);
   background-color: rgba(255, 255, 255, 0.3);
 }
 
@@ -34,7 +34,7 @@
   width: 100%;
   margin-bottom: 0.3rem;
   font-size: 2.4rem;
-  color: #fff;
+  color: var(--color-blanco);
   font-weight: 900;
   letter-spacing: 2px;
   font-family: 'Segoe UI Black', 'Segoe UI Bold', sans-serif;
@@ -43,7 +43,7 @@
 
 .precio {
   font-size: 1.6rem;
-  color: #ffd700; 
+  color: var(--color-amarillo-advertencia); 
   font-weight: 700;
   margin-bottom: 1.5rem;
   text-align: left;
@@ -53,7 +53,7 @@
 .descripcion {
   margin-bottom: 1.5rem;
   font-size: 1.1rem;
-  color: #e0e0e0;
+  color: var(--color-gris-claro);
   width: 100%;
   text-align: left;
 }
@@ -74,11 +74,14 @@
 .imagenPrincipal img {
   width: 70%;
   max-width: 600px;
+  height: 400px;
   border-radius: 8px;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
   cursor: zoom-in;
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
   transition: transform 0.35s ease;
+  background: #f8f9fa;
 }
 .imagenPrincipal img:hover {
   transform: scale(1.03);
@@ -95,12 +98,14 @@
 .imagenesSecundarias img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
   border-radius: 6px;
   cursor: pointer;
   opacity: 0.8;
   transition: opacity 0.3s ease;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  background: #f8f9fa;
 }
 
 .imagenesSecundarias img:hover,
@@ -115,8 +120,8 @@
 }
 
 .verMas button {
-  background-color: #3b82f6;
-  color: #fff;
+  background-color: var(--color-azul-medio);
+  color: var(--color-blanco);
   border: none;
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
@@ -127,7 +132,7 @@
 }
 
 .btnCompartir {
-  background-color: #10b981 !important;
+  background-color: var(--color-verde-exito) !important;
 }
 
 .btnCompartir:hover {
@@ -242,8 +247,8 @@
 
 /* Estados de las fechas */
 .fecha.disponible {
-  background: #10b981;
-  color: white;
+  background: var(--color-verde-exito);
+  color: var(--color-blanco);
   box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
 }
 
@@ -253,8 +258,8 @@
 }
 
 .fecha.ocupada {
-  background: #ef4444;
-  color: white;
+  background: var(--color-rojo-error);
+  color: var(--color-blanco);
   box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
 }
 
@@ -294,9 +299,9 @@
 
 /* Fecha de inicio seleccionada */
 .fecha.seleccionada-inicio {
-  background: #3b82f6;
-  color: white;
-  border: 3px solid #1d4ed8;
+  background: var(--color-azul-medio);
+  color: var(--color-blanco);
+  border: 3px solid var(--color-boton-hover);
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
   transform: scale(1.1);
   z-index: 3;
@@ -346,8 +351,8 @@
 }
 
 .btnReservar {
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
+  background: linear-gradient(135deg, var(--color-verde-exito), #059669);
+  color: var(--color-blanco);
   border: none;
   padding: 1rem 2rem;
   font-size: 1.1rem;
@@ -397,11 +402,11 @@
 }
 
 .leyendaColor.disponible {
-  background: #10b981;
+  background: var(--color-verde-exito);
 }
 
 .leyendaColor.ocupada {
-  background: #ef4444;
+  background: var(--color-rojo-error);
 }
 
 .leyendaColor.indefinida {
@@ -452,8 +457,8 @@
 }
 
 .retryButton {
-  background: #ef4444;
-  color: white;
+  background: var(--color-rojo-error);
+  color: var(--color-blanco);
   border: none;
   padding: 0.75rem 1.5rem;
   font-size: 0.9rem;
