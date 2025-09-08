@@ -57,7 +57,8 @@ public class WebConfig {
                         .requestMatchers(HttpMethod.GET, "/api/categorias/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/caracteristicas/**").permitAll()
 
-
+                        .requestMatchers(HttpMethod.GET, "/usuarios/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/usuarios/**").authenticated()
 
                         .requestMatchers("/api/favoritos/**").permitAll()
 

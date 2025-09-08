@@ -23,7 +23,6 @@ public class UsuarioController {
         this.jwtUtil = jwtUtil;
     }
 
-
     @GetMapping
     public List<Usuario> getAll() {
         return service.findAll();
@@ -37,19 +36,16 @@ public class UsuarioController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> body) {
-        try{
+        try {
             String email = body.get("email");
-            String pass = body.get("contraseña");
+            // 👇 Aseguro compatibilidad: acepta "contraseña" o "password"
+            String pass = body.get("contraseña") != null ? body.get("contraseña") : body.get("password");
 
             Optional<Usuario> userOpt = service.validar(email, pass);
             if (userOpt.isPresent()) {
-                // Obtenemos el primer rol del set
                 String rol = userOpt.get().getRoles().iterator().next();
-
-                // Generamos el token usando JwtUtil
                 String token = jwtUtil.generateToken(email, rol);
 
-                // Devolvemos un JSON con el token y rol
                 return ResponseEntity.ok(Map.of(
                         "token", token,
                         "rol", rol,
@@ -59,11 +55,46 @@ public class UsuarioController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Map.of("error", "Credenciales inválidas"));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno: " + e.getMessage()));
         }
     }
+
+    @GetMapping("/{email}")
+    public ResponseEntity<Usuario> getUsuarioByEmail(@PathVariable("email") String email) {
+        try {
+            Usuario usuario = service.findByEmail(email);
+            return ResponseEntity.ok(usuario);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @PutMapping("/{email}")
+    public ResponseEntity<Usuario> updateUsuario(@PathVariable("email") String email,
+                                                 @RequestBody Usuario updatedUsuario) {
+        try {
+            Usuario existingUser = service.findByEmail(email);
+
+            if (updatedUsuario.getNombre() != null) {
+                existingUser.setNombre(updatedUsuario.getNombre());
+            }
+            if (updatedUsuario.getApellido() != null) {
+                existingUser.setApellido(updatedUsuario.getApellido());
+            }
+            if (updatedUsuario.getContraseña() != null && !updatedUsuario.getContraseña().isBlank()) {
+                existingUser.setContraseña(service.encodePassword(updatedUsuario.getContraseña()));
+            }
+
+            Usuario savedUser = service.save(existingUser);
+            return ResponseEntity.ok(savedUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 }
+
+
 

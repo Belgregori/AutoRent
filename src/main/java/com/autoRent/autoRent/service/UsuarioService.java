@@ -58,6 +58,15 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + email));
     }
 
+    public Usuario save(Usuario usuario) {
+        return repo.save(usuario);
+    }
+
+    public String encodePassword(String rawPassword) {
+        return encoder.encode(rawPassword);
+    }
+
+
 }
 
 
