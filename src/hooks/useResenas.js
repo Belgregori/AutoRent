@@ -9,21 +9,11 @@ export const useResenas = () => {
   const obtenerResenas = useCallback(async (productoId) => {
     if (!productoId) return;
     
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setError('Debes iniciar sesión para ver las reseñas');
-      return;
-    }
-    
     setIsLoading(true);
     setError(null);
     
     try {
-      const response = await fetch(`/api/resenas/producto/${productoId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await fetch(`/api/resenas/producto/${productoId}`);
       
       if (response.status === 401) {
         setError('Sesión expirada. Por favor inicia sesión nuevamente.');
@@ -47,18 +37,8 @@ export const useResenas = () => {
   const obtenerResumenValoraciones = useCallback(async (productoId) => {
     if (!productoId) return;
     
-    const token = localStorage.getItem('token');
-    if (!token) {
-      console.error('No hay token para obtener resumen de valoraciones');
-      return;
-    }
-    
     try {
-      const response = await fetch(`/api/resenas/producto/${productoId}/resumen`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await fetch(`/api/resenas/producto/${productoId}/resumen`);
       
       if (response.status === 401) {
         console.error('Token expirado al obtener resumen de valoraciones');

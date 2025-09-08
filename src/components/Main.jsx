@@ -244,7 +244,7 @@ export const Main = () => {
 
     if (productosGuardados) {
       const parsed =
-        JSON.parse(productosGuardados).map(transformProducto);
+        JSON.parse(productosGuardados).map(p => transformProducto(p, true));
       setAleatorios(parsed);
       sessionStorage.setItem('primerCargaAleatorios', 'true');
       return;
@@ -260,7 +260,7 @@ export const Main = () => {
 
         const data = await response.json();
         const productosValidos = data
-          .map(transformProducto)
+          .map(p => transformProducto(p, true))
           .filter(p => p !== null)
           .slice(0, 10);
 
@@ -281,7 +281,7 @@ export const Main = () => {
 
 
 
-  const transformProducto = (producto) => {
+  const transformProducto = (producto, esAleatorio = false) => {
     if (!producto || typeof producto !== 'object') return null;
 
 
@@ -292,7 +292,7 @@ export const Main = () => {
         nombre: producto.nombre,
         categoria: producto.categoria,
         precio: Number(producto.precio || 0).toFixed(2),
-        disponible: Boolean(producto.disponible),
+        disponible: esAleatorio ? true : Boolean(producto.disponible),
         imagenUrl: `data:image/jpeg;base64,${imagenesData[0]}`,
       };
     }
@@ -304,7 +304,7 @@ export const Main = () => {
         nombre: producto.nombre,
         categoria: producto.categoria,
         precio: Number(producto.precio || 0).toFixed(2),
-        disponible: Boolean(producto.disponible),
+        disponible: esAleatorio ? true : Boolean(producto.disponible),
         imagenUrl: producto.imagenUrl,
       };
     }
@@ -315,7 +315,7 @@ export const Main = () => {
       nombre: producto.nombre,
       categoria: producto.categoria,
       precio: Number(producto.precio || 0).toFixed(2),
-      disponible: Boolean(producto.disponible),
+      disponible: esAleatorio ? true : Boolean(producto.disponible),
       imagenUrl: '',
     };
   };
@@ -446,7 +446,11 @@ export const Main = () => {
           <button className={styles.verDetalleButton} onClick={() => navigate(`/producto/${producto.id}`)}>
             Ver Detalle
           </button>
-          <button className={styles.reservarButton} disabled={!producto.disponible}>
+          <button 
+            className={styles.reservarButton} 
+            disabled={!producto.disponible}
+            onClick={() => navigate(`/producto/${producto.id}#reservar`)}
+          >
             {producto.disponible ? 'Reservar' : 'No Disponible'}
           </button>
         </div>

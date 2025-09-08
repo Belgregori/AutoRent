@@ -82,7 +82,7 @@ export const ListaProductos = () => {
           cellSpacing="0"
           style={{ width: '100%', borderCollapse: 'collapse' }}
         >
-          <thead style={{ backgroundColor: '#eee' }}>
+          <thead style={{ backgroundColor: '#4a5568', color: 'white' }}>
             <tr>
               <th>ID</th>
               <th>Nombre</th>

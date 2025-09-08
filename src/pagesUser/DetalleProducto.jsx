@@ -218,7 +218,6 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
         </div>
         
         <div className={styles.calendarioWrapper}>
-          {/* Calendario izquierdo */}
           <div className={styles.calendario}>
             <div className={styles.calendarioHeader}>
               <button onClick={mesAnterior} className={styles.navButton}>‹</button>
@@ -250,7 +249,6 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
             </div>
           </div>
 
-          {/* Calendario derecho */}
           <div className={styles.calendario}>
             <div className={styles.calendarioHeader}>
               <button onClick={mesAnterior} className={styles.navButton}>‹</button>
@@ -283,7 +281,6 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
           </div>
         </div>
 
-        {/* Leyenda */}
         <div className={styles.leyenda}>
           <div className={styles.leyendaItem}>
             <div className={`${styles.leyendaColor} ${styles.disponible}`}></div>
@@ -299,7 +296,6 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
           </div>
         </div>
 
-        {/* Botón de reserva rápida */}
         <div className={styles.reservaRapida}>
           <button 
             onClick={() => setModalReservaAbierto(true)}
@@ -310,7 +306,6 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
         </div>
       </div>
 
-      {/* Leyenda del calendario */}
       <div className={styles.leyenda}>
         <div className={styles.leyendaItem}>
           <div className={styles.leyendaColor} style={{ backgroundColor: '#10b981' }}></div>
@@ -334,7 +329,6 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
         </div>
       </div>
 
-      {/* Formulario de reserva */}
       <FormularioReserva
         producto={producto}
         isOpen={modalReservaAbierto}
@@ -426,6 +420,24 @@ export const DetalleProducto = () => {
     }
   }, [producto, obtenerResenas, obtenerResumenValoraciones]);
 
+  // Scroll automático a la sección de reserva si hay hash #reservar
+  useEffect(() => {
+    if (window.location.hash === '#reservar') {
+      // Esperar un poco para que el componente se renderice completamente
+      const timer = setTimeout(() => {
+        const element = document.getElementById('reservar');
+        if (element) {
+          element.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+          });
+        }
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [producto]); // Se ejecuta cuando el producto se carga
+
   // Función para manejar cuando se crea una reseña
   const handleResenaCreada = () => {
     if (producto?.id) {
@@ -446,35 +458,39 @@ export const DetalleProducto = () => {
     <>
       <Header />
       <div className={styles.container}>
-        <h1 className={styles.nombre}>{producto.nombre.toUpperCase()}</h1>
-        <p className={styles.descripcion}>{producto.descripcion}</p>
-        <p className={styles.precio}>${producto.precio.toFixed(2)}</p>
-
-        <div className={styles.galeria}>
-          <div className={styles.imagenPrincipal}>
-            <img src={imagenPrincipal} alt={`Imagen principal de ${producto.nombre}`} loading="eager" decoding="async" />
+        <div className={styles.productoInfoContainer}>
+          <div className={styles.headerInfo}>
+            <h1 className={styles.nombre}>{producto.nombre}</h1>
+            <p className={styles.descripcion}>{producto.descripcion}</p>
+            <p className={styles.precio}>{producto.precio.toFixed(2)}</p>
           </div>
-          <div className={styles.imagenesSecundarias}>
-            {imagenes.slice(1, 5).map((img, idx) => (
-              <img
-                key={idx}
-                src={img}
-                alt={`Imagen ${idx + 2} de ${producto.nombre}`}
-                onClick={() => setImagenPrincipal(img)}
-                className={img === imagenPrincipal ? styles.selected : ''}
-              />
-            ))}
+
+          <div className={styles.galeria}>
+            <div className={styles.imagenPrincipal}>
+              <img src={imagenPrincipal} alt={`Imagen principal de ${producto.nombre}`} loading="eager" decoding="async" />
+            </div>
+            <div className={styles.imagenesSecundarias}>
+              {imagenes.slice(1, 5).map((img, idx) => (
+                <img
+                  key={idx}
+                  src={img}
+                  alt={`Imagen ${idx + 2} de ${producto.nombre}`}
+                  onClick={() => setImagenPrincipal(img)}
+                  className={img === imagenPrincipal ? styles.selected : ''}
+                />
+              ))}
+            </div>
+          </div>
+          
+          <div className={styles.verMas}>
+            <button onClick={() => setModalAbierto(true)}>Ver Más Imágenes</button>
+            <button onClick={() => setModalCompartirAbierto(true)} className={styles.btnCompartir}>
+              📤 Compartir
+            </button>
           </div>
         </div>
         
         <div className={styles.flechaVolver} onClick={() => navigate(-1)}>← Volver</div>
-        
-        <div className={styles.verMas}>
-          <button onClick={() => setModalAbierto(true)}>Ver Más Imágenes</button>
-          <button onClick={() => setModalCompartirAbierto(true)} className={styles.btnCompartir}>
-            📤 Compartir
-          </button>
-        </div>
         
         {modalAbierto && (
           <div className={styles.modalOverlay} onClick={() => setModalAbierto(false)}>
@@ -496,8 +512,9 @@ export const DetalleProducto = () => {
           </div>
         )}
 
-        {/* Calendario de disponibilidad */}
-        <CalendarioDisponibilidad productoId={id} producto={producto} />
+        <div id="reservar" className={styles.calendarioSection}>
+          <CalendarioDisponibilidad productoId={id} producto={producto} />
+        </div>
 
         <section className={styles.caracteristicasSection}>
           <h2 className={styles.subtitulo}>Características</h2>
@@ -576,7 +593,6 @@ export const DetalleProducto = () => {
           </div>
         </section>
 
-        {/* Sección de Valoraciones y Reseñas */}
         <section className={styles.valoracionesSection}>
           <h2 className={styles.subtitulo}>⭐ Valoraciones y Reseñas</h2>
           
