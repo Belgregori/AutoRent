@@ -51,6 +51,7 @@ public class WebConfig {
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/imagenes/**").permitAll()
                         .requestMatchers("/api/productos/random").permitAll()
+                        .requestMatchers("/send-email").permitAll()
 
                         // 🔥 Permitir públicamente los GET de productos, categorías y características
                         .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
