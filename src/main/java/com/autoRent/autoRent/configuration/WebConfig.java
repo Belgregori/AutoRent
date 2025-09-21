@@ -10,22 +10,31 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-
+import com.autoRent.autoRent.Security.PermissionFilter;
+import com.autoRent.autoRent.service.PermissionService;
+import com.autoRent.autoRent.repository.UsuarioRepository;
 import java.util.Arrays;
+
 
 @Configuration
 public class WebConfig {
 
 
+    @Autowired
+    private PermissionService permissionService;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
@@ -38,6 +47,7 @@ public class WebConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomAccessDeniedHandler customAccessDeniedHandler) throws Exception {
         http
+
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
@@ -64,24 +74,35 @@ public class WebConfig {
                         .requestMatchers("/api/favoritos/**").permitAll()
 
 
-                        // ❌ Proteger lo demás (POST, PUT, DELETE, etc.)
-                        .requestMatchers(
-                                "/usuarios/**",
-                                "/productos/**",
-                                "/api/categorias/**",    // POST/PUT/DELETE quedan bloqueados
-                                "/caracteristicas/**"
-                        ).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/admin", "/admin/**").hasAnyAuthority("ADMIN","ADMIN1","ADMIN2")
 
-                        .anyRequest().authenticated()
+
+                        .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN","ADMIN1","ADMIN2")
+
+
+                                .requestMatchers("/api/productos/**", "/api/categorias/**", "/api/caracteristicas/**").authenticated()
+
+
+                                .anyRequest().authenticated()
                 )
 
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler(customAccessDeniedHandler)
                 )
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new PermissionFilter(permissionService, usuarioRepository), JwtRequestFilter.class);
 
 
         return http.build();
+    }
+
+
+    @Bean
+    public HttpFirewall allowUrlEncodedHttpFirewall() {
+        StrictHttpFirewall firewall = new StrictHttpFirewall();
+        firewall.setAllowUrlEncodedPercent(true); // permite %0A, %0D
+        firewall.setAllowUrlEncodedSlash(true);   // permite /
+        return firewall;
     }
 
     @Bean
@@ -95,7 +116,7 @@ public class WebConfig {
                 "http://localhost:5176"
         ));
         configuration.setAllowedMethods(Arrays.asList(
-                "GET","POST","PUT","DELETE","OPTIONS"
+                "GET","POST","PUT","DELETE","PATCH","OPTIONS"
         ));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
