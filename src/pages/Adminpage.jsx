@@ -18,6 +18,33 @@ export const Adminpage = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Petición GET a /admin con JWT
+  useEffect(() => {
+    const fetchAdminData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('/admin', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Admin data:', data);
+      } catch (error) {
+        console.error('Error al cargar datos de admin:', error);
+      }
+    };
+
+    fetchAdminData();
+  }, []);
+
   if (isMobile) {
     return (
       <div style={{ padding: '2rem', textAlign: 'center', color: 'red' }}>

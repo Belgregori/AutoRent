@@ -1,16 +1,19 @@
-import React, { useEffect, useState, useCallback } from 'react';
-
-// Si querés usar módulo CSS parecido a los otros, podés crear administrarPermisos.module.css
-// import styles from './administrarPermisos.module.css';
+import React, { useState, useEffect, useCallback } from 'react';
 
 export const AdministrarPermisos = () => {
   const [users, setUsers] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [allPermissions, setAllPermissions] = useState([]);
+  const [userPermissions, setUserPermissions] = useState([]);
+  const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState({}); // { [userId]: bool }
+  const [isLoadingPermissions, setIsLoadingPermissions] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [mensaje, setMensaje] = useState({ texto: '', tipo: '' });
-  const [error, setError] = useState('');
 
-  // Reutilizo tu apiFetch (idéntico al de AdministrarCaracteristicas)
+  // Función para realizar peticiones a la API
   const apiFetch = useCallback(async (url, options = {}) => {
     const token = localStorage.getItem('token');
     const mergedHeaders = {
@@ -37,85 +40,146 @@ export const AdministrarPermisos = () => {
     return response.text();
   }, []);
 
-  const parseJwt = (token) => {
-    if (!token) return null;
-    try {
-      const payload = token.split('.')[1];
-      const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
-      return decoded;
-    } catch {
-      return null;
-    }
-  };
-
-  // Email del admin actual (para evitar auto-quitar ADMIN)
-  const tokenPayload = parseJwt(localStorage.getItem('token'));
-  const currentEmail = tokenPayload?.sub || tokenPayload?.email || tokenPayload?.username || null;
-
+  // Cargar lista de usuarios
   const fetchUsers = useCallback(async () => {
     setIsLoading(true);
-    setError('');
     try {
       const data = await apiFetch('/api/admin/users', { headers: { 'Content-Type': 'application/json' } });
-      // Esperamos data = [{id, nombre, apellido, email, roles: []}, ...]
       setUsers(Array.isArray(data) ? data : []);
     } catch (err) {
-      setError(err.message || 'Error al cargar usuarios');
-      setMensaje({ texto: 'Error al cargar usuarios', tipo: 'error' });
+      setMensaje({ texto: `Error al cargar usuarios: ${err.message}`, tipo: 'error' });
     } finally {
       setIsLoading(false);
     }
   }, [apiFetch]);
 
+  // Cargar permisos del usuario seleccionado
+  const fetchUserPermissions = useCallback(async (userId) => {
+    if (!userId) return;
+    
+    setIsLoadingPermissions(true);
+    try {
+      const permissions = await apiFetch(`/api/admin/users/${userId}/permissions`);
+      const userPerms = Array.isArray(permissions) ? permissions : [];
+      setUserPermissions(userPerms);
+      setSelectedPermissions(userPerms);
+    } catch (err) {
+      setMensaje({ 
+        texto: `Error al cargar permisos del usuario: ${err.message}`, 
+        tipo: 'error' 
+      });
+    } finally {
+      setIsLoadingPermissions(false);
+    }
+  }, [apiFetch]);
+
+  // Cargar lista completa de permisos
+  const loadAllPermissions = useCallback(async () => {
+    try {
+      const perms = await apiFetch('/api/admin/permissions', {
+        headers: { 'Content-Type': 'application/json' }
+      });
+      setAllPermissions(Array.isArray(perms) ? perms : []);
+    } catch (err) {
+      setMensaje({ texto: `Error al cargar permisos: ${err.message}`, tipo: 'error' });
+    }
+  }, [apiFetch]);
+
   useEffect(() => {
     fetchUsers();
-  }, [fetchUsers]);
+    loadAllPermissions();
+  }, [fetchUsers, loadAllPermissions]);
 
-  const grantAdmin = async (user) => {
-    if (!window.confirm(`¿Querés dar rol ADMIN a ${user.nombre} (${user.email})?`)) return;
-    setActionLoading(prev => ({ ...prev, [user.id]: true }));
-    try {
-      await apiFetch(`/api/admin/users/${user.id}/roles`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role: 'ADMIN' }),
-      });
-      setMensaje({ texto: `ADMIN otorgado a ${user.nombre}`, tipo: 'exito' });
-      await fetchUsers();
-    } catch (err) {
-      setMensaje({ texto: `Error: ${err.message}`, tipo: 'error' });
-    } finally {
-      setActionLoading(prev => ({ ...prev, [user.id]: false }));
-      setTimeout(() => setMensaje({ texto: '', tipo: '' }), 3500);
+  // Cargar permisos cuando se selecciona un usuario
+  useEffect(() => {
+    if (selectedUserId) {
+      fetchUserPermissions(selectedUserId);
     }
+  }, [selectedUserId, fetchUserPermissions]);
+
+  // Filtrar permisos según búsqueda y categoría
+  const filteredPermissions = allPermissions.filter(permission => {
+    const matchesSearch = permission.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || 
+      permission.startsWith(selectedCategory.toUpperCase() + '_');
+    return matchesSearch && matchesCategory;
+  });
+
+  // Manejar cambio en checkbox
+  const handlePermissionChange = (permission, isChecked) => {
+    setSelectedPermissions(prev => {
+      if (isChecked) {
+        return [...prev, permission];
+      } else {
+        return prev.filter(p => p !== permission);
+      }
+    });
   };
 
-  const revokeAdmin = async (user) => {
-    // prevenimos que el admin se quite a sí mismo en frontend
-    if (currentEmail && user.email && currentEmail.toLowerCase() === user.email.toLowerCase()) {
-      alert('No podés quitarte tu propio rol ADMIN desde aquí.');
+  // Guardar cambios
+  const handleSave = async () => {
+    if (!selectedUserId) {
+      setMensaje({ text: 'ID de usuario no válido', type: 'error' });
       return;
     }
-    if (!window.confirm(`¿Querés quitar rol ADMIN a ${user.nombre} (${user.email})?`)) return;
-    setActionLoading(prev => ({ ...prev, [user.id]: true }));
+
+    setIsSaving(true);
+    setMensaje({ texto: '', tipo: '' });
+
     try {
-      await apiFetch(`/api/admin/users/${user.id}/roles/ADMIN`, {
-        method: 'DELETE'
+      await apiFetch(`/api/admin/users/${selectedUserId}/permissions`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ permissions: selectedPermissions })
       });
-      setMensaje({ texto: `ADMIN removido de ${user.nombre}`, tipo: 'exito' });
-      await fetchUsers();
-    } catch (err) {
-      setMensaje({ texto: `Error: ${err.message}`, tipo: 'error' });
+
+      // Actualizar permisos del usuario
+      setUserPermissions(selectedPermissions);
+      setMensaje({ 
+        texto: 'Permisos actualizados correctamente', 
+        tipo: 'exito' 
+      });
+
+    } catch (error) {
+      setMensaje({ 
+        texto: `Error al guardar permisos: ${error.message}`, 
+        tipo: 'error' 
+      });
     } finally {
-      setActionLoading(prev => ({ ...prev, [user.id]: false }));
-      setTimeout(() => setMensaje({ texto: '', tipo: '' }), 3500);
+      setIsSaving(false);
     }
   };
+
+  const handleAssignRole = async (userId, role) => {
+    try {
+      await apiFetch(`/api/admin/users/${userId}/role`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ role }),
+      });
+      setMensaje({ texto: `Rol asignado: ${role}`, tipo: "exito" });
+    } catch (err) {
+      setMensaje({ texto: `Error: ${err.message}`, tipo: "error" });
+    }
+  };
+
+  // Obtener categorías disponibles
+  const categories = [
+    { value: 'all', label: 'Todas' },
+    { value: 'products', label: 'Productos' },
+    { value: 'categories', label: 'Categorías' },
+    { value: 'features', label: 'Características' },
+    { value: 'users', label: 'Usuarios' }
+  ];
+
+  if (isLoading) {
+    return <div style={{ padding: 16 }}>Cargando usuarios...</div>;
+  }
 
   return (
     <div style={{ padding: 16 }}>
-      <h2>Administrar permisos</h2>
-
+      <h2>Administrar Permisos de Usuarios</h2>
+      
       {mensaje.texto && (
         <div style={{
           marginBottom: 12,
@@ -128,63 +192,183 @@ export const AdministrarPermisos = () => {
         </div>
       )}
 
-      {error && <div style={{ color: 'red', marginBottom: 8 }}>{error}</div>}
+      {/* Selector de usuario */}
+      <div style={{ marginBottom: 24 }}>
+        <label htmlFor="userSelect" style={{ display: 'block', marginBottom: 8, fontWeight: 600 }}>
+          Selecciona un usuario para administrar sus permisos:
+        </label>
+        <select
+          id="userSelect"
+          value={selectedUserId || ''}
+          onChange={(e) => setSelectedUserId(e.target.value ? Number(e.target.value) : null)}
+          style={{
+            padding: '8px 12px',
+            border: '2px solid #e5e7eb',
+            borderRadius: '6px',
+            fontSize: '14px',
+            minWidth: '300px'
+          }}
+        >
+          <option value="">-- Selecciona un usuario --</option>
+          {users.map(user => (
+            <option key={user.id} value={user.id}>
+              {user.nombre} {user.apellido} ({user.email})
+            </option>
+          ))}
+        </select>
+      </div>
 
-      {isLoading ? (
-        <p>Cargando usuarios…</p>
-      ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>
-              <th style={{ padding: 8 }}>ID</th>
-              <th style={{ padding: 8 }}>Nombre</th>
-              <th style={{ padding: 8 }}>Apellido</th>
-              <th style={{ padding: 8 }}>Email</th>
-              <th style={{ padding: 8 }}>Roles</th>
-              <th style={{ padding: 8 }}>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map(u => {
-              const hasAdmin = Array.isArray(u.roles) ? u.roles.map(r => r.toUpperCase()).includes('ADMIN') : (u.roles && u.roles.has && u.roles.has('ADMIN'));
-              const self = currentEmail && u.email && currentEmail.toLowerCase() === u.email.toLowerCase();
-              return (
-                <tr key={u.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                  <td style={{ padding: 8 }}>{u.id}</td>
-                  <td style={{ padding: 8 }}>{u.nombre}</td>
-                  <td style={{ padding: 8 }}>{u.apellido}</td>
-                  <td style={{ padding: 8 }}>{u.email}</td>
-                  <td style={{ padding: 8 }}>{Array.isArray(u.roles) ? u.roles.join(', ') : (u.roles ? Array.from(u.roles).join(', ') : '')}</td>
-                  <td style={{ padding: 8 }}>
-                    {hasAdmin ? (
-                      <button
-                        onClick={() => revokeAdmin(u)}
-                        disabled={actionLoading[u.id] || self}
-                        style={{ marginRight: 8, padding: '6px 10px', background: self ? '#f3f4f6' : '#ef4444', color: 'white', border: 'none', borderRadius: 6, cursor: actionLoading[u.id] || self ? 'not-allowed' : 'pointer' }}
-                        title={self ? 'No podés quitarte tu propio ADMIN' : 'Quitar ADMIN'}
-                      >
-                        {actionLoading[u.id] ? 'Procesando…' : 'Quitar ADMIN'}
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => grantAdmin(u)}
-                        disabled={actionLoading[u.id]}
-                        style={{ marginRight: 8, padding: '6px 10px', background: '#0ea5e9', color: 'white', border: 'none', borderRadius: 6, cursor: actionLoading[u.id] ? 'not-allowed' : 'pointer' }}
-                      >
-                        {actionLoading[u.id] ? 'Procesando…' : 'Dar ADMIN'}
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-            {users.length === 0 && (
-              <tr>
-                <td colSpan={6} style={{ padding: 12 }}>No hay usuarios registrados.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      {/* Lista de usuarios con botones de roles */}
+      <div style={{ marginBottom: 24 }}>
+        <h3 style={{ marginBottom: 16 }}>Asignar Roles a Usuarios:</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {users.map(user => (
+            <div key={user.id} style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between',
+              padding: '12px',
+              border: '1px solid #e5e7eb',
+              borderRadius: '6px',
+              backgroundColor: '#f9fafb'
+            }}>
+              <span style={{ fontWeight: '500' }}>
+                {user.nombre} {user.apellido} ({user.email})
+              </span>
+              <div>
+                <button
+                  onClick={() => handleAssignRole(user.id, "ADMIN2")}
+                  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                >
+                  Asignar ADMIN2
+                </button>
+
+                <button
+                  onClick={() => handleAssignRole(user.id, "USER")}
+                  className="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 ml-2"
+                >
+                  Asignar USER
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Panel de permisos */}
+      {selectedUserId && (
+        <div style={{ 
+          border: '1px solid #e5e7eb', 
+          borderRadius: '8px', 
+          padding: '20px',
+          backgroundColor: '#f9fafb'
+        }}>
+          <h3 style={{ marginTop: 0, marginBottom: '16px' }}>
+            Permisos para: {users.find(u => u.id === selectedUserId)?.nombre} {users.find(u => u.id === selectedUserId)?.apellido}
+          </h3>
+
+          {/* Controles de búsqueda y filtro */}
+          <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', flexWrap: 'wrap' }}>
+            <input
+              type="text"
+              placeholder="Buscar permisos..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                flex: 1,
+                minWidth: '200px',
+                padding: '8px 12px',
+                border: '2px solid #e5e7eb',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+            />
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              style={{
+                padding: '8px 12px',
+                border: '2px solid #e5e7eb',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+            >
+              {categories.map(category => (
+                <option key={category.value} value={category.value}>
+                  {category.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Lista de permisos */}
+          {isLoadingPermissions ? (
+            <p>Cargando permisos...</p>
+          ) : (
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
+              gap: '12px',
+              marginBottom: '20px'
+            }}>
+              {filteredPermissions.map(permission => {
+                const isSelected = selectedPermissions.includes(permission);
+                
+                return (
+                  <div 
+                    key={permission} 
+                    style={{
+                      padding: '12px',
+                      border: '2px solid #e5e7eb',
+                      borderRadius: '6px',
+                      backgroundColor: '#ffffff',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => handlePermissionChange(permission, !isSelected)}
+                  >
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', margin: 0 }}>
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={(e) => handlePermissionChange(permission, e.target.checked)}
+                        disabled={isSaving}
+                        style={{ width: '16px', height: '16px' }}
+                      />
+                      <span style={{ fontSize: '14px', fontWeight: '500' }}>{permission}</span>
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {filteredPermissions.length === 0 && !isLoadingPermissions && (
+            <p style={{ textAlign: 'center', color: '#6b7280', fontStyle: 'italic' }}>
+              No se encontraron permisos que coincidan con los filtros aplicados.
+            </p>
+          )}
+
+          {/* Botón de guardar */}
+          <div style={{ textAlign: 'center' }}>
+            <button
+              onClick={handleSave}
+              disabled={isSaving}
+              style={{
+                padding: '12px 24px',
+                backgroundColor: isSaving ? '#9ca3af' : '#3b82f6',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: isSaving ? 'not-allowed' : 'pointer',
+                minWidth: '140px'
+              }}
+            >
+              {isSaving ? 'Guardando...' : 'Guardar Cambios'}
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
