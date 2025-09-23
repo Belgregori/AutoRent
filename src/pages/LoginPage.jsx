@@ -11,7 +11,7 @@ export const LoginPage = () => {
     // Función para verificar si el usuario tiene permisos
     const verificarPermisosAdmin = async (token, userEmail) => {
       try {
-        const response = await fetch('/api/users-with-permissions', {
+        const response = await fetch('/api/admin/users-with-permissions', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         
@@ -84,7 +84,7 @@ export const LoginPage = () => {
             if (tienePermisos) {
               navigate("/admin");
             } else {
-              navigate("/home");
+              navigate("/");
             }
           }
         } catch (err) {
