@@ -36,7 +36,7 @@ public class PermissionService {
         return usuarioPermissionRepository.findPermissionNamesByUsuarioId(usuarioId);
     }
 
-    // Asigna rol (por ejemplo "ADMIN2") a un usuario
+    // Asigna rol (ADMIN o USER) a un usuario
     @Transactional
     public void assignRole(Long targetUsuarioId, String newRole, Long actorUsuarioId) {
         Usuario user = usuarioRepository.findById(targetUsuarioId)
@@ -74,10 +74,16 @@ public class PermissionService {
 
         // Agregar: buscar Permission por name y crear UsuarioPermission
         for (String permName : toAdd) {
-            Permission perm = permissionRepository.findByName(permName)
-                    .orElseThrow(() -> new RuntimeException("Permiso desconocido: " + permName));
-            UsuarioPermission up = new UsuarioPermission(targetUsuarioId, perm.getId(), actorUsuarioId);
-            usuarioPermissionRepository.save(up);
+            try {
+                Permission perm = permissionRepository.findByName(permName)
+                        .orElseThrow(() -> new RuntimeException("Permiso desconocido: " + permName));
+                UsuarioPermission up = new UsuarioPermission(targetUsuarioId, perm.getId(), actorUsuarioId);
+                usuarioPermissionRepository.save(up);
+                System.out.println("✅ Permiso agregado: " + permName + " para usuario: " + targetUsuarioId);
+            } catch (Exception e) {
+                System.err.println("❌ Error agregando permiso " + permName + ": " + e.getMessage());
+                // Continuar con los demás permisos
+            }
         }
 
         // Quitar: obtener ids de permisos a eliminar y borrarlos
