@@ -8,6 +8,25 @@ export const LoginPage = () => {
     const [contraseña, setContraseña] = useState("");
     const [error, setError] = useState("");
 
+    // Función para verificar si el usuario tiene permisos
+    const verificarPermisosAdmin = async (token, userEmail) => {
+      try {
+        const response = await fetch('/api/users-with-permissions', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (!response.ok) return false;
+        
+        const users = await response.json();
+        const currentUser = users.find(user => user.email === userEmail);
+        
+        // Verificar si tiene permisos (array no vacío)
+        return currentUser && currentUser.permissions && currentUser.permissions.length > 0;
+      } catch {
+        return false;
+      }
+    };
+
     const handleLogin = async (e) => {
         e.preventDefault();
         setError("");
@@ -60,7 +79,13 @@ export const LoginPage = () => {
           if (data.rol === "ADMIN") {
             navigate("/admin");
           } else {
-            navigate("/");
+            // Verificar si tiene permisos
+            const tienePermisos = await verificarPermisosAdmin(data.token, data.email);
+            if (tienePermisos) {
+              navigate("/admin");
+            } else {
+              navigate("/home");
+            }
           }
         } catch (err) {
           console.error("handleLogin error:", err);

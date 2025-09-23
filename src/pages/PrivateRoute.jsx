@@ -2,7 +2,7 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 
-export const PrivateRoute = ({ children, requiredRole }) => {
+export const PrivateRoute = ({ children, requiredRoles }) => {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("rol");
 
@@ -10,7 +10,7 @@ export const PrivateRoute = ({ children, requiredRole }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (requiredRole && role !== requiredRole) {
+  if (requiredRoles && !requiredRoles.includes(role)) {
     return <Navigate to="/" replace />;
   }
 

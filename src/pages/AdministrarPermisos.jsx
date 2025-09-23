@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { UserModal } from '../components/UserModal';
 
 export const AdministrarPermisos = () => {
   const [users, setUsers] = useState([]);
@@ -12,6 +13,8 @@ export const AdministrarPermisos = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [mensaje, setMensaje] = useState({ texto: '', tipo: '' });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   // Función para realizar peticiones a la API
   const apiFetch = useCallback(async (url, options = {}) => {
@@ -158,8 +161,69 @@ export const AdministrarPermisos = () => {
         body: JSON.stringify({ role }),
       });
       setMensaje({ texto: `Rol asignado: ${role}`, tipo: "exito" });
+      // Actualizar la lista de usuarios
+      fetchUsers();
     } catch (err) {
       setMensaje({ texto: `Error: ${err.message}`, tipo: "error" });
+    }
+  };
+
+  // Funciones para el modal
+  const openUserModal = (user) => {
+    setSelectedUser(user);
+    setSelectedUserId(user.id);
+    setIsModalOpen(true);
+  };
+
+  const closeUserModal = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
+    setSelectedUserId(null);
+  };
+
+  const handlePermissionsChange = (newPermissions) => {
+    setSelectedPermissions(newPermissions);
+  };
+
+  // Función para guardar permisos desde el modal
+  const handleSavePermissions = async () => {
+    console.log('handleSavePermissions ejecutándose...');
+    console.log('selectedUserId:', selectedUserId);
+    console.log('selectedPermissions:', selectedPermissions);
+    
+    if (!selectedUserId) {
+      setMensaje({ texto: 'ID de usuario no válido', tipo: 'error' });
+      return;
+    }
+
+    setIsSaving(true);
+    setMensaje({ texto: '', tipo: '' });
+
+    try {
+      console.log('Enviando petición al backend...');
+      const response = await apiFetch(`/api/admin/users/${selectedUserId}/permissions`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ permissions: selectedPermissions })
+      });
+      
+      console.log('Respuesta del backend:', response);
+
+      // Actualizar permisos del usuario
+      setUserPermissions(selectedPermissions);
+      setMensaje({ 
+        texto: 'Permisos actualizados correctamente', 
+        tipo: 'exito' 
+      });
+
+    } catch (error) {
+      console.error('Error en handleSavePermissions:', error);
+      setMensaje({ 
+        texto: `Error al guardar permisos: ${error.message}`, 
+        tipo: 'error' 
+      });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -218,9 +282,9 @@ export const AdministrarPermisos = () => {
         </select>
       </div>
 
-      {/* Lista de usuarios con botones de roles */}
+      {/* Lista de usuarios con botón de gestión */}
       <div style={{ marginBottom: 24 }}>
-        <h3 style={{ marginBottom: 16 }}>Asignar Roles a Usuarios:</h3>
+        <h3 style={{ marginBottom: 16 }}>Gestionar Usuarios:</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {users.map(user => (
             <div key={user.id} style={{ 
@@ -232,22 +296,40 @@ export const AdministrarPermisos = () => {
               borderRadius: '6px',
               backgroundColor: '#f9fafb'
             }}>
-              <span style={{ fontWeight: '500' }}>
-                {user.nombre} {user.apellido} ({user.email})
-              </span>
+              <div>
+                <span style={{ fontWeight: '500', display: 'block' }}>
+                  {user.nombre} {user.apellido}
+                </span>
+                <span style={{ fontSize: '14px', color: '#6b7280' }}>
+                  {user.email}
+                </span>
+                <span style={{ 
+                  fontSize: '12px', 
+                  color: '#6b7280',
+                  display: 'block',
+                  marginTop: '4px'
+                }}>
+                  Rol: {user.role || 'No asignado'}
+                </span>
+              </div>
               <div>
                 <button
-                  onClick={() => handleAssignRole(user.id, "ADMIN2")}
-                  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                  onClick={() => openUserModal(user)}
+                  style={{
+                    backgroundColor: '#10b981',
+                    color: 'white',
+                    padding: '8px 16px',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    transition: 'background-color 0.2s'
+                  }}
+                  onMouseOver={(e) => e.target.style.backgroundColor = '#059669'}
+                  onMouseOut={(e) => e.target.style.backgroundColor = '#10b981'}
                 >
-                  Asignar ADMIN2
-                </button>
-
-                <button
-                  onClick={() => handleAssignRole(user.id, "USER")}
-                  className="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 ml-2"
-                >
-                  Asignar USER
+                  Gestionar Usuario
                 </button>
               </div>
             </div>
@@ -370,6 +452,20 @@ export const AdministrarPermisos = () => {
           </div>
         </div>
       )}
+
+      {/* Modal de gestión de usuario */}
+      <UserModal
+        isOpen={isModalOpen}
+        onClose={closeUserModal}
+        user={selectedUser}
+        onRoleChange={handleAssignRole}
+        onPermissionsChange={handlePermissionsChange}
+        onSavePermissions={handleSavePermissions}
+        allPermissions={allPermissions}
+        userPermissions={userPermissions}
+        isLoadingPermissions={isLoadingPermissions}
+        isSaving={isSaving}
+      />
     </div>
   );
 };
