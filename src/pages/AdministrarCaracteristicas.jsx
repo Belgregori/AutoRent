@@ -46,6 +46,9 @@ export const AdministrarCaracteristicas = () => {
     };
     const response = await fetch(url, { ...options, headers: mergedHeaders });
     if (!response.ok) {
+      if (response.status === 403) {
+        throw new Error('No cuenta con los permisos necesarios para realizar esta acción.');
+      }
       let errorMessage = '';
       try {
         const asJson = await response.json();

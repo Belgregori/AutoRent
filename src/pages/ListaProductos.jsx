@@ -55,7 +55,11 @@ export const ListaProductos = () => {
           setProductos(productos.filter(prod => prod.id !== id));
           alert('Producto eliminado con éxito');
         } else {
-          alert('Error al eliminar el producto');
+          if (res.status === 403) {
+            alert('No cuenta con los permisos necesarios para realizar esta acción.');
+          } else {
+            alert('Error al eliminar el producto');
+          }
         }
       })
       .catch(() => alert('Error al eliminar el producto en el servidor'));

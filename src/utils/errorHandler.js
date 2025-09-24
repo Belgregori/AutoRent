@@ -62,6 +62,9 @@ export const getFriendlyErrorMessage = (error, statusCode = null) => {
       return 'Error de conexión. Verifica tu conexión a internet.';
     
     case ERROR_TYPES.AUTH:
+      if (statusCode === 403) {
+        return 'No cuenta con los permisos necesarios para realizar esta acción.';
+      }
       return 'Sesión expirada. Por favor, inicia sesión nuevamente.';
     
     case ERROR_TYPES.VALIDATION:

@@ -63,7 +63,10 @@ export const useErrorHandler = () => {
     // Manejar según el tipo
     switch (errorType) {
       case ERROR_TYPES.AUTH:
-        if (options.shouldRedirect !== false) {
+        if (options.statusCode === 403) {
+          // Para 403, solo mostrar mensaje sin redirigir
+          showError(getFriendlyErrorMessage(error, 403));
+        } else if (options.shouldRedirect !== false) {
           handleAuthError(error, context);
         } else {
           showWarning('Error de autenticación');

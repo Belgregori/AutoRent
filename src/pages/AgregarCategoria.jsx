@@ -56,8 +56,12 @@ export const AgregarCategoria = ({ productoId }) => {
     })
       .then(async res => {
         if (!res.ok) {
-          const errorText = await res.text();
-          alert('❌ Error al agregar la categoría:\n' + errorText);
+          if (res.status === 403) {
+            alert('No cuenta con los permisos necesarios para realizar esta acción.');
+          } else {
+            const errorText = await res.text();
+            alert('❌ Error al agregar la categoría:\n' + errorText);
+          }
           return null;
         }
         // Intenta parsear el JSON, pero si falla igual muestra el alert
@@ -116,7 +120,11 @@ export const AgregarCategoria = ({ productoId }) => {
       alert('✅ Categoría eliminada correctamente');
     } catch (err) {
       console.error('❌ Error de conexión:', err);
-      alert('❌ Error de conexión al eliminar categoría');
+      if (err.status === 403) {
+        alert('No cuenta con los permisos necesarios para realizar esta acción.');
+      } else {
+        alert('❌ Error de conexión al eliminar categoría');
+      }
     }
   };
 

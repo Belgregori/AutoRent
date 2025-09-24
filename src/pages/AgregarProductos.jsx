@@ -103,7 +103,11 @@ export const AgregarProductos = () => {
         setPrecio(0);
         setImagenes([]);
       } else {
-        alert('❌ Error al agregar el producto');
+        if (response.status === 403) {
+          alert('No cuenta con los permisos necesarios para realizar esta acción.');
+        } else {
+          alert('❌ Error al agregar el producto');
+        }
       }
     } catch (error) {
       alert('❌ Error en la conexión al servidor');

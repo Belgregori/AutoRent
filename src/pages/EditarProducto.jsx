@@ -45,7 +45,7 @@ export const EditarProducto = () => {
   const guardarCambios = async () => {
     if (!productoSeleccionado) return;
 
-    await fetch(`/api/productos/${productoSeleccionado.id}`, {
+    const response = await fetch(`/api/productos/${productoSeleccionado.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -57,11 +57,19 @@ export const EditarProducto = () => {
       })
     });
 
-    alert('Producto actualizado con éxito');
-    setProductoSeleccionado(null);
-    setNuevoNombre('');
-    setCategoriaId('');
-    cargarProductos();
+    if (response.ok) {
+      alert('Producto actualizado con éxito');
+      setProductoSeleccionado(null);
+      setNuevoNombre('');
+      setCategoriaId('');
+      cargarProductos();
+    } else {
+      if (response.status === 403) {
+        alert('No cuenta con los permisos necesarios para realizar esta acción.');
+      } else {
+        alert('Error al actualizar el producto');
+      }
+    }
   };
 
   return (
