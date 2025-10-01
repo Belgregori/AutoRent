@@ -76,7 +76,6 @@ export const EditarProducto = () => {
     <div className={styles.container}>
       <h2 className={styles.title}>Editar Producto</h2>
 
-      
       <div className={styles.listadoProductos}>
         <h3 className={styles.subtituloListado}>Listado de productos y su categoría</h3>
         <ul className={styles.listaProductos}>

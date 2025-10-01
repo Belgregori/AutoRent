@@ -36,18 +36,28 @@ export const FormularioReserva = ({ producto, isOpen, onClose, onReservaExitosa,
   fechaMaxima.setMonth(fechaMaxima.getMonth() + 6);
   const fechaMaximaStr = fechaMaxima.toISOString().split('T')[0];
 
+  // Función para formatear fecha preservando zona horaria local
+  const formatDateToLocal = (date) => {
+    const año = date.getFullYear();
+    const mes = String(date.getMonth() + 1).padStart(2, '0');
+    const dia = String(date.getDate()).padStart(2, '0');
+    return `${año}-${mes}-${dia}`;
+  };
+
   // Establecer fechas preseleccionadas cuando se abra el modal
   useEffect(() => {
     if (isOpen && fechasPreseleccionadas?.fechaInicio && fechasPreseleccionadas?.fechaFin) {
-      setFechaInicio(fechasPreseleccionadas.fechaInicio.toISOString().split('T')[0]);
-      setFechaFin(fechasPreseleccionadas.fechaFin.toISOString().split('T')[0]);
+      setFechaInicio(formatDateToLocal(fechasPreseleccionadas.fechaInicio));
+      setFechaFin(formatDateToLocal(fechasPreseleccionadas.fechaFin));
     }
   }, [isOpen, fechasPreseleccionadas]);
 
   // Calcular precio total
   const calcularPrecioTotal = () => {
     if (!fechaInicio || !fechaFin) return 0;
-    const dias = Math.floor((new Date(fechaFin) - new Date(fechaInicio)) / (1000 * 60 * 60 * 24)) + 1;
+    const inicio = new Date(fechaInicio + 'T08:00:00');
+    const fin = new Date(fechaFin + 'T08:00:00');
+    const dias = Math.floor((fin - inicio) / (1000 * 60 * 60 * 24));
     return (producto.precio * dias).toFixed(2);
   };
 
@@ -55,21 +65,23 @@ export const FormularioReserva = ({ producto, isOpen, onClose, onReservaExitosa,
   const generarTextoFechas = () => {
     if (!fechaInicio || !fechaFin) return '';
     
-    const inicio = new Date(fechaInicio);
-    const fin = new Date(fechaFin);
-    const dias = Math.floor((fin - inicio) / (1000 * 60 * 60 * 24)) + 1;
+    const inicio = new Date(fechaInicio + 'T08:00:00');
+    const fin = new Date(fechaFin + 'T08:00:00');
+    const dias = Math.floor((fin - inicio) / (1000 * 60 * 60 * 24));
     
     const opcionesFecha = { 
       weekday: 'long', 
       year: 'numeric', 
       month: 'long', 
-      day: 'numeric' 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     };
     
     const fechaInicioFormateada = inicio.toLocaleDateString('es-ES', opcionesFecha);
     const fechaFinFormateada = fin.toLocaleDateString('es-ES', opcionesFecha);
     
-    return `Tu reserva será desde el ${fechaInicioFormateada} hasta el ${fechaFinFormateada}, con una duración de ${dias} día${dias !== 1 ? 's' : ''}.`;
+    return `Tu reserva comienza el ${fechaInicioFormateada} y debes devolver el vehículo el ${fechaFinFormateada}. Duración: ${dias} día${dias !== 1 ? 's' : ''} (${dias * 24} horas).`;
   };
 
   // Validar fechas
@@ -130,7 +142,9 @@ export const FormularioReserva = ({ producto, isOpen, onClose, onReservaExitosa,
   // Actualizar cantidad de días cuando cambien las fechas
   useEffect(() => {
     if (fechaInicio && fechaFin) {
-      const dias = Math.floor((new Date(fechaFin) - new Date(fechaInicio)) / (1000 * 60 * 60 * 24)) + 1;
+      const inicio = new Date(fechaInicio + 'T08:00:00');
+      const fin = new Date(fechaFin + 'T08:00:00');
+      const dias = Math.floor((fin - inicio) / (1000 * 60 * 60 * 24));
       setCantidadDias(dias);
     }
   }, [fechaInicio, fechaFin]);
@@ -182,17 +196,7 @@ export const FormularioReserva = ({ producto, isOpen, onClose, onReservaExitosa,
       const reservaData = {
         productoId: producto.id,
         fechaInicio,
-        fechaFin,
-        // Datos del usuario
-        nombreCompleto: nombreCompleto.trim(),
-        email: email.trim(),
-        telefono: telefono.trim(),
-        // Datos opcionales
-        direccion: direccion.trim() || null,
-        ciudad: ciudad.trim() || null,
-        codigoPostal: codigoPostal.trim() || null,
-        comentarios: comentarios.trim() || null,
-        metodoPago: metodoPago || null
+        fechaFin
       };
 
       // Obtener token del usuario

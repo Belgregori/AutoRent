@@ -20,7 +20,6 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
   const [error, setError] = useState(null);
   const [mesActual, setMesActual] = useState(new Date());
   const [modalReservaAbierto, setModalReservaAbierto] = useState(false);
-  const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
   const [fechasSeleccionadas, setFechasSeleccionadas] = useState({ fechaInicio: null, fechaFin: null });
 
   const generarFechasMes = (fecha) => {
@@ -113,19 +112,25 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
     }
   };
 
-  const handleReservaExitosa = (nuevaReserva) => {
-    // Actualizar el calendario con la nueva reserva
-    const fechaInicio = new Date(nuevaReserva.fechaInicio);
-    const fechaFin = new Date(nuevaReserva.fechaFin);
-    const nuevasFechasOcupadas = [];
-    
-    for (let fecha = new Date(fechaInicio); fecha <= fechaFin; fecha.setDate(fecha.getDate() + 1)) {
-      const fechaStr = fecha.toISOString().split('T')[0];
-      nuevasFechasOcupadas.push(fechaStr);
+  const handleReservaExitosa = async (nuevaReserva) => {
+    // Refrescar disponibilidad desde el servidor para obtener datos actualizados
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/reservas/producto/${productoId}/disponibilidad`, {
+        headers: {
+          'Accept': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFechasDisponibles(data.fechasDisponibles || []);
+        setFechasOcupadas(data.fechasOcupadas || []);
+      }
+    } catch (error) {
+      console.error('Error refrescando disponibilidad:', error);
     }
-    
-    setFechasOcupadas(prev => [...prev, ...nuevasFechasOcupadas]);
-    setFechasDisponibles(prev => prev.filter(f => !nuevasFechasOcupadas.includes(f)));
   };
 
   useEffect(() => {
@@ -134,35 +139,43 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
       setError(null);
       
       try {
-        // Por ahora, usar datos simulados para evitar errores del backend
-        const hoy = new Date();
-        const fechasDisponiblesTemp = [];
-        const fechasOcupadasTemp = [];
-        
-        for (let i = 0; i < 180; i++) {
-          const fecha = new Date(hoy);
-          fecha.setDate(hoy.getDate() + i);
-          const fechaStr = fecha.toISOString().split('T')[0];
-          
-          if (Math.random() < 0.1) { 
-            fechasOcupadasTemp.push(fechaStr);
+        const token = localStorage.getItem('token');
+        const response = await fetch(`/api/reservas/producto/${productoId}/disponibilidad`, {
+          headers: {
+            'Accept': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          }
+        });
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error('Producto no encontrado');
+          } else if (response.status === 401) {
+            throw new Error('Debes iniciar sesión para ver la disponibilidad');
+          } else if (response.status === 403) {
+            throw new Error('No tienes permisos para ver la disponibilidad');
           } else {
-            fechasDisponiblesTemp.push(fechaStr);
+            throw new Error(`Error del servidor: ${response.status}`);
           }
         }
+
+        const data = await response.json();
         
-        setFechasDisponibles(fechasDisponiblesTemp);
-        setFechasOcupadas(fechasOcupadasTemp);
-       
+        
+        setFechasDisponibles(data.fechasDisponibles || []);
+        setFechasOcupadas(data.fechasOcupadas || []);
+        
       } catch (error) {
         console.error('Error cargando disponibilidad:', error);
-        setError('Error al cargar la disponibilidad de fechas. Inténtalo más tarde.');
+        setError(`Error al cargar la disponibilidad: ${error.message}`);
       } finally {
         setIsLoading(false);
       }
     };
 
-    cargarDisponibilidad();
+    if (productoId) {
+      cargarDisponibilidad();
+    }
   }, [productoId]);
 
   const mesAnterior = () => {
@@ -199,9 +212,36 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
           <p className={styles.errorMessage}>{error}</p>
           <button 
             className={styles.retryButton}
-            onClick={() => window.location.reload()}
+            onClick={() => {
+              setError(null);
+              const cargarDisponibilidad = async () => {
+                setIsLoading(true);
+                try {
+                  const token = localStorage.getItem('token');
+                  const response = await fetch(`/api/reservas/producto/${productoId}/disponibilidad`, {
+                    headers: {
+                      'Accept': 'application/json',
+                      ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                    }
+                  });
+                  if (response.ok) {
+                    const data = await response.json();
+                    setFechasDisponibles(data.fechasDisponibles || []);
+                    setFechasOcupadas(data.fechasOcupadas || []);
+                    setError(null);
+                  } else {
+                    setError('Error al cargar la disponibilidad. Inténtalo más tarde.');
+                  }
+                } catch (err) {
+                  setError('Error de conexión. Verifica tu internet e inténtalo de nuevo.');
+                } finally {
+                  setIsLoading(false);
+                }
+              };
+              cargarDisponibilidad();
+            }}
           >
-            Intentar más tarde
+            Reintentar
           </button>
         </div>
       </div>
@@ -234,7 +274,8 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
             <div className={styles.fechasGrid}>
               {fechas.map((fecha, index) => {
                 const estado = obtenerEstadoFecha(fecha);
-                const esSeleccionada = fechaSeleccionada && fecha.fecha.toISOString().split('T')[0] === fechaSeleccionada.toISOString().split('T')[0];
+                const esSeleccionada = (fechasSeleccionadas.fechaInicio && fecha.fecha.toISOString().split('T')[0] === fechasSeleccionadas.fechaInicio.toISOString().split('T')[0]) ||
+                                      (fechasSeleccionadas.fechaFin && fecha.fecha.toISOString().split('T')[0] === fechasSeleccionadas.fechaFin.toISOString().split('T')[0]);
                 return (
                   <div
                     key={index}
@@ -265,7 +306,8 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
             <div className={styles.fechasGrid}>
               {generarFechasMes(new Date(mesActual.getFullYear(), mesActual.getMonth() + 1, 1)).map((fecha, index) => {
                 const estado = obtenerEstadoFecha(fecha);
-                const esSeleccionada = fechaSeleccionada && fecha.fecha.toISOString().split('T')[0] === fechaSeleccionada.toISOString().split('T')[0];
+                const esSeleccionada = (fechasSeleccionadas.fechaInicio && fecha.fecha.toISOString().split('T')[0] === fechasSeleccionadas.fechaInicio.toISOString().split('T')[0]) ||
+                                      (fechasSeleccionadas.fechaFin && fecha.fecha.toISOString().split('T')[0] === fechasSeleccionadas.fechaFin.toISOString().split('T')[0]);
                 return (
                   <div
                     key={index}

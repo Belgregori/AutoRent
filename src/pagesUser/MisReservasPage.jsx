@@ -59,11 +59,13 @@ export const MisReservasPage = () => {
   };
 
   const formatearFecha = (fecha) => {
-    return new Date(fecha).toLocaleDateString('es-ES', {
+    return new Date(fecha + 'T08:00:00').toLocaleDateString('es-ES', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
   };
 
@@ -82,10 +84,10 @@ export const MisReservasPage = () => {
   };
 
   const calcularDias = (fechaInicio, fechaFin) => {
-    const inicio = new Date(fechaInicio);
-    const fin = new Date(fechaFin);
+    const inicio = new Date(fechaInicio + 'T08:00:00');
+    const fin = new Date(fechaFin + 'T08:00:00');
     const diferencia = fin.getTime() - inicio.getTime();
-    return Math.floor(diferencia / (1000 * 60 * 60 * 24)) + 1;
+    return Math.floor(diferencia / (1000 * 60 * 60 * 24));
   };
 
   if (isLoading) {

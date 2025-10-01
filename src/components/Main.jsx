@@ -25,21 +25,17 @@ export const Main = () => {
   const [isBuscando, setIsBuscando] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
- 
   const [favoritos, setFavoritos] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoadingFavoritos, setIsLoadingFavoritos] = useState(false);
-
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     const isLoggedInUser = !!token;
     setIsLoggedIn(isLoggedInUser);
-    
-    
   }, []);
 
-  
+
   useEffect(() => {
     const handleFavoritosUpdate = () => {
       const token = localStorage.getItem('token');
@@ -279,11 +275,8 @@ export const Main = () => {
     fetchProductosAleatorios();
   }, []);
 
-
-
   const transformProducto = (producto, esAleatorio = false) => {
     if (!producto || typeof producto !== 'object') return null;
-
 
     const imagenesData = producto.imagenesData || [];
     if (imagenesData.length > 0) {
@@ -297,7 +290,6 @@ export const Main = () => {
       };
     }
 
-
     if (producto.imagenUrl) {
       return {
         id: String(producto.id),
@@ -308,7 +300,6 @@ export const Main = () => {
         imagenUrl: producto.imagenUrl,
       };
     }
-
 
     return {
       id: String(producto.id),
@@ -361,8 +352,7 @@ export const Main = () => {
             return;
           }
         } catch {
-         
-          
+          // Error silencioso en búsqueda por fechas
         }
       }
       
