@@ -22,6 +22,7 @@ export const FormularioReserva = ({ producto, isOpen, onClose, onReservaExitosa,
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errores, setErrores] = useState({});
+  const [reservaExitosa, setReservaExitosa] = useState(false);
 
   // Estados para notificaciones
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
@@ -210,22 +211,12 @@ export const FormularioReserva = ({ producto, isOpen, onClose, onReservaExitosa,
       // Llamada real al backend
       const response = await fetch('/api/reservas', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(reservaData)
       });
-
-      if (response.ok) {
-        const nuevaReserva = await response.json();
-        setNotificationMessage('¡Reserva exitosa! Tu reserva ha sido confirmada.');
-        setShowSuccessNotification(true);
-        setTimeout(() => {
-          onReservaExitosa(nuevaReserva);
-          onClose();
-        }, 2000);
-      } else {
+      const data = await response.json();
+      setReservaExitosa(true); 
+      if (onReservaExitosa) onReservaExitosa(data); else {
         const errorData = await response.json().catch(() => ({}));
         
         let mensajeError = 'Error al crear la reserva.';
