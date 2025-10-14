@@ -33,4 +33,7 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     List<Reserva> findByUsuarioIdOrderByFechaCreacionDesc(Long usuarioId);
 
     List<Reserva> findByUsuarioIdAndProductoId(Long usuarioId, Long productoId);
+    
+    // Contar reservas por estado
+    long countByEstado(EstadoReserva estado);
 }

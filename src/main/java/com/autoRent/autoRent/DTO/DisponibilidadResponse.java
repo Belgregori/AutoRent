@@ -9,6 +9,22 @@ public class DisponibilidadResponse {
     private List<LocalDate> fechasDisponibles;
     private List<LocalDate> fechasOcupadas;
 
+    public Long getProductoId() {
+        return productoId;
+    }
+
+    public int getMesesConsultados() {
+        return mesesConsultados;
+    }
+
+    public List<LocalDate> getFechasDisponibles() {
+        return fechasDisponibles;
+    }
+
+    public List<LocalDate> getFechasOcupadas() {
+        return fechasOcupadas;
+    }
+
     public void setMesesConsultados(int meses) {
         this.mesesConsultados = meses;
     }
@@ -24,6 +40,4 @@ public class DisponibilidadResponse {
     public void setFechasDisponibles(List<LocalDate> fechasDisponibles) {
         this.fechasDisponibles = fechasDisponibles;
     }
-
-
 }

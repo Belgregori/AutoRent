@@ -1,0 +1,5 @@
+[33m19fbd5f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/sprint1-backend[m[33m, [m[1;31morigin/feature/sprint1-backend[m[33m)[m Implementaciones para el manejo de permisos del administrador
+[33m74099e4[m Implementa envío automático de email al registrar un usuario: - Configura JavaMailSender en application.properties - Crea servicio y controlador para el envío de emails - Usa contraseña de aplicación de Gmail
+[33mcd7f83e[m .\implementaciones para permitir que usuarios GET y PUT su propio perfil sin ser admin - Se actualizó la configuración de seguridad para permitir que usuarios autenticados accedan a /usuarios/{email}
+[33m57b8dec[m feat: implementar sistema completo de reseñas y valoraciones
+[33ma5e015a[m Modificaciones para que el usuario logueado pueda eliminar sus propias reservas

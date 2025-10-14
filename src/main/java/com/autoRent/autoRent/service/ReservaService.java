@@ -137,7 +137,7 @@ public class ReservaService {
 
 
     public long contarReservasPorEstado(Reserva.EstadoReserva estadoReserva) {
-        return reservaRepository.count();
+        return reservaRepository.countByEstado(estadoReserva);
     }
 
     public long contarTotalReservas() {

@@ -95,11 +95,6 @@ public class Reserva {
 
 
     public Reserva() {
-        this.usuario = usuario;
-        this.producto = producto;
-        this.fechaInicio = fechaInicio;
-        this.fechaFin = fechaFin;
-        this.precioTotal = precioTotal;
         this.estado = EstadoReserva.PENDIENTE;
         this.fechaCreacion = LocalDateTime.now();
     }
