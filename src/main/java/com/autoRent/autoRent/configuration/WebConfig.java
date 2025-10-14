@@ -73,14 +73,13 @@ public class WebConfig {
 
                         .requestMatchers("/api/favoritos/**").permitAll()
 
-
-                        .requestMatchers(HttpMethod.GET, "/admin", "/admin/**").hasAnyAuthority("ADMIN","ADMIN1","ADMIN2")
-
-
-                        .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN","ADMIN1","ADMIN2")
-
-
-                                .requestMatchers("/api/productos/**", "/api/categorias/**", "/api/caracteristicas/**").authenticated()
+                        // Endpoint específico público ANTES de la regla general
+                        .requestMatchers(HttpMethod.GET, "/api/admin/users-with-permissions").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/admin/users/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/admin/users/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/admin/permissions").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/productos/**", "/api/categorias/**", "/api/caracteristicas/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/admin", "/admin/**").authenticated()
 
 
                                 .anyRequest().authenticated()
@@ -100,8 +99,8 @@ public class WebConfig {
     @Bean
     public HttpFirewall allowUrlEncodedHttpFirewall() {
         StrictHttpFirewall firewall = new StrictHttpFirewall();
-        firewall.setAllowUrlEncodedPercent(true); // permite %0A, %0D
-        firewall.setAllowUrlEncodedSlash(true);   // permite /
+        firewall.setAllowUrlEncodedPercent(true);
+        firewall.setAllowUrlEncodedSlash(true);
         return firewall;
     }
 

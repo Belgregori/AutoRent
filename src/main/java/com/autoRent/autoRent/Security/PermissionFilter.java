@@ -39,31 +39,21 @@ public class PermissionFilter extends OncePerRequestFilter {
             return;
         }
 
-        String principal = auth.getPrincipal().toString(); // en tu JwtRequestFilter es el email
-        // cargar usuario por email
+        String principal = auth.getPrincipal().toString();
         Usuario usuario = usuarioRepository.findByEmail(principal).orElse(null);
         if (usuario == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Determinar roles: soportamos tanto "ADMIN" como "ADMIN1"
-        boolean isAdmin1 = usuario.getRoles() != null &&
-                (usuario.getRoles().contains("ADMIN") || usuario.getRoles().contains("ADMIN1"));
-
-        boolean isAdmin2 = usuario.getRoles() != null && usuario.getRoles().contains("ADMIN2");
-
-// Si es ADMIN1 (superadmin) pasa sin más
-        if (isAdmin1) {
+        // ADMIN: Acceso total sin validación de permisos
+        if (usuario.getRoles() != null && usuario.getRoles().contains("ADMIN")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-// Si NO es ADMIN2: NO aplicamos el control de permisos dinámicos aquí.
-// Dejamos que WebSecurity (WebConfig) y los endpoints manejen lo que corresponde.
-// Esto restaura el comportamiento anterior: usuarios comunes podrán hacer GETs públicos
-// y las rutas que WebConfig permite para autenticados (ej. agregar favoritos).
-        if (!isAdmin2) {
+        // USER: Validación de permisos granulares según sus permisos asignados
+        if (usuario.getRoles() == null || !usuario.getRoles().contains("USER")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -72,14 +62,8 @@ public class PermissionFilter extends OncePerRequestFilter {
         // Mapear request a permiso
         String permissionName = mapRequestToPermission(request.getMethod(), normalizePath(request.getRequestURI()));
         if (permissionName == null) {
-            // no hay mapping: denegar por defecto (fail-safe) para métodos que modifican datos
-            if (HttpMethod.GET.matches(request.getMethod()) || HttpMethod.OPTIONS.matches(request.getMethod())) {
-                filterChain.doFilter(request, response);
-            } else {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                response.setContentType("application/json");
-                response.getWriter().write("{\"message\":\"Acceso denegado - permiso no encontrado para esta ruta\"}");
-            }
+            // no hay mapping: permitir acceso (para rutas como /admin que no necesitan permisos granulares)
+            filterChain.doFilter(request, response);
             return;
         }
 
