@@ -1,12 +1,12 @@
 .container {
   min-height: calc(100vh - 64px);
-  background: #0e6ac7;
+  background: #f9f9f9;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 32px 16px;
   box-sizing: border-box;
-  color: white;
+  color: #333;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin-top: 64px; 
   padding-top: 48px; 
@@ -24,15 +24,16 @@
 .titulo {
   font-size: 2.5rem;
   font-weight: 900;
-  color: #fff;
+  color: #0d6efd;
   margin: 0 0 0.5rem 0;
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+  border-bottom: 2px solid #0d6efd;
+  padding-bottom: 6px;
   letter-spacing: 2px;
 }
 
 .subtitulo {
   font-size: 1.1rem;
-  color: #e0e0e0;
+  color: #6c757d;
   margin: 0;
   opacity: 0.9;
 }
@@ -562,7 +563,37 @@
   background: #dc2626;
 }
 
-/* Responsive */
+/* ===== RESPONSIVE DESIGN - MIS RESERVAS ===== */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .container {
+    padding: 24px 16px;
+  }
+  
+  .reservasGrid {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+  }
+  
+  .reservaCard {
+    padding: 20px;
+  }
+  
+  .productoInfo {
+    gap: 16px;
+  }
+  
+  .productoImagen {
+    height: 140px;
+  }
+  
+  .productoImagen img {
+    height: 140px;
+  }
+}
+
+/* Mobile Large (481px - 767px) */
 @media (max-width: 768px) {
   .container {
     padding: 20px 12px;
@@ -623,9 +654,35 @@
   .btnReservarNuevamente {
     width: 100%;
   }
+  
+  .reservaDetalles {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .detalleItem {
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+  }
+  
+  .detalleLabel {
+    font-size: 0.8rem;
+  }
+  
+  .detalleValor {
+    font-size: 0.9rem;
+  }
 }
 
+/* Mobile (320px - 480px) */
 @media (max-width: 480px) {
+  .container {
+    padding: 16px 8px;
+    margin-top: 64px;
+    padding-top: 24px;
+  }
+
   .titulo {
     font-size: 1.8rem;
   }
@@ -646,5 +703,168 @@
 
   .detalleValor {
     text-align: left;
+  }
+  
+  .reservasGrid {
+    gap: 12px;
+  }
+  
+  .reservaHeader {
+    gap: 6px;
+  }
+  
+  .fechaCreacion {
+    font-size: 0.8rem;
+  }
+  
+  .estadoReserva {
+    font-size: 0.8rem;
+    padding: 3px 8px;
+  }
+  
+  .productoImagen {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .productoImagen img {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .productoNombre {
+    font-size: 1rem;
+  }
+  
+  .productoPrecio {
+    font-size: 0.9rem;
+  }
+  
+  .reservaAcciones {
+    gap: 6px;
+  }
+  
+  .btnVerProducto,
+  .btnConfirmarReserva,
+  .btnEliminarReserva,
+  .btnReservarNuevamente {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .filtros {
+    gap: 10px;
+  }
+  
+  .filtroGrupo label {
+    font-size: 0.9rem;
+  }
+  
+  .selectFiltro {
+    padding: 6px 8px;
+    font-size: 0.85rem;
+  }
+  
+  .contador {
+    font-size: 0.85rem;
+  }
+}
+
+/* Mobile Small (320px - 374px) */
+@media (max-width: 374px) {
+  .container {
+    padding: 12px 6px;
+  }
+  
+  .titulo {
+    font-size: 1.6rem;
+  }
+  
+  .subtitulo {
+    font-size: 0.9rem;
+  }
+  
+  .reservasGrid {
+    gap: 10px;
+  }
+  
+  .reservaCard {
+    padding: 0.875rem;
+  }
+  
+  .productoImagen {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .productoImagen img {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .productoNombre {
+    font-size: 0.9rem;
+  }
+  
+  .productoPrecio {
+    font-size: 0.85rem;
+  }
+  
+  .btnVerProducto,
+  .btnConfirmarReserva,
+  .btnEliminarReserva,
+  .btnReservarNuevamente {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .detalleLabel {
+    font-size: 0.75rem;
+  }
+  
+  .detalleValor {
+    font-size: 0.8rem;
+  }
+}
+
+/* Landscape orientation para móvil */
+@media (max-height: 500px) and (orientation: landscape) {
+  .container {
+    padding: 12px 8px;
+  }
+  
+  .reservasGrid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 12px;
+  }
+  
+  .productoImagen {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .productoImagen img {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .reservaDetalles {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+  
+  .detalleItem {
+    flex-direction: row;
+    gap: 4px;
+    align-items: center;
+  }
+  
+  .detalleLabel {
+    font-size: 0.7rem;
+  }
+  
+  .detalleValor {
+    font-size: 0.8rem;
   }
 }

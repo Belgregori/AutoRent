@@ -153,7 +153,7 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
           } else if (response.status === 401) {
             throw new Error('Debes iniciar sesión para ver la disponibilidad');
           } else if (response.status === 403) {
-            throw new Error('No tienes permisos para ver la disponibilidad');
+            throw new Error('🔐 Necesitas iniciar sesión para ver la disponibilidad y hacer reservas');
           } else {
             throw new Error(`Error del servidor: ${response.status}`);
           }
@@ -348,28 +348,6 @@ const CalendarioDisponibilidad = ({ productoId, producto }) => {
         </div>
       </div>
 
-      <div className={styles.leyenda}>
-        <div className={styles.leyendaItem}>
-          <div className={styles.leyendaColor} style={{ backgroundColor: '#10b981' }}></div>
-          <span>Disponible</span>
-        </div>
-        <div className={styles.leyendaItem}>
-          <div className={styles.leyendaColor} style={{ backgroundColor: '#ef4444' }}></div>
-          <span>Ocupada</span>
-        </div>
-        <div className={styles.leyendaItem}>
-          <div className={styles.leyendaColor} style={{ backgroundColor: '#3b82f6' }}></div>
-          <span>Inicio</span>
-        </div>
-        <div className={styles.leyendaItem}>
-          <div className={styles.leyendaColor} style={{ backgroundColor: '#8b5cf6' }}></div>
-          <span>Fin</span>
-        </div>
-        <div className={styles.leyendaItem}>
-          <div className={styles.leyendaColor} style={{ backgroundColor: '#f59e0b' }}></div>
-          <span>Rango</span>
-        </div>
-      </div>
 
       <FormularioReserva
         producto={producto}

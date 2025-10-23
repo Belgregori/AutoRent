@@ -114,53 +114,149 @@ export const RegisterPage = () => {
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "720px",
-        margin: "3rem auto",
-        padding: "2rem",
-        background: "#fff",
-        borderRadius: "12px",
-        boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
-      }}
-    >
-      <UserNavControls />
-      <h2 style={{ marginTop: 0, color: "#0d6efd" }}>Crear cuenta</h2>
-      <p style={{ marginTop: 6, color: "#475569" }}>
-        Completá tus datos para registrarte y comenzar a alquilar.
-      </p>
+    <>
+      <style>{`
+        @media (max-width: 768px) {
+          .register-container {
+            padding: 16px !important;
+          }
+          .register-card {
+            padding: 1.5rem !important;
+            max-width: 100% !important;
+          }
+          .register-title {
+            font-size: 1.5rem !important;
+          }
+          .register-subtitle {
+            font-size: 0.9rem !important;
+          }
+          .register-grid {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+          }
+          .register-buttons {
+            flex-direction: column !important;
+            gap: 8px !important;
+          }
+          .register-button {
+            width: 100% !important;
+            min-width: auto !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .register-container {
+            padding: 12px !important;
+          }
+          .register-card {
+            padding: 1rem !important;
+          }
+          .register-title {
+            font-size: 1.3rem !important;
+          }
+          .register-subtitle {
+            font-size: 0.85rem !important;
+          }
+        }
+      `}</style>
+      <div
+        className="register-container"
+        style={{
+        minHeight: "calc(100vh - 64px)",
+        background: "#f9f9f9",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "20px",
+          boxSizing: "border-box",
+          fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+        }}
+      >
+        <div
+          className="register-card"
+          style={{
+            maxWidth: "720px",
+            width: "100%",
+            margin: "0 auto",
+            padding: "2rem",
+          background: "#fff",
+          borderRadius: "16px",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+          border: "1px solid rgba(0,0,0,0.05)",
+          color: "#333"
+          }}
+        >
+        <UserNavControls />
+        <h2 className="register-title" style={{
+          margin: "0 0 0.5rem 0",
+          color: "#0d6efd",
+          fontSize: "1.8rem",
+          fontWeight: "700",
+          textAlign: "center",
+          borderBottom: "2px solid #0d6efd",
+          paddingBottom: "6px"
+        }}>📝 Crear cuenta</h2>
+        <p className="register-subtitle" style={{
+          margin: "0 0 1.5rem 0",
+          color: "#6c757d",
+          textAlign: "center",
+          fontSize: "1rem"
+        }}>
+          Completá tus datos para registrarte y comenzar a alquilar.
+        </p>
       <form onSubmit={handleSubmit} noValidate>
         <div
+          className="register-grid"
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
+            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
             gap: "16px",
             marginTop: 16,
           }}
         >
           <div>
-            <label style={{ color: "#0d6efd", fontWeight: 600 }}>Nombre</label>
+            <label style={{
+              display: "block",
+              marginBottom: "0.5rem",
+              color: "#333",
+              fontWeight: "500",
+              fontSize: "0.9rem"
+            }}>Nombre</label>
             <input
               type="text"
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
-              onBlur={() => {
+              onBlur={(e) => {
                 const res = validaciones.nombre(nombre);
                 setErrors((prev) => ({ ...prev, nombre: res !== true ? res : "" }));
+                e.target.style.borderColor = errors.nombre ? "#dc2626" : "rgba(255, 255, 255, 0.3)";
+                e.target.style.background = "rgba(255, 255, 255, 0.1)";
               }}
               required
               style={{
                 width: "100%",
-                padding: "12px",
-                marginTop: 6,
-                borderRadius: 8,
+                padding: "0.75rem",
                 border: errors.nombre
                   ? "1px solid #dc2626"
                   : "1px solid #cbd5e1",
+                borderRadius: "8px",
+                background: "#fff",
+                color: "#333",
+                fontSize: "0.9rem",
+                transition: "all 0.3s ease",
+                boxSizing: "border-box"
               }}
+              onFocus={(e) => {
+                e.target.style.borderColor = "#3b82f6";
+                e.target.style.background = "rgba(255, 255, 255, 0.15)";
+              }}
+              placeholder="Ingresa tu nombre"
             />
             {errors.nombre && (
-              <p style={{ color: "#dc2626", fontSize: "0.9rem" }}>{errors.nombre}</p>
+              <p style={{
+                color: "#dc3545",
+                fontSize: "0.8rem",
+                margin: "0.25rem 0 0 0"
+              }}>{errors.nombre}</p>
             )}
           </div>
           <div>
@@ -257,18 +353,42 @@ export const RegisterPage = () => {
           </p>
         )}
 
-        <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
+        <div className="register-buttons" style={{
+          display: "flex",
+          gap: "12px",
+          marginTop: "1.5rem",
+          flexWrap: "wrap"
+        }}>
           <button
             type="submit"
             disabled={enviando}
+            className="register-button"
             style={{
-              padding: "0.7rem 1.1rem",
+              flex: "1",
+              minWidth: "140px",
+              padding: "0.75rem 1.5rem",
               background: enviando ? "#93c5fd" : "#0d6efd",
               color: "white",
               border: "none",
-              borderRadius: 8,
-              fontWeight: 600,
+              borderRadius: "8px",
+              fontWeight: "600",
               cursor: enviando ? "not-allowed" : "pointer",
+              transition: "all 0.3s ease",
+              fontSize: "0.9rem"
+            }}
+            onMouseOver={(e) => {
+              if (!enviando) {
+                e.target.style.background = "#0b5ed7";
+                e.target.style.transform = "translateY(-1px)";
+                e.target.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.3)";
+              }
+            }}
+            onMouseOut={(e) => {
+              if (!enviando) {
+                e.target.style.background = "#0d6efd";
+                e.target.style.transform = "translateY(0)";
+                e.target.style.boxShadow = "none";
+              }
             }}
           >
             {enviando ? "Creando…" : "Crear cuenta"}
@@ -276,13 +396,27 @@ export const RegisterPage = () => {
           <button
             type="button"
             onClick={() => navigate("/login")}
+            className="register-button"
             style={{
-              padding: "0.7rem 1.1rem",
-              background: "#0ea5e9",
+              flex: "1",
+              minWidth: "140px",
+              padding: "0.75rem 1.5rem",
+              background: "rgba(255, 255, 255, 0.1)",
               color: "white",
-              border: "none",
-              borderRadius: 8,
-              fontWeight: 600,
+              border: "1px solid rgba(255, 255, 255, 0.3)",
+              borderRadius: "8px",
+              fontWeight: "600",
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+              fontSize: "0.9rem"
+            }}
+            onMouseOver={(e) => {
+              e.target.style.background = "rgba(255, 255, 255, 0.2)";
+              e.target.style.transform = "translateY(-1px)";
+            }}
+            onMouseOut={(e) => {
+              e.target.style.background = "rgba(255, 255, 255, 0.1)";
+              e.target.style.transform = "translateY(0)";
             }}
           >
             Iniciar sesión
@@ -325,6 +459,8 @@ export const RegisterPage = () => {
           </div>
         </div>
       )}
+      </div>
     </div>
+    </>
   );
 };

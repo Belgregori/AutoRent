@@ -97,34 +97,152 @@ export const LoginPage = () => {
     return (
         <>
             <UserNavControls />
-            <div style={{ maxWidth: "400px", margin: "3rem auto", padding: "2rem", border: "1px solid #ccc", borderRadius: "8px", background: "#fff" }}>
-            <h2>🔑 Iniciar sesión</h2>
-            <form onSubmit={handleLogin}>
-                <div style={{ marginBottom: "1rem" }}>
-                    <label>Email</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        style={{ display: "block", width: "100%", padding: "0.5rem", marginTop: "0.5rem" }}
-                    />
+            <div style={{
+                minHeight: "calc(100vh - 64px)",
+                background: "#f9f9f9",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "20px",
+                boxSizing: "border-box",
+                fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+            }}>
+                <div style={{
+                    maxWidth: "400px",
+                    width: "100%",
+                    margin: "0 auto",
+                    padding: "2rem",
+                    background: "#fff",
+                    borderRadius: "16px",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                    border: "1px solid rgba(0,0,0,0.05)",
+                    color: "#333"
+                }}>
+                    <h2 style={{
+                        margin: "0 0 1.5rem 0",
+                        fontSize: "1.8rem",
+                        fontWeight: "700",
+                        textAlign: "center",
+                        color: "#0d6efd",
+                        borderBottom: "2px solid #0d6efd",
+                        paddingBottom: "6px"
+                    }}>🔑 Iniciar sesión</h2>
+                    
+                    <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                        <div>
+                            <label style={{
+                                display: "block",
+                                marginBottom: "0.5rem",
+                                color: "#333",
+                                fontWeight: "500",
+                                fontSize: "0.9rem"
+                            }}>Email</label>
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                style={{
+                                    width: "100%",
+                                    padding: "0.75rem",
+                                    border: "1px solid #cbd5e1",
+                                    borderRadius: "8px",
+                                    background: "#fff",
+                                    color: "#333",
+                                    fontSize: "0.9rem",
+                                    transition: "all 0.3s ease",
+                                    boxSizing: "border-box"
+                                }}
+                                onFocus={(e) => {
+                                    e.target.style.borderColor = "#0d6efd";
+                                    e.target.style.background = "#fff";
+                                }}
+                                onBlur={(e) => {
+                                    e.target.style.borderColor = "#cbd5e1";
+                                    e.target.style.background = "#fff";
+                                }}
+                                placeholder="Ingresa tu email"
+                            />
+                        </div>
+                        
+                        <div>
+                            <label style={{
+                                display: "block",
+                                marginBottom: "0.5rem",
+                                color: "#333",
+                                fontWeight: "500",
+                                fontSize: "0.9rem"
+                            }}>Contraseña</label>
+                            <input
+                                type="password"
+                                value={contraseña}
+                                onChange={(e) => setContraseña(e.target.value)}
+                                required
+                                style={{
+                                    width: "100%",
+                                    padding: "0.75rem",
+                                    border: "1px solid #cbd5e1",
+                                    borderRadius: "8px",
+                                    background: "#fff",
+                                    color: "#333",
+                                    fontSize: "0.9rem",
+                                    transition: "all 0.3s ease",
+                                    boxSizing: "border-box"
+                                }}
+                                onFocus={(e) => {
+                                    e.target.style.borderColor = "#0d6efd";
+                                    e.target.style.background = "#fff";
+                                }}
+                                onBlur={(e) => {
+                                    e.target.style.borderColor = "#cbd5e1";
+                                    e.target.style.background = "#fff";
+                                }}
+                                placeholder="Ingresa tu contraseña"
+                            />
+                        </div>
+                        
+                        {error && (
+                            <p style={{
+                                color: "#dc3545",
+                                fontSize: "0.85rem",
+                                margin: "0",
+                                padding: "0.5rem",
+                                background: "#f8d7da",
+                                border: "1px solid #f5c6cb",
+                                borderRadius: "6px",
+                                textAlign: "center"
+                            }}>{error}</p>
+                        )}
+                        
+                        <button 
+                            type="submit" 
+                            style={{
+                                padding: "0.75rem 1.5rem",
+                                background: "#0d6efd",
+                                color: "white",
+                                border: "none",
+                                borderRadius: "8px",
+                                fontSize: "0.9rem",
+                                fontWeight: "600",
+                                cursor: "pointer",
+                                transition: "all 0.3s ease",
+                                marginTop: "0.5rem"
+                            }}
+                            onMouseOver={(e) => {
+                                e.target.style.background = "#0b5ed7";
+                                e.target.style.transform = "translateY(-2px)";
+                                e.target.style.boxShadow = "0 4px 12px rgba(13, 110, 253, 0.3)";
+                            }}
+                            onMouseOut={(e) => {
+                                e.target.style.background = "#0d6efd";
+                                e.target.style.transform = "translateY(0)";
+                                e.target.style.boxShadow = "none";
+                            }}
+                        >
+                            Ingresar
+                        </button>
+                    </form>
                 </div>
-                <div style={{ marginBottom: "1rem" }}>
-                    <label>Contraseña</label>
-                    <input
-                        type="password"
-                        value={contraseña}
-                        onChange={(e) => setContraseña(e.target.value)}
-                        required
-                        style={{ display: "block", width: "100%", padding: "0.5rem", marginTop: "0.5rem" }}
-                    />
-                </div>
-                {error && <p style={{ color: "red" }}>{error}</p>}
-                <button type="submit" style={{ padding: "0.5rem 1rem", background: "blue", color: "white", border: "none", borderRadius: "4px" }}>
-                    Ingresar
-                </button>
-            </form>
             </div>
         </>
     );

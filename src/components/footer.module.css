@@ -1,4 +1,4 @@
- .footer {
+.footer {
   width: 100%;
   background: linear-gradient(135deg, var(--color-azul-oscuro) 0%, var(--color-azul-medio) 100%);
   color: var(--color-blanco);
@@ -8,20 +8,51 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-align: left;
   box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+  backdrop-filter: blur(10px);
 }
 
-.footer p {
+.bloqueizq {
+  width: 100%;
+  background: linear-gradient(135deg, var(--color-azul-oscuro) 0%, var(--color-azul-medio) 100%);
+  color: var(--color-blanco);
+  font-size: 0.9rem;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: left;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+  backdrop-filter: blur(10px);
+}
+
+.bloqueizq p {
   margin: 0;
   font-weight: bold;
   font-size: 1.1rem;
   color: var(--color-blanco);
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  transition: var(--transicion-suave);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
 }
 
-.footer small {
+.bloqueizq p:hover {
+  background-color: var(--color-boton-hover);
+  color: var(--color-blanco);
+  text-decoration: underline;
+  transform: translateY(-1px);
+}
+
+.bloqueizq small {
   display: block;
   margin-top: 0.3rem;
   color: rgba(255,255,255,0.8);
+  transition: var(--transicion-suave);
+}
+
+.bloqueizq small:hover {
+  color: var(--color-blanco);
+  transform: translateY(-1px);
 }
 
 .pageWrapper {

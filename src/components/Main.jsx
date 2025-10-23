@@ -25,6 +25,11 @@ export const Main = () => {
   const [isBuscando, setIsBuscando] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
+  // Filtros por categoría
+  const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState([]);
+  const [showFilterMenu, setShowFilterMenu] = useState(false);
+  const [resultadosOriginales, setResultadosOriginales] = useState([]);
+
   const [favoritos, setFavoritos] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoadingFavoritos, setIsLoadingFavoritos] = useState(false);
@@ -329,6 +334,24 @@ export const Main = () => {
     setShowSuggestions(matches.length > 0);
   }, [busquedaTexto, productos]);
 
+  // useEffect para aplicar filtros cuando cambien las categorías seleccionadas
+  useEffect(() => {
+    if (categoriasSeleccionadas.length === 0) {
+      setResultados(resultadosOriginales);
+      return;
+    }
+
+    const filtrados = resultadosOriginales.filter(p => {
+      const categoriaId = typeof p.categoria === 'object' 
+        ? p.categoria?.id 
+        : p.categoria;
+      
+      return categoriasSeleccionadas.includes(categoriaId);
+    });
+    
+    setResultados(filtrados);
+  }, [categoriasSeleccionadas, resultadosOriginales]);
+
   const ejecutarBusqueda = async (e) => {
     if (e) e.preventDefault();
     setIsBuscando(true);
@@ -348,6 +371,7 @@ export const Main = () => {
             const data = await res.json();
             const tx = data.map(transformProducto).filter(Boolean);
             setResultados(tx);
+            setResultadosOriginales(tx);
             setIsBuscando(false);
             return;
           }
@@ -363,6 +387,7 @@ export const Main = () => {
         return nombre.includes(texto) || cat.includes(texto);
       });
       setResultados(filtrados);
+      setResultadosOriginales(filtrados);
     } finally {
       setIsBuscando(false);
     }
@@ -373,6 +398,7 @@ export const Main = () => {
     setSugerencias([]);
     setShowSuggestions(false);
     setResultados([p]);
+    setResultadosOriginales([p]);
   };
 
   const handleInputFocus = () => {
@@ -393,8 +419,18 @@ export const Main = () => {
     }
   };
 
-  
+  // Funciones para filtros por categoría
+  const toggleCategoria = (categoriaId) => {
+    setCategoriasSeleccionadas(prev => {
+      return prev.includes(categoriaId) 
+        ? prev.filter(id => id !== categoriaId)
+        : [...prev, categoriaId];
+    });
+  };
 
+  const limpiarFiltros = () => {
+    setCategoriasSeleccionadas([]);
+  };
 
   const ProductoCard = ({ producto }) => (
     <div key={producto.id} className={styles.productoCard}>
@@ -559,9 +595,72 @@ export const Main = () => {
           {/* Resultados de búsqueda */}
           {resultados.length > 0 && (
             <div className={styles.resultsSection}>
-              <h3 className={styles.resultsTitle}>
-                {resultados.length} {resultados.length === 1 ? 'auto encontrado' : 'autos encontrados'}
-              </h3>
+              <div className={styles.resultsHeader}>
+                <h3 className={styles.resultsTitle}>
+                  {resultados.length} {resultados.length === 1 ? 'auto encontrado' : 'autos encontrados'}
+                </h3>
+                <button 
+                  className={styles.filterButton}
+                  onClick={() => setShowFilterMenu(!showFilterMenu)}
+                >
+                  🔍 Filtrar
+                </button>
+              </div>
+
+              {/* Panel de filtros */}
+              {showFilterMenu && (
+                <div className={styles.filterMenu}>
+                  <div className={styles.filterHeader}>
+                    <h4>Filtrar por categorías</h4>
+                    <button 
+                      className={styles.closeFilterButton}
+                      onClick={() => setShowFilterMenu(false)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                  
+                  <div className={styles.categoriasFiltros}>
+                    {categorias.map(cat => (
+                      <label key={cat.id} className={styles.categoriaFiltro}>
+                        <input
+                          type="checkbox"
+                          checked={categoriasSeleccionadas.includes(cat.id)}
+                          onChange={() => toggleCategoria(cat.id)}
+                        />
+                        <span>{cat.nombre}</span>
+                      </label>
+                    ))}
+                  </div>
+                  
+                  {categoriasSeleccionadas.length > 0 && (
+                    <div className={styles.selectedFilters}>
+                      <span>Categorías seleccionadas:</span>
+                      {categoriasSeleccionadas.map(catId => {
+                        const cat = categorias.find(c => c.id === catId);
+                        return (
+                          <span key={catId} className={styles.filterTag}>
+                            {cat?.nombre}
+                            <button 
+                              onClick={() => toggleCategoria(catId)}
+                              className={styles.removeFilterButton}
+                            >
+                              ×
+                            </button>
+                          </span>
+                        );
+                      })}
+                      <button 
+                        className={styles.limpiarFiltrosButton}
+                        onClick={limpiarFiltros}
+                      >
+                        Limpiar todo
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div className={styles.resultsGrid}>
                 {resultados.map(prod => (
                   <ProductoCard key={prod.id} producto={prod} />

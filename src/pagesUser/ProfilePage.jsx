@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserNavControls } from "../components/UserNavControls";
+import styles from "./profile.module.css";
 
 export const ProfilePage = () => {
   const navigate = useNavigate();
@@ -112,53 +113,93 @@ export const ProfilePage = () => {
 
   if (cargando) {
     return (
-      <div style={{ maxWidth: 600, margin: '2rem auto', background: '#fff', padding: 20, border: '1px solid #eee', borderRadius: 8, textAlign: 'center' }}>
+      <div className={styles.container}>
         <UserNavControls />
-        <h2 style={{ color: '#333', marginBottom: '1rem' }}>Mi perfil</h2>
-        <p style={{ color: '#666' }}>Cargando datos del usuario...</p>
+        <div className={styles.loadingContainer}>
+          <h2>Mi perfil</h2>
+          <p>Cargando datos del usuario...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: 600, margin: '2rem auto', background: '#fff', padding: 20, border: '1px solid #eee', borderRadius: 8 }}>
+    <div className={styles.container}>
       <UserNavControls />
-      <h2 style={{ color: '#333', marginBottom: '1.5rem', fontSize: '1.8rem' }}>Mi perfil</h2>
-      <div style={{ marginBottom: '1rem', padding: '1rem', background: '#f8f9fa', borderRadius: '6px', border: '1px solid #e9ecef' }}>
-        <h3 style={{ margin: '0 0 0.5rem 0', color: '#2c3e50', fontSize: '1.2rem', fontWeight: '600' }}>📋 Datos actuales</h3>
-        <p style={{ color: '#333', margin: '0.5rem 0' }}><strong style={{ color: '#2c3e50' }}>Email:</strong> {email || 'No disponible'}</p>
-        <p style={{ color: '#333', margin: '0.5rem 0' }}><strong style={{ color: '#2c3e50' }}>Nombre:</strong> {nombre || 'No disponible'}</p>
-        <p style={{ color: '#333', margin: '0.5rem 0' }}><strong style={{ color: '#2c3e50' }}>Apellido:</strong> {apellido || 'No disponible'}</p>
-      </div>
-      <h3 style={{ margin: '1.5rem 0 1rem 0', color: '#2c3e50', fontSize: '1.2rem', fontWeight: '600' }}>✏️ Editar datos</h3>
-      <form onSubmit={handleSave}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-          <div>
-            <label style={{ color: '#333', fontWeight: '500', display: 'block', marginBottom: '0.5rem' }}>Nombre</label>
-            <input value={nombre} onChange={(e) => setNombre(e.target.value)} style={{ width: '100%', padding: '0.5rem', marginTop: 6, border: '1px solid #ddd', borderRadius: '4px' }} />
-          </div>
-          <div>
-            <label style={{ color: '#333', fontWeight: '500', display: 'block', marginBottom: '0.5rem' }}>Apellido</label>
-            <input value={apellido} onChange={(e) => setApellido(e.target.value)} style={{ width: '100%', padding: '0.5rem', marginTop: 6, border: '1px solid #ddd', borderRadius: '4px' }} />
-          </div>
-          <div>
-            <label style={{ color: '#333', fontWeight: '500', display: 'block', marginBottom: '0.5rem' }}>Contraseña</label>
-            <input value={contraseña} onChange={(e) => setContraseña(e.target.value)} style={{ width: '100%', padding: '0.5rem', marginTop: 6, border: '1px solid #ddd', borderRadius: '4px' }} />
-          </div>
-          </div>
-        <div style={{ marginTop: 12 }}>
-          <label style={{ color: '#333', fontWeight: '500', display: 'block', marginBottom: '0.5rem' }}>Email</label>
-          <input value={email} disabled style={{ width: '100%', padding: '0.5rem', marginTop: 6, background: '#f7f7f7', border: '1px solid #ddd', borderRadius: '4px', color: '#666' }} />
+      <div className={styles.profileCard}>
+        <h2 className={styles.title}>Mi perfil</h2>
+        
+        <div className={styles.currentData}>
+          <h3>📋 Datos actuales</h3>
+          <p><strong>Email:</strong> {email || 'No disponible'}</p>
+          <p><strong>Nombre:</strong> {nombre || 'No disponible'}</p>
+          <p><strong>Apellido:</strong> {apellido || 'No disponible'}</p>
         </div>
-        {error && <p style={{ color: 'red', marginTop: 12 }}>{error}</p>}
-        {ok && <p style={{ color: 'green', marginTop: 12 }}>{ok}</p>}
-        <button type="submit" disabled={guardando} style={{ padding: '0.6rem 1rem', background: '#0d6efd', color: '#fff', border: 'none', borderRadius: 6, marginTop: 16 }}>
-          {guardando ? 'Guardando…' : 'Guardar cambios'}
-        </button>
-        <button type="button" onClick={() => navigate('/')} style={{ padding: '0.6rem 1rem', marginLeft: 8, background: '#6c757d', color: 'white', border: 'none', borderRadius: 6, marginTop: 16 }}>
-          Volver al inicio
-        </button>
-      </form>
+        
+        <h3 className={styles.editTitle}>✏️ Editar datos</h3>
+        
+        <form onSubmit={handleSave} className={styles.form}>
+          <div className={styles.formRow}>
+            <div className={styles.formField}>
+              <label className={styles.label}>Nombre</label>
+              <input 
+                value={nombre} 
+                onChange={(e) => setNombre(e.target.value)} 
+                className={styles.input}
+                placeholder="Ingresa tu nombre"
+              />
+            </div>
+            <div className={styles.formField}>
+              <label className={styles.label}>Apellido</label>
+              <input 
+                value={apellido} 
+                onChange={(e) => setApellido(e.target.value)} 
+                className={styles.input}
+                placeholder="Ingresa tu apellido"
+              />
+            </div>
+            <div className={styles.formField}>
+              <label className={styles.label}>Contraseña</label>
+              <input 
+                type="password"
+                value={contraseña} 
+                onChange={(e) => setContraseña(e.target.value)} 
+                className={styles.input}
+                placeholder="Nueva contraseña (opcional)"
+              />
+            </div>
+          </div>
+          
+          <div className={`${styles.formField} ${styles.fullWidth}`}>
+            <label className={styles.label}>Email</label>
+            <input 
+              value={email} 
+              disabled 
+              className={styles.input}
+            />
+          </div>
+          
+          {error && <p className={styles.error}>{error}</p>}
+          {ok && <p className={styles.success}>{ok}</p>}
+          
+          <div className={styles.buttonGroup}>
+            <button 
+              type="submit" 
+              disabled={guardando} 
+              className={`${styles.button} ${styles.primaryButton}`}
+            >
+              {guardando ? 'Guardando…' : 'Guardar cambios'}
+            </button>
+            <button 
+              type="button" 
+              onClick={() => navigate('/')} 
+              className={`${styles.button} ${styles.secondaryButton}`}
+            >
+              Volver al inicio
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

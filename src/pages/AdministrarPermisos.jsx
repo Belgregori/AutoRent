@@ -169,10 +169,12 @@ export const AdministrarPermisos = () => {
   };
 
   // Funciones para el modal
-  const openUserModal = (user) => {
+  const openUserModal = async (user) => {
     setSelectedUser(user);
     setSelectedUserId(user.id);
     setIsModalOpen(true);
+    // Cargar permisos del usuario inmediatamente
+    await fetchUserPermissions(user.id);
   };
 
   const closeUserModal = () => {
@@ -286,7 +288,7 @@ export const AdministrarPermisos = () => {
       <div style={{ marginBottom: 24 }}>
         <h3 style={{ marginBottom: 16 }}>Gestionar Usuarios:</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {users.map(user => (
+          {users.filter(user => selectedUserId ? user.id === selectedUserId : true).map(user => (
             <div key={user.id} style={{ 
               display: 'flex', 
               alignItems: 'center', 

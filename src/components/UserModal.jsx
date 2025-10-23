@@ -119,14 +119,37 @@ export const UserModal = ({
           )}
           
           {activeTab === 'permissions' && (
-            <PermissionManager
-              user={user}
-              allPermissions={allPermissions}
-              userPermissions={userPermissions}
-              onPermissionsChange={onPermissionsChange}
-              isLoadingPermissions={isLoadingPermissions}
-              isSaving={isSaving}
-            />
+            <div>
+              {isLoadingPermissions ? (
+                <div style={{
+                  textAlign: 'center',
+                  padding: '40px',
+                  color: '#6b7280',
+                  fontSize: '16px'
+                }}>
+                  <div style={{
+                    display: 'inline-block',
+                    width: '20px',
+                    height: '20px',
+                    border: '2px solid #e5e7eb',
+                    borderTop: '2px solid #3b82f6',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite',
+                    marginRight: '12px'
+                  }}></div>
+                  Cargando permisos del usuario...
+                </div>
+              ) : (
+                <PermissionManager
+                  user={user}
+                  allPermissions={allPermissions}
+                  userPermissions={userPermissions}
+                  onPermissionsChange={onPermissionsChange}
+                  isLoadingPermissions={isLoadingPermissions}
+                  isSaving={isSaving}
+                />
+              )}
+            </div>
           )}
         </div>
 
@@ -175,6 +198,13 @@ export const UserModal = ({
           )}
         </div>
       </div>
+      
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };

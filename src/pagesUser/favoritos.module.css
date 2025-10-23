@@ -1,9 +1,9 @@
 .container {
   min-height: calc(100vh - 64px);
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 32px 16px;
+  background: #f9f9f9;
+  padding: 100px 16px 32px 16px;
   box-sizing: border-box;
-  color: white;
+  color: #333;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -16,13 +16,14 @@
   margin: 0 0 12px 0;
   font-size: 2.5rem;
   font-weight: 700;
-  color: white;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  color: #0d6efd;
+  border-bottom: 2px solid #0d6efd;
+  padding-bottom: 6px;
 }
 
 .subtitle {
   margin: 0;
-  color: rgba(255,255,255,0.9);
+  color: #6c757d;
   font-size: 1.2rem;
   font-weight: 500;
 }
@@ -30,12 +31,13 @@
 /* Estado vacío */
 .emptyState {
   text-align: center;
-  background: rgba(255,255,255,0.1);
+  background: #fff;
   border-radius: 16px;
   padding: 48px 24px;
   max-width: 500px;
   margin: 0 auto;
-  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
 .emptyIcon {
@@ -46,20 +48,20 @@
 
 .emptyState h2 {
   margin: 0 0 12px 0;
-  color: white;
+  color: #0d6efd;
   font-size: 1.8rem;
   font-weight: 600;
 }
 
 .emptyState p {
   margin: 0 0 24px 0;
-  color: rgba(255,255,255,0.8);
+  color: #6c757d;
   font-size: 1.1rem;
   line-height: 1.5;
 }
 
 .explorarButton {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  background: #0d6efd;
   color: white;
   border: none;
   border-radius: 12px;
@@ -68,12 +70,13 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 .explorarButton:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  background: #0b5ed7;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
 }
 
 /* Grid de favoritos */
@@ -343,7 +346,7 @@
   color: white;
   padding: 16px 24px;
   border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   z-index: 1000;
   animation: slideIn 0.3s ease-out;
   font-weight: 500;
@@ -496,7 +499,7 @@
 }
 
 .explorarButton {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  background: #0d6efd;
   color: white;
   border: none;
   border-radius: 12px;
@@ -505,14 +508,15 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   position: relative;
   overflow: hidden;
 }
 
 .explorarButton:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  background: #0b5ed7;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
 }
 
 .explorarButton:active {
@@ -543,10 +547,36 @@
   border: 1px solid #f5c6cb;
 }
 
-/* Responsive */
+/* ===== RESPONSIVE DESIGN - FAVORITOS ===== */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .container {
+    padding: 90px 16px 32px 16px;
+  }
+  
+  .favoritosGrid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .productoCard {
+    border-radius: 14px;
+  }
+  
+  .productoImagen {
+    height: 220px;
+  }
+  
+  .productoImagenImg {
+    height: 220px;
+  }
+}
+
+/* Mobile Large (481px - 767px) */
 @media (max-width: 768px) {
   .container {
-    padding: 24px 12px;
+    padding: 80px 12px 24px 12px;
   }
   
   .title {
@@ -558,11 +588,15 @@
   }
   
   .favoritosGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
   }
   
   .productoImagen {
+    height: 180px;
+  }
+  
+  .productoImagenImg {
     height: 180px;
   }
   
@@ -578,35 +612,6 @@
     font-size: 1.3rem;
   }
   
-  .successMessage {
-    top: 10px;
-    right: 10px;
-    left: 10px;
-    text-align: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .title {
-    font-size: 1.8rem;
-  }
-  
-  .emptyState {
-    padding: 32px 16px;
-  }
-  
-  .emptyIcon {
-    font-size: 3rem;
-  }
-  
-  .emptyState h2 {
-    font-size: 1.5rem;
-  }
-  
-  .emptyState p {
-    font-size: 1rem;
-  }
-  
   .productoAcciones {
     flex-direction: column;
     gap: 8px;
@@ -615,6 +620,191 @@
   .verDetalleButton,
   .reservarButton {
     width: 100%;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+  
+  .eliminarFavoritoButton {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
+  
+  .successMessage {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    text-align: center;
+  }
+}
+
+/* Mobile (320px - 480px) */
+@media (max-width: 480px) {
+  .container {
+    padding: 70px 8px 20px 8px;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+  
+  .favoritosGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .productoCard {
+    border-radius: 12px;
+  }
+  
+  .productoImagen {
+    height: 160px;
+  }
+  
+  .productoImagenImg {
+    height: 160px;
+  }
+  
+  .productoInfo {
+    padding: 12px;
+  }
+  
+  .productoNombre {
+    font-size: 1.1rem;
+  }
+  
+  .productoCategoria {
+    font-size: 0.85rem;
+  }
+  
+  .precio {
+    font-size: 1.2rem;
+  }
+  
+  .productoAcciones {
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .verDetalleButton,
+  .reservarButton {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .eliminarFavoritoButton {
+    width: 28px;
+    height: 28px;
+    font-size: 0.7rem;
+  }
+  
+  .emptyState {
+    padding: 24px 12px;
+  }
+  
+  .emptyIcon {
+    font-size: 2.5rem;
+  }
+  
+  .emptyState h2 {
+    font-size: 1.3rem;
+  }
+  
+  .emptyState p {
+    font-size: 0.9rem;
+  }
+  
+  .explorarButton {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile Small (320px - 374px) */
+@media (max-width: 374px) {
+  .container {
+    padding: 60px 6px 16px 6px;
+  }
+  
+  .title {
+    font-size: 1.6rem;
+  }
+  
+  .subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .favoritosGrid {
+    gap: 12px;
+  }
+  
+  .productoImagen {
+    height: 140px;
+  }
+  
+  .productoImagenImg {
+    height: 140px;
+  }
+  
+  .productoInfo {
+    padding: 10px;
+  }
+  
+  .productoNombre {
+    font-size: 1rem;
+  }
+  
+  .precio {
+    font-size: 1.1rem;
+  }
+  
+  .verDetalleButton,
+  .reservarButton {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .eliminarFavoritoButton {
+    width: 24px;
+    height: 24px;
+    font-size: 0.6rem;
+  }
+}
+
+/* Landscape orientation para móvil */
+@media (max-height: 500px) and (orientation: landscape) {
+  .container {
+    padding: 60px 12px 16px 12px;
+  }
+  
+  .favoritosGrid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+  }
+  
+  .productoImagen {
+    height: 120px;
+  }
+  
+  .productoImagenImg {
+    height: 120px;
+  }
+  
+  .productoInfo {
+    padding: 8px;
+  }
+  
+  .productoNombre {
+    font-size: 0.9rem;
+  }
+  
+  .precio {
+    font-size: 1rem;
   }
 }
 
