@@ -1,184 +1,391 @@
-# 🚗 AutoRent - Frontend
+# 🚗 AutoRent - Plataforma Web de Alquiler de Vehículos
 
-## 🏷️ Título y descripción breve del proyecto
+AutoRent es una aplicación **Full Stack** desarrollada por **Romina Gregori**. Combina un **backend robusto en Spring Boot (Java 17)** con un **frontend moderno en React 19 + Vite**, ofreciendo una plataforma completa para el alquiler de autos.  
 
-**AutoRent** es una plataforma web completa para el alquiler de vehículos que permite a los usuarios buscar, reservar y gestionar alquileres de autos de manera intuitiva. El frontend de esta aplicación está desarrollado en React y se conecta con un backend API para proporcionar una experiencia de usuario fluida y moderna.
-
-El frontend maneja toda la interfaz de usuario, incluyendo:
-- 🏠 Página de inicio con catálogo de vehículos
-- 👤 Sistema de autenticación (login/registro)
-- 🔐 Gestión de perfiles de usuario
-- ❤️ Sistema de favoritos
-- 📅 Gestión de reservas
-- ⭐ Sistema de valoraciones y reseñas
-- 🛠️ Panel de administración completo
-- 📱 Diseño responsive y moderno
-
-## ⚙️ Tecnologías principales y versiones
-
-- **React**: ^19.1.0
-- **React DOM**: ^19.1.0
-- **React Router DOM**: ^6.30.1
-- **Vite**: ^6.3.5 (Build tool)
-- **Node.js**: Versión mínima 18.x
-- **npm**: Versión mínima 8.x
-
-## 💾 Instalación local
-
-### Requisitos previos
-
-- **Node.js**: Versión mínima 18.x
-- **npm**: Versión mínima 8.x
-- **Git**: Para clonar el repositorio
-
-### Comandos para instalar y ejecutar el proyecto
-
-```bash
-# Clonar el repositorio
-git clone [https://github.com/Belgregori/AutoRent.git]
-
-# Navegar al directorio del frontend
-cd frontend/front-alquiler-autos
-
-# Instalar dependencias
-npm install
-
-# Ejecutar en modo desarrollo
-npm run dev
-
-# Construir para producción
-npm run build
-
-# Previsualizar build de producción
-npm run preview
-
-# Ejecutar tests
-npm run test
-
-# Ejecutar tests en modo watch
-npm run test:watch
-
-# Ejecutar linter
-npm run lint
-```
-
-## 🌐 Configuración Frontend (.env.example)
-
-Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
-
-```env
-# URL base del backend API
-VITE_API_URL=http://localhost:53059
-
-# URL base para imágenes
-VITE_IMAGES_URL=http://localhost:53059/imagenes
-
-# URL base para uploads
-VITE_UPLOADS_URL=http://localhost:53059/uploads
-
-# Configuración de desarrollo
-VITE_NODE_ENV=development
-
-# URL del frontend (para producción)
-VITE_FRONTEND_URL=http://localhost:5173
-```
-
-### Descripción de variables:
-
-- `VITE_API_URL`: URL base del backend API donde se realizan las peticiones HTTP
-- `VITE_IMAGES_URL`: URL base para acceder a las imágenes de los vehículos
-- `VITE_UPLOADS_URL`: URL base para archivos subidos por usuarios
-- `VITE_NODE_ENV`: Entorno de ejecución (development/production)
-- `VITE_FRONTEND_URL`: URL del frontend para redirecciones y enlaces
-
-## 🧩 Dependencias principales
-
-### Dependencias de producción:
-- **react**: ^19.1.0 - Biblioteca principal de React
-- **react-dom**: ^19.1.0 - Renderizado de React en el DOM
-- **react-router-dom**: ^6.30.1 - Enrutamiento para aplicaciones React
-
-### Dependencias de desarrollo:
-- **@vitejs/plugin-react-swc**: ^3.9.0 - Plugin de Vite para React con SWC
-- **vite**: ^6.3.5 - Herramienta de build rápida
-- **eslint**: ^9.25.0 - Linter para JavaScript/React
-- **jest**: ^29.7.0 - Framework de testing
-- **@testing-library/react**: ^16.0.1 - Utilidades para testing de React
-- **msw**: ^1.3.2 - Mock Service Worker para testing
-
-## 🧪 Testing
-
-El proyecto incluye una suite completa de testing con Jest y React Testing Library:
-
-```bash
-# Ejecutar todos los tests
-npm run test
-
-# Ejecutar tests en modo watch (desarrollo)
-npm run test:watch
-
-# Ejecutar tests con cobertura
-npm run test -- --coverage
-```
-
-### Estructura de testing:
-- Tests unitarios para componentes React
-- Tests de integración para hooks personalizados
-- Mocks con MSW para simular respuestas del backend
-- Configuración de Jest con jsdom para testing de componentes
-
-## 🚀 Deploy
-
-### Vercel (Recomendado)
-```bash
-# Instalar Vercel CLI
-npm i -g vercel
-
-# Deploy
-vercel
-
-# Deploy de producción
-vercel --prod
-```
-
-### Netlify
-```bash
-# Build del proyecto
-npm run build
-
-# Subir carpeta dist/ a Netlify
-```
-
-### Variables de entorno para producción:
-- Configurar `VITE_API_URL` con la URL del backend en producción
-- Configurar `VITE_IMAGES_URL` con la URL de CDN o servidor de imágenes
-- Configurar `VITE_FRONTEND_URL` con la URL del frontend desplegado
-
-**URL del deploy**: [Agregar URL del deploy cuando esté disponible]
-
-## 🖼️ Capturas o demostración
-
-<!-- Espacio reservado para capturas de pantalla o video demostrativo -->
-
-### Funcionalidades principales:
-- 🏠 **Página de inicio**: Catálogo de vehículos con filtros y búsqueda
-- 👤 **Autenticación**: Login y registro de usuarios
-- 🔐 **Perfil de usuario**: Gestión de datos personales
-- ❤️ **Favoritos**: Lista de vehículos favoritos
-- 📅 **Reservas**: Gestión completa de reservas
-- ⭐ **Valoraciones**: Sistema de reseñas y calificaciones
-- 🛠️ **Panel admin**: Gestión completa de vehículos, categorías y usuarios
-
-## ✍️ Autora
-
-**Romina Belgregori**
+El sistema permite a los usuarios **buscar, reservar y gestionar vehículos** fácilmente, y cuenta con un **panel administrativo avanzado** con gestión de roles y permisos dinámicos.
 
 ---
 
-## 📝 Notas adicionales
+## 📚 Tabla de Contenidos
 
-- El proyecto utiliza CSS Modules para el styling
-- Implementa un sistema de roles (USER/ADMIN) con rutas protegidas
-- Incluye manejo de errores global y notificaciones
-- Diseño responsive optimizado para móviles y desktop
-- Integración con WhatsApp para contacto directo
+- [👩🏻‍💻[1. Descripción General](#1-descripción-general)
+- [📝[2. Características Principales](#2-características-principales)
+- [🛠️ [3. Tecnologías Utilizadas](#3-tecnologías-utilizadas)
+- [📋 [4. Requisitos Previos](#4-requisitos-previos)
+- [⚙️ [5. Instalación y Configuración](#5-instalación-y-configuración)
+  - [5.1 Backend (Spring Boot)](#51-backend-spring-boot)
+  - [5.2 Frontend (React + Vite)](#52-frontend-react--vite)
+- [🔑 [6. Variables de Entorno](#6-variables-de-entorno)
+- [🗄️ [7. Base de Datos](#7-base-de-datos)
+- [🔗 [8. Endpoints Principales](#8-endpoints-principales)
+- [📁 [9. Estructura del Proyecto](#9-estructura-del-proyecto)
+- [🧪 [10. Testing](#10-testing)
+- [🚀 [11. Deploy](#11-deploy)
+- [💡 [12. Solución de Problemas](#12-solución-de-problemas)
+- [🤝 [13. Contribución](#13-contribución)
+- [14. Licencia](#14-licencia)
+-[👩‍💻  [15. Autora y Contacto](#15-autora-y-contacto)
+
+---
+
+## 1. Descripción General 🥁
+
+AutoRent es una plataforma que permite gestionar **alquileres de vehículos**, ofreciendo funcionalidades tanto para el usuario final como para administradores.  
+Incluye sistema de autenticación con JWT, reservas, reseñas, favoritos, administración de usuarios, categorías, características y notificaciones por correo.
+
+---
+
+## 2. Características Principales 🤓
+
+### 👥 Usuario Final
+- Registro e inicio de sesión (JWT)
+- Perfil personal y edición de datos
+- Sistema de favoritos
+- Gestión de reservas con calendario de disponibilidad
+- Sistema de valoraciones y reseñas
+- Interfaz responsive y diseño moderno
+
+### 🧑‍💼 Administrador
+- Panel de administración completo
+- Gestión de usuarios, roles y permisos dinámicos
+- CRUD de productos, categorías y características
+- Auditoría de acciones administrativas
+
+---
+
+## 3. Tecnologías Utilizadas 💻
+
+### 🔹 Backend
+| Tecnología | Versión | Descripción |
+|-------------|----------|-------------|
+| Java | 17 | Lenguaje principal |
+| Spring Boot | 3.5.2 | Framework backend |
+| Spring Security | 3.5.2 | Autenticación y autorización |
+| Spring Data JPA | 3.5.2 | Persistencia de datos |
+| Spring Mail | 3.5.2 | Envío de emails |
+| MySQL | 8.0+ | Base de datos relacional |
+| JWT | 0.11.5 | Manejo de tokens |
+| Maven | 3.6+ | Gestión de dependencias |
+| Lombok | - | Reducción de código boilerplate |
+| Hibernate | - | ORM |
+| Jackson | - | Serialización JSON |
+
+### 🔹 Frontend
+| Tecnología | Versión | Descripción |
+|-------------|----------|-------------|
+| React | ^19.1.0 | Biblioteca de UI |
+| React Router DOM | ^6.30.1 | Enrutamiento |
+| Vite | ^6.3.5 | Servidor y build |
+| ESLint | ^9.25.0 | Linter |
+| Jest | ^29.7.0 | Testing framework |
+| React Testing Library | ^16.0.1 | Testing de componentes |
+| MSW | ^1.3.2 | Mock Service Worker |
+| CSS Modules | - | Estilos modulares |
+| Babel | ^7.26.0 | Transpilador JS |
+
+---
+
+## 4. Requisitos Previos 🫡
+
+### 🔧 Backend
+- Java 17+
+- Maven 3.6+
+- MySQL 8.0+
+- Git
+
+### 💻 Frontend
+- Node.js 18+
+- npm 8+
+- Git
+
+### Verificar Instalaciones
+```bash
+java -version
+mvn -version
+mysql --version
+node --version
+npm --version
+git --version
+```
+
+---
+
+## 5. Instalación y Configuración 🏗️
+
+### 5.1 Backend (Spring Boot)
+
+```bash
+git clone https://github.com/Belgregori/AutoRent.git
+cd AutoRent/backend
+```
+
+#### 1️⃣ Crear Base de Datos
+```sql
+mysql -u root -p
+CREATE DATABASE alquiler_autos;
+SHOW DATABASES;
+EXIT;
+```
+
+#### 2️⃣ Configurar `.env`
+```bash
+DB_NAME=alquiler_autos
+DB_USER=root
+DB_PASSWORD=tu_password
+DB_HOST=localhost
+DB_PORT=3306
+JWT_SECRET=claveSuperSecreta
+EMAIL_USERNAME=tu_email@gmail.com
+EMAIL_PASSWORD=tu_app_password
+EMAIL_FROM=tu_email@gmail.com
+FRONTEND_URL=http://localhost:5173
+```
+
+#### 3️⃣ Instalar Dependencias
+```bash
+mvn clean install
+mvn spring-boot:run
+```
+
+#### ✅ Verificar
+- API: http://localhost:8080
+- BD: creada automáticamente
+- Logs: sin errores
+
+---
+
+### 5.2 Frontend (React + Vite)
+
+```bash
+cd ../frontend
+npm install
+npm run dev
+```
+
+> Servidor: http://localhost:5173
+
+#### Proxy en `vite.config.js`
+```javascript
+server: {
+  proxy: {
+    '/api': {
+      target: 'http://localhost:8080',
+      changeOrigin: true,
+      secure: false,
+    },
+    '/imagenes': {
+      target: 'http://localhost:8080',
+      changeOrigin: true,
+      secure: false,
+    },
+  },
+}
+```
+
+---
+
+## 6. Variables de Entorno  🗝️
+
+### Backend
+| Variable | Descripción | Ejemplo |
+|----------|-------------|---------|
+| DB_NAME | Nombre BD | alquiler_autos |
+| DB_USER | Usuario MySQL | root |
+| DB_PASSWORD | Contraseña | password |
+| DB_HOST | Host | localhost |
+| DB_PORT | Puerto | 3306 |
+| JWT_SECRET | Clave JWT | claveSuperSecreta |
+| EMAIL_USERNAME | Email | tu_email@gmail.com |
+| EMAIL_PASSWORD | App password | app_password |
+| FRONTEND_URL | URL frontend | http://localhost:5173 |
+
+### Frontend `.env.example`
+```bash
+VITE_API_URL=http://localhost:8080/api
+VITE_APP_NAME=AutoRent
+```
+
+---
+
+## 7. Base de Datos  🌐
+
+### Tablas Principales
+- usuarios
+- productos
+- categorias
+- caracteristicas
+- reservas
+- favoritos
+- resenas
+- imagenes_producto
+- usuario_roles
+- usuario_permissions
+- audit_log
+
+
+📌 Diagrama generado con dbdiagram.io
+ "https://github.com/user-attachments/assets/eb3380ae-c3a2-4d9b-9d8c-58f2b459fb06"
+
+
+
+### Relaciones
+```
+Usuario (1) ←→ (N) Reserva (N) ←→ (1) Producto
+Producto (N) ←→ (N) Caracteristica
+Categoria (1) ←→ (N) Producto
+Usuario (1) ←→ (N) Favorito (N) ←→ (1) Producto
+Usuario (1) ←→ (N) Resena (N) ←→ (1) Producto
+```
+
+---
+
+## 8. Endpoints Principales 🧩
+
+
+| Módulo | Método | Endpoint | Descripción | Autenticación |
+|--------|---------|-----------|--------------|----------------|
+| **Usuarios** | POST | `/usuarios/register` | Registrar nuevo usuario | ❌ |
+| | POST | `/usuarios/login` | Iniciar sesión | ❌ |
+| **Productos** | GET | `/api/productos` | Listar productos | ❌ |
+| | GET | `/api/productos/{id}` | Obtener producto por ID | ❌ |
+| | POST | `/api/productos` | Crear producto | ✅ |
+| | DELETE | `/api/productos/{id}` | Eliminar producto | ✅ |
+| **Reservas** | POST | `/api/reservas` | Crear reserva | ✅ |
+| | GET | `/api/reservas/usuario` | Ver reservas del usuario | ✅ |
+| | GET | `/api/reservas/producto/{id}/disponibilidad` | Ver disponibilidad | ❌ |
+| | GET | `/api/reservas/admin/todas` | Ver todas las reservas | ✅ Admin |
+| **Favoritos** | GET | `/api/favoritos` | Listar favoritos | ✅ |
+| | POST | `/api/favoritos` | Agregar a favoritos | ✅ |
+| | DELETE | `/api/favoritos/{productoId}` | Quitar de favoritos | ✅ |
+| **Reseñas** | POST | `/api/resenas` | Crear reseña | ✅ |
+| | GET | `/api/resenas/producto/{id}` | Ver reseñas de un producto | ❌ |
+| | GET | `/api/resenas/producto/{id}/resumen` | Promedio de valoraciones | ❌ |
+| **Categorías** | GET | `/api/categorias` | Listar categorías | ❌ |
+| | POST | `/api/categorias` | Crear categoría | ✅ |
+| | DELETE | `/api/categorias/{id}` | Eliminar categoría | ✅ |
+| **Características** | GET | `/api/caracteristicas` | Listar características | ❌ |
+| | POST | `/api/caracteristicas` | Crear característica | ✅ |
+| | DELETE | `/api/caracteristicas/{id}` | Eliminar característica | ✅ |
+| **Administración** | GET | `/api/admin/users` | Listar usuarios | ✅ Admin |
+| | GET | `/api/admin/permissions` | Listar permisos | ✅ Admin |
+| | PATCH | `/api/admin/users/{id}/permissions` | Asignar permisos | ✅ Admin |
+
+## 9. Estructura del Proyecto
+
+```
+AutoRent/
+├── backend/
+│   ├── src/main/java/com/autoRent/autoRent/
+│   │   ├── controller/
+│   │   ├── service/
+│   │   ├── repository/
+│   │   ├── model/
+│   │   ├── DTO/
+│   │   ├── configuration/
+│   │   └── AutoRentApplication.java
+│   └── resources/
+│       └── application.properties
+│   ├── pom.xml
+│   └── .env
+└── frontend/
+    ├── src/
+    │   ├── components/
+    │   ├── pages/
+    │   ├── pagesUser/
+    │   ├── hooks/
+    │   ├── utils/
+    │   └── main.jsx
+    ├── vite.config.js
+    ├── package.json
+    └── .env.example
+```
+
+---
+
+## 10. Testing
+
+### Backend
+```bash
+mvn test
+mvn test jacoco:report
+```
+
+### Frontend
+```bash
+npm run test
+npm run test:watch
+npm run test -- --coverage
+```
+
+---
+
+## 11. Deploy
+
+### Backend (Railway / Render / Heroku)
+```bash
+mvn clean package
+java -jar target/autoRent-0.0.1-SNAPSHOT.jar
+```
+
+### Frontend (Vercel / Netlify / GitHub Pages)
+```bash
+npm run build
+vercel
+```
+
+Variables de entorno en producción:
+```
+VITE_API_URL=https://backend-deploy/api
+VITE_APP_NAME=AutoRent
+```
+
+---
+
+## 12. Solución de Problemas
+
+### ❌ Error: Could not connect to database
+- Verificar MySQL corriendo
+- Revisar `.env`
+- Confirmar base creada
+
+### ❌ Error: Port 8080 already in use
+```bash
+netstat -ano | findstr :8080
+taskkill /PID <PID> /F
+```
+
+### ❌ Error: Maven not found
+- Agregar Maven al PATH
+
+---
+
+## 13. Contribución
+
+1. Hacer fork del repositorio  
+2. Crear rama de feature  
+3. Hacer commit y push  
+4. Crear pull request
+
+---
+
+## 14. Licencia
+
+Este proyecto está bajo la Licencia **MIT**.
+
+---
+
+## 15. Autora y Contacto
+
+**Romina Belgregori**  
+📧 autorentargentina@gmail.com  
+📦 [Repositorio GitHub](https://github.com/Belgregori/AutoRent)
+
+---
+
+## 16. Imagenes
+
+Home ![Imagen de WhatsApp 2025-10-24 a las 11 25 33_b3604cff](https://github.com/user-attachments/assets/4840f4d6-6dd7-4b1a-81fa-90c266995bd8)
+Panel del admin ![Imagen de WhatsApp 2025-10-24 a las 11 26 14_c944054b](https://github.com/user-attachments/assets/839a46cb-bbf7-4aff-a2a3-7b5ea202a94c)
+Lista de productos ![Imagen de WhatsApp 2025-10-24 a las 11 26 42_a53f918f](https://github.com/user-attachments/assets/b668a5cd-0911-47ec-94f8-64ae4b84f9e6)
+
+
