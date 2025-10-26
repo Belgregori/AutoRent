@@ -8,17 +8,17 @@ import com.autoRent.autoRent.model.Producto;
 import com.autoRent.autoRent.service.ReservaService;
 import com.autoRent.autoRent.service.UsuarioService;
 import com.autoRent.autoRent.service.ProductoService;
+import com.autoRent.autoRent.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +35,9 @@ public class ReservaController {
 
     @Autowired
     private ProductoService productoService;
+
+    @Autowired
+    private EmailService emailService;
 
     @PostMapping
     public ResponseEntity<?> crearReserva(@Valid @RequestBody ReservaRequest request,
@@ -107,6 +110,21 @@ public class ReservaController {
             Reserva nuevaReserva = reservaService.crearReserva(request, usuario.getId());
 
             System.out.println("crearReserva -> reserva creada id: " + (nuevaReserva != null ? nuevaReserva.getId() : "null"));
+
+            // Obtener la reserva completa con usuario y producto cargados
+            Reserva reservaCompleta = reservaService.findById(nuevaReserva.getId());
+            
+            // Obtener el usuario completo con email
+            Usuario usuarioCompleto = usuarioService.findByEmail(usuario.getEmail());
+            
+            // Enviar email de confirmación
+            try {
+                enviarEmailConfirmacionReserva(usuarioCompleto, reservaCompleta, producto);
+                System.out.println("Email de confirmación enviado a: " + usuarioCompleto.getEmail());
+            } catch (Exception emailException) {
+                System.err.println("Error enviando email de confirmación: " + emailException.getMessage());
+                // No fallar la creación de la reserva si el email falla
+            }
 
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevaReserva);
 
@@ -376,6 +394,63 @@ public class ReservaController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error al eliminar la reserva: " + e.getMessage());
         }
+    }
+
+    private void enviarEmailConfirmacionReserva(Usuario usuario, Reserva reserva, Producto producto) {
+        // Formatear fechas
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String fechaInicio = reserva.getFechaInicio().format(formatter);
+        String fechaFin = reserva.getFechaFin().format(formatter);
+        String fechaCreacion = reserva.getFechaCreacion().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+
+        // Asunto
+        String subject = "Reserva Confirmada - AutoRent";
+
+        // Contenido HTML
+        String htmlContent = "<!DOCTYPE html>"
+                + "<html>"
+                + "<head>"
+                + "<meta charset='UTF-8'>"
+                + "<title>Confirmación de Reserva - AutoRent</title>"
+                + "</head>"
+                + "<body style='font-family:Arial,sans-serif;background-color:#f8f9fa;padding:20px;margin:0;'>"
+                + "<div style='max-width:600px;margin:0 auto;background:#ffffff;border-radius:10px;box-shadow:0 4px 8px rgba(0,0,0,0.1);padding:30px;'>"
+                + "<h2 style='color:#0d6efd;text-align:center;'>¡Reserva Confirmada!</h2>"
+                + "<p style='font-size:16px;color:#555;'>Hola " + usuario.getNombre() + ",</p>"
+                + "<p style='font-size:16px;color:#555;'>Tu reserva ha sido confirmada exitosamente. Aquí tienes todos los detalles:</p>"
+                
+                + "<div style='background:#f8f9fa;padding:20px;border-radius:8px;margin:20px 0;'>"
+                + "<h3 style='color:#333;margin-top:0;'>Detalles de la Reserva</h3>"
+                + "<p style='margin:10px 0;'><strong>Número de Reserva:</strong> #" + reserva.getId() + "</p>"
+                + "<p style='margin:10px 0;'><strong>Vehículo:</strong> " + producto.getNombre() + "</p>"
+                + "<p style='margin:10px 0;'><strong>Descripción:</strong> " + producto.getDescripcion() + "</p>"
+                + "<p style='margin:10px 0;'><strong>Fecha de Inicio:</strong> " + fechaInicio + "</p>"
+                + "<p style='margin:10px 0;'><strong>Fecha de Fin:</strong> " + fechaFin + "</p>"
+                + "<p style='margin:10px 0;'><strong>Días de Reserva:</strong> " + reserva.getDiasReserva() + " días</p>"
+                + "<p style='margin:10px 0;'><strong>Precio por Día:</strong> $" + String.format("%.2f", producto.getPrecio()) + "</p>"
+                + "<p style='margin:10px 0;'><strong>Total a Pagar:</strong> $" + reserva.getPrecioTotal() + "</p>"
+                + "<p style='margin:10px 0;'><strong>Estado:</strong> " + reserva.getEstado() + "</p>"
+                + "<p style='margin:10px 0;'><strong>Fecha de Reserva:</strong> " + fechaCreacion + "</p>"
+                + "</div>"
+
+                + "<div style='background:#e7f3ff;padding:15px;border-radius:8px;border-left:4px solid #0d6efd;margin:20px 0;'>"
+                + "<p style='margin:0;font-size:14px;color:#555;'><strong>Importante:</strong> Guarda este email como comprobante de tu reserva. Puedes gestionar tu reserva desde tu cuenta en AutoRent.</p>"
+                + "</div>"
+
+                + "<div style='text-align:center;margin:20px 0;'>"
+                + "<a href='https://tusitio.com/mis-reservas' style='display:inline-block;padding:12px 25px;background:#0d6efd;color:#fff;text-decoration:none;font-weight:bold;border-radius:5px;font-size:16px;'>Ver Mis Reservas</a>"
+                + "</div>"
+
+                + "<hr style='border:none;border-top:1px solid #e0e0e0;margin:20px 0;'>"
+                + "<p style='font-size:14px;color:#666;'>Si tenés alguna consulta sobre tu reserva, no dudes en contactarnos.</p>"
+                + "<p style='font-size:16px;color:#555;'>¡Gracias por elegirnos y que disfrutes tu viaje!</p>"
+                + "<p style='font-size:16px;color:#555;'>Saludos cordiales,<br><strong>Equipo AutoRent</strong></p>"
+                + "</div>"
+                + "</body>"
+                + "</html>";
+
+        // Enviar email
+        emailService.sendHtmlEmail(usuario.getEmail(), subject, htmlContent);
     }
 
 }
