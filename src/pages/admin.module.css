@@ -10,7 +10,7 @@
 :global(body) {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: var(--color-fondo);
+  background-color: var(--color-primario);
   height: 100vh;
   display: flex;
   justify-content: center;
