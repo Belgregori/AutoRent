@@ -1,0 +1,2 @@
+nombre=Familiar
+descripcion=Un sedán alargado con gran baúl trasero, ideal para viajes familiares

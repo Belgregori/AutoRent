@@ -1,0 +1,2 @@
+nombre=Eléctrico
+descripcion=Autos eléctricos de gama alta, con tecnología avanzada y confort.

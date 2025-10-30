@@ -1,0 +1,2 @@
+nombre=Off-road
+descripcion=Diseñado para terrenos difíciles: barro, arena, piedras. Resistente y rudo.

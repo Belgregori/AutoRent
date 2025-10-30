@@ -1,0 +1,2 @@
+nombre=Híbrido
+descripcion=Combina motor eléctrico y de combustión para eficiencia de combustible y bajas emisiones.

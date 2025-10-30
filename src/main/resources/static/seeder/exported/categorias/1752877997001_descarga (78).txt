@@ -1,0 +1,2 @@
+nombre=Compacto
+descripcion=Autos pequeños, ágiles y económicos, perfectos para moverse por la ciudad, estacionar en lugares ajustados y ahorrar combustible.
