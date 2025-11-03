@@ -33,6 +33,7 @@
     z-index: 1000;
     box-shadow: 0 4px 20px rgba(0,0,0,0.15);
     border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-family: inherit;
 }
 
 .navBar {
@@ -55,7 +56,7 @@
     font-weight: 600;
     padding: 10px 20px;
     border-radius: 8px;
-    font-family: 'Bodoni Moda', serif;
+    font-family: inherit;
     font-size: 14px;
     cursor: pointer;
     transition: var(--transicion-suave);
@@ -72,22 +73,24 @@
 }
 
 .slogan {
-    color: var(--color-blanco);
-    font-size: 16px;
-    font-weight: 400;
+    color: rgba(255,255,255,0.9);
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: normal;
+    text-shadow: none;
     margin-left: 20px;
     text-align: center;
     flex-grow: 1;
-    font-family: 'Bodoni Moda', serif;
+    font-family: inherit;
     transition: var(--transicion-suave);
 }
 
 .slogan:hover {
-    background-color: var(--color-boton-hover);
-    color: var(--color-blanco);
-    text-decoration: underline;
-    padding: 6px;
-    border-radius: 4px;
+    background-color: transparent;
+    color: rgba(255,255,255,0.9);
+    text-decoration: none;
+    padding: 0;
+    border-radius: 0;
 }
 
 @media (max-width: 768px) {
@@ -126,7 +129,7 @@
     }
   }
 
-.userArea { display: flex; align-items: center; gap: 10px; }
+.userArea { display: flex; align-items: center; gap: 10px; margin-right: 16px; }
 
 .favoritosButton {
   background: transparent;
@@ -211,5 +214,6 @@
   .userArea {
     flex-direction: column;
     gap: 8px;
+    margin-right: 8px;
   }
 }

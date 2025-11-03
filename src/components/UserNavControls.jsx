@@ -33,7 +33,7 @@ export const UserNavControls = () => {
 
   return (
     <div className={styles.navBar} role="navigation" aria-label="Navegación de páginas">
-      <div className={styles.counter} aria-live="polite">Página {index} de {max}</div>
+      <div className={styles.counter} aria-live="polite">{index}</div>
       <div className={styles.actions}>
         <button type="button" className={styles.btn} onClick={() => navigate('/')}>Inicio</button>
         <button type="button" className={styles.btn} onClick={() => navigate(-1)}>Atrás</button>

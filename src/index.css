@@ -13,20 +13,17 @@
   --color-boton-hover: #357ABD;
   --transicion-suave: all 0.3s ease;
   --transicion-rapida: all 0.2s ease;
+  --font-family-base: 'Inter', 'Segoe UI', Roboto, system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
 }
 
-.body{
+body{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: var(--font-family-base);
 }
 
-.bodoni-moda {
-  font-family: "Bodoni Moda", serif;
-  font-optical-sizing: auto;
-  font-weight: 400; 
-  font-style: normal;
-}
+
 
 html, body, #root {
   width: 100%;

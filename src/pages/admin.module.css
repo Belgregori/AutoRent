@@ -9,7 +9,7 @@
 
 :global(body) {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--font-family-base);
   background-color: var(--color-primario);
   height: 100vh;
   display: flex;

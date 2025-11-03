@@ -1,13 +1,13 @@
 .container {
   min-height: calc(100vh - 64px);
-  background: #f9f9f9;
+  background-color: #2563eb;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 32px 16px;
   box-sizing: border-box;
   color: #333;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: inherit;
   margin-top: 64px; 
   padding-top: 48px; 
 }
@@ -24,7 +24,7 @@
 .titulo {
   font-size: 2.5rem;
   font-weight: 900;
-  color: #0d6efd;
+  color: #6099ef;
   margin: 0 0 0.5rem 0;
   border-bottom: 2px solid #0d6efd;
   padding-bottom: 6px;
@@ -33,9 +33,9 @@
 
 .subtitulo {
   font-size: 1.1rem;
-  color: #6c757d;
+  color: #dbeafe;
   margin: 0;
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
 .estadoReserva {

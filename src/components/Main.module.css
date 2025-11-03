@@ -7,7 +7,7 @@
   box-sizing: border-box;
   overflow-y: auto;
   overflow-x: hidden;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: inherit;
   color: #333;
 }
 
@@ -42,7 +42,9 @@
 .aleatoriosGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(5, 1fr);
+ 
+  grid-auto-rows: auto;
+  align-content: start;
   gap: 20px;
 }
 

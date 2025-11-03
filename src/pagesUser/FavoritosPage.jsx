@@ -219,6 +219,7 @@ export const FavoritosPage = () => {
                     </button>
                     <button 
                       className={styles.reservarButton} 
+                      onClick={() => navigate(`/producto/${producto.id}#reservar`)}
                       disabled={!producto.disponible}
                     >
                       {producto.disponible ? 'Reservar' : 'No Disponible'}
