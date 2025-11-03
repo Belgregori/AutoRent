@@ -1,2 +1,0 @@
-nombre=Deportivo de lujo
-descripcion=calidad y tecnología tope de gama.
