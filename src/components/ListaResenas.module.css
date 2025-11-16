@@ -16,19 +16,39 @@
     gap: 1rem;
   }
   
-  .resenaItem {
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 10px;
-    padding: 1.25rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+.resenaItem {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 2px solid rgba(255, 255, 255, 0.2);
     transition: all 0.3s ease;
-  }
-  
-  .resenaItem:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-  }
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    animation: fadeInUp 0.6s ease-out backwards;
+}
+
+.resenaItem:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-4px);
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
   
   .resenaHeader {
     display: flex;

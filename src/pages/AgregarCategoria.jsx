@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import styles from './agregarCategoria.module.css';
+import { UserNavControls } from '../components/UserNavControls.jsx';
+import Header from '../components/Header';
+import { Footer } from '../components/Footer';
+import { AdminDesktopOnly } from '../components/AdminDesktopOnly';
 
 export const AgregarCategoria = ({ productoId }) => {
   const [categorias, setCategorias] = useState([]);
@@ -7,17 +11,6 @@ export const AgregarCategoria = ({ productoId }) => {
   const [descripcion, setDescripcion] = useState('');
   const [imagen, setImagen] = useState(null);
   const [mostrarCategorias, setMostrarCategorias] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -128,19 +121,13 @@ export const AgregarCategoria = ({ productoId }) => {
     }
   };
 
-  if (isMobile) {
-    return (
-      <div style={{ padding: '2rem', textAlign: 'center', color: 'red' }}>
-        <h2>⚠️ Acceso restringido</h2>
-        <p>Esta sección no está disponible en dispositivos móviles.</p>
-      </div>
-    );
-  }
-
   return (
-    <>
-      <h1>Agregar Categoría</h1>
-      <form onSubmit={handleAgregarCategoria} className={styles.agregarCategoriaForm}>
+    <AdminDesktopOnly>
+      <Header />
+      <div className={styles.container}>
+        <UserNavControls />
+        <h1 className={styles.titulo}>Agregar Categoría</h1>
+        <form onSubmit={handleAgregarCategoria} className={styles.agregarCategoriaForm}>
         <label>
           Nombre:
           <input
@@ -172,45 +159,47 @@ export const AgregarCategoria = ({ productoId }) => {
             Archivo seleccionado: {imagen.name}
           </div>
         )}
-        <button type="submit" style={{ background: '#17a2b8' }}>
+        <button type="submit">
           Agregar Categoría
         </button>
-      </form>
+        </form>
 
-      <div className={styles.btnVerCategoriasContainer}>
-        <button
-          type="button"
-          className={styles.btnVerCaracteristicas}
-          onClick={() => setMostrarCategorias(!mostrarCategorias)}
-        >
-          Ver Categorías Registradas
-        </button>
+        <div className={styles.btnVerCategoriasContainer}>
+          <button
+            type="button"
+            className={styles.btnVerCaracteristicas}
+            onClick={() => setMostrarCategorias(!mostrarCategorias)}
+          >
+            Ver Categorías Registradas
+          </button>
+        </div>
+        {mostrarCategorias && (
+          <ul className={styles.categoriasList}>
+            {categorias.map(cat => (
+              <li key={cat.id} className={styles.categoriaItem}>
+                <div className={styles.categoriaInfo}>
+                  {cat.imagenUrl && (
+                    <img
+                      src={cat.imagenUrl}
+                      alt={cat.nombre}
+                      className={styles.categoriaImagen}
+                    />
+                  )}
+                  <span>{cat.nombre} - {cat.descripcion}</span>
+                </div>
+                <button
+                  className={styles.btnEliminar}
+                  onClick={() => handleEliminarCategoria(cat.id)}
+                >
+                  Eliminar
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
-      {mostrarCategorias && (
-        <ul className={styles.categoriasList}>
-          {categorias.map(cat => (
-            <li key={cat.id} className={styles.categoriaItem}>
-              <div className={styles.categoriaInfo}>
-                {cat.imagenUrl && (
-                  <img
-                    src={cat.imagenUrl}
-                    alt={cat.nombre}
-                    className={styles.categoriaImagen}
-                  />
-                )}
-                <span>{cat.nombre} - {cat.descripcion}</span>
-              </div>
-              <button
-                className={styles.btnEliminar}
-                onClick={() => handleEliminarCategoria(cat.id)}
-              >
-                Eliminar
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </>
+      <Footer />
+    </AdminDesktopOnly>
   );
 };
 

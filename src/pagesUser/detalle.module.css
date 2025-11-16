@@ -1,6 +1,16 @@
 .container {
   min-height: calc(100vh - 64px);
-  background: var(--color-primario);
+  background: linear-gradient(135deg, 
+    #1e3a8a 0%, 
+    #1e40af 14%, 
+    #2563eb 28%, 
+    #3b82f6 42%, 
+    #60a5fa 56%, 
+    #93c5fd 70%, 
+    #bfdbfe 84%, 
+    #3b82f6 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -10,6 +20,30 @@
   color: var(--color-blanco);
   font-family: inherit;
   position: relative;
+  overflow-x: hidden;
+}
+
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .productoInfoContainer {
@@ -50,31 +84,32 @@
 }
 
 .nombre {
-  text-align: left;
+  text-align: center;
   width: 100%;
-  margin-bottom: 1rem;
-  font-size: 3.2rem;
+  margin-bottom: 2.5rem;
+  font-size: 3rem;
   color: var(--color-blanco);
-  padding-left: 20px;
   font-weight: 900;
   letter-spacing: 2px;
-  font-family: inherit;
-  text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+  font-family: var(--font-family-base);
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   line-height: 1.1;
   text-transform: uppercase;
   position: relative;
-  padding-bottom: 1rem;
+  padding-bottom: 1.5rem;
 }
 
 .nombre::after {
   content: '';
   position: absolute;
   bottom: 0;
-  left: 20px;
-  width: 80px;
-  height: 3px;
-  background: linear-gradient(90deg, var(--color-secundario), var(--color-azul-medio));
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: var(--color-blanco);
   border-radius: 2px;
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.5);
 }
 
 .precio {
@@ -132,23 +167,26 @@
 
 .galeria {
   display: flex;
-  gap: 2rem;
+  flex-direction: row;
+  gap: 1rem;
   width: 100%;
   box-sizing: border-box;
   margin-top: 0;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  flex-wrap: nowrap;
 }
 
 .imagenPrincipal {
   flex: 1 1 50%;
+  min-width: 0;
   display: flex;
   justify-content: flex-end;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .imagenPrincipal img {
-  width: 60%;
+  width: 100%;
   max-width: 500px;
   height: 350px;
   border-radius: 6px;
@@ -158,6 +196,7 @@
   opacity: 0.8;
   transition: all 0.3s ease;
 }
+
 .imagenPrincipal img:hover {
   opacity: 1;
   transform: scale(1.4);
@@ -165,12 +204,13 @@
 
 .imagenesSecundarias {
   flex: 1 1 50%;
+  min-width: 0;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 140px);
   gap: 0.75rem;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .imagenesSecundarias img {
@@ -190,6 +230,187 @@
   opacity: 1;
   transform: scale(1.1);
   box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+@media (max-width: 1200px) {
+  .galeria {
+    gap: 0.875rem;
+  }
+  
+  .imagenPrincipal img {
+    max-width: 100%;
+    height: 320px;
+  }
+  
+  .imagenesSecundarias {
+    grid-template-rows: repeat(2, 120px);
+    gap: 0.625rem;
+  }
+
+  .calendarioWrapper {
+    gap: 0.875rem;
+  }
+
+  .calendario {
+    min-width: 180px;
+    padding: 0.625rem;
+  }
+
+  .calendarioHeader h3 {
+    font-size: 0.875rem;
+  }
+
+  .fecha {
+    font-size: 0.7rem;
+  }
+
+  .diasSemana {
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .galeria {
+    gap: 0.75rem;
+  }
+  
+  .imagenPrincipal img {
+    height: 280px;
+  }
+  
+  .imagenesSecundarias {
+    grid-template-rows: repeat(2, 110px);
+    gap: 0.5rem;
+  }
+
+  .calendarioWrapper {
+    gap: 0.75rem;
+  }
+
+  .calendario {
+    min-width: 160px;
+    padding: 0.5625rem;
+  }
+
+  .calendarioHeader h3 {
+    font-size: 0.8rem;
+  }
+
+  .fecha {
+    font-size: 0.65rem;
+  }
+
+  .diasSemana {
+    font-size: 0.6rem;
+  }
+
+  .diaSemana {
+    font-size: 0.6rem;
+    padding: 0.3125rem 0;
+  }
+
+  .navButton {
+    width: 24px;
+    height: 24px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .galeria {
+    gap: 0.625rem;
+  }
+  
+  .imagenPrincipal {
+    flex: 1 1 55%;
+  }
+  
+  .imagenPrincipal img {
+    height: 240px;
+  }
+  
+  .imagenesSecundarias {
+    flex: 1 1 45%;
+    grid-template-rows: repeat(2, 90px);
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .galeria {
+    gap: 0.5rem;
+  }
+  
+  .imagenPrincipal {
+    flex: 1 1 60%;
+  }
+  
+  .imagenPrincipal img {
+    height: 200px;
+  }
+  
+  .imagenesSecundarias {
+    flex: 1 1 40%;
+    grid-template-rows: repeat(2, 70px);
+    gap: 0.375rem;
+  }
+
+  .calendarioWrapper {
+    gap: 0.5rem;
+  }
+
+  .calendario {
+    min-width: 130px;
+    padding: 0.5rem;
+  }
+
+  .calendarioHeader h3 {
+    font-size: 0.7rem;
+  }
+
+  .fecha {
+    font-size: 0.575rem;
+  }
+
+  .diasSemana {
+    font-size: 0.525rem;
+    gap: 2px;
+  }
+
+  .diaSemana {
+    font-size: 0.525rem;
+    padding: 0.25rem 0;
+  }
+
+  .fechasGrid {
+    gap: 2px;
+  }
+
+  .navButton {
+    width: 22px;
+    height: 22px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .galeria {
+    gap: 0.375rem;
+  }
+  
+  .imagenPrincipal {
+    flex: 1 1 65%;
+  }
+  
+  .imagenPrincipal img {
+    height: 180px;
+  }
+  
+  .imagenesSecundarias {
+    flex: 1 1 35%;
+    grid-template-rows: repeat(2, 60px);
+    gap: 0.25rem;
+  }
 }
 
 .verMas {
@@ -244,29 +465,36 @@
 
 .calendarioWrapper {
   display: flex;
-  gap: 2rem;
+  flex-direction: row;
+  gap: 1rem;
   justify-content: center;
   margin-top: 1rem;
+  flex-wrap: nowrap;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .calendario {
   background: rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  padding: 1rem;
-  min-width: 280px;
+  border-radius: 8px;
+  padding: 0.75rem;
+  min-width: 200px;
+  flex: 1 1 50%;
+  max-width: 50%;
   box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  box-sizing: border-box;
 }
 
 .calendarioHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1rem;
+  margin-bottom: 0.625rem;
 }
 
 .calendarioHeader h3 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #fff;
   text-transform: capitalize;
@@ -276,10 +504,10 @@
   background: rgba(255, 255, 255, 0.2);
   border: none;
   color: #fff;
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: bold;
-  width: 32px;
-  height: 32px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -296,16 +524,16 @@
 .diasSemana {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  margin-bottom: 0.5rem;
+  gap: 3px;
+  margin-bottom: 0.375rem;
 }
 
 .diaSemana {
   text-align: center;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 600;
   color: #ffd700;
-  padding: 0.5rem 0;
+  padding: 0.375rem 0;
   text-transform: uppercase;
 }
 
@@ -320,9 +548,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
@@ -711,23 +939,6 @@
 }
 
 @media (max-width: 768px) {
-  .galeria {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .imagenPrincipal,
-  .imagenesSecundarias {
-    max-width: 100%;
-    flex: 1 1 100%;
-  }
-
-  .imagenesSecundarias {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: 100px;
-    gap: 8px;
-  }
-
   .caracteristicasGrid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -748,45 +959,95 @@
   }
 
   .calendarioWrapper {
-    flex-direction: column;
-    gap: 1rem;
+    gap: 0.625rem;
   }
 
   .calendario {
-    min-width: auto;
-    width: 100%;
+    min-width: 140px;
+    padding: 0.5rem;
+    flex: 1 1 50%;
+    max-width: 50%;
   }
 
-  .leyenda {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: center;
-  }
-
-  .fecha {
+  .calendarioHeader h3 {
     font-size: 0.75rem;
   }
 
+  .fecha {
+    font-size: 0.6rem;
+  }
+
   .diasSemana {
-    font-size: 0.7rem;
+    font-size: 0.55rem;
+  }
+
+  .diaSemana {
+    font-size: 0.55rem;
+    padding: 0.25rem 0;
+  }
+
+  .navButton {
+    width: 22px;
+    height: 22px;
+    font-size: 0.85rem;
+  }
+
+  .leyenda {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    font-size: 0.8rem;
   }
 }
 
 @media (max-width: 480px) {
+  .calendarioWrapper {
+    gap: 0.5rem;
+  }
+
   .calendario {
-    padding: 0.75rem;
-  }
-
-  .fecha {
-    font-size: 0.7rem;
-  }
-
-  .diasSemana {
-    font-size: 0.65rem;
+    padding: 0.4375rem;
+    min-width: 120px;
+    flex: 1 1 50%;
+    max-width: 50%;
   }
 
   .calendarioHeader h3 {
-    font-size: 1rem;
+    font-size: 0.7rem;
+  }
+
+  .fecha {
+    font-size: 0.55rem;
+  }
+
+  .diasSemana {
+    font-size: 0.5rem;
+    gap: 2px;
+    margin-bottom: 0.25rem;
+  }
+
+  .diaSemana {
+    font-size: 0.5rem;
+    padding: 0.25rem 0;
+  }
+
+  .fechasGrid {
+    gap: 1px;
+  }
+
+  .navButton {
+    width: 20px;
+    height: 20px;
+    font-size: 0.75rem;
+  }
+
+  .leyenda {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    font-size: 0.7rem;
   }
 }
 
@@ -814,44 +1075,38 @@
 
 /* Tablet (768px - 1023px) */
 @media (max-width: 1023px) and (min-width: 768px) {
-  .galeria {
-    flex-direction: column;
-    gap: 1.5rem;
-    align-items: center;
-  }
-
-  .imagenPrincipal {
-    flex: none;
-    width: 100%;
-    max-width: 500px;
-    justify-content: center;
-  }
-
-  .imagenPrincipal img {
-    width: 100%;
-    max-width: 500px;
-    height: 300px;
-  }
-
-  .imagenesSecundarias {
-    flex: none;
-    width: 100%;
-    max-width: 500px;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 120px;
+  .calendarioWrapper {
     gap: 0.75rem;
   }
 
-  .calendarioWrapper {
-    flex-direction: column;
-    gap: 1.5rem;
+  .calendario {
+    min-width: 160px;
+    flex: 1 1 50%;
+    max-width: 50%;
+    padding: 0.5625rem;
   }
 
-  .calendario {
-    min-width: auto;
-    width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
+  .calendarioHeader h3 {
+    font-size: 0.8rem;
+  }
+
+  .fecha {
+    font-size: 0.65rem;
+  }
+
+  .diasSemana {
+    font-size: 0.6rem;
+  }
+
+  .diaSemana {
+    font-size: 0.6rem;
+    padding: 0.3125rem 0;
+  }
+
+  .navButton {
+    width: 24px;
+    height: 24px;
+    font-size: 0.9rem;
   }
 
   .verMas {
@@ -869,30 +1124,6 @@
 
 /* Mobile Large (481px - 767px) */
 @media (max-width: 767px) and (min-width: 481px) {
-  .galeria {
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  .imagenPrincipal {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .imagenPrincipal img {
-    width: 100%;
-    max-width: 400px;
-    height: 250px;
-  }
-
-  .imagenesSecundarias {
-    width: 100%;
-    max-width: 400px;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 100px);
-    gap: 0.5rem;
-  }
-
   .caracteristicasGrid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
@@ -904,13 +1135,37 @@
   }
 
   .calendarioWrapper {
-    flex-direction: column;
-    gap: 1rem;
+    gap: 0.625rem;
   }
 
   .calendario {
-    min-width: auto;
-    width: 100%;
+    min-width: 140px;
+    flex: 1 1 50%;
+    max-width: 50%;
+    padding: 0.5rem;
+  }
+
+  .calendarioHeader h3 {
+    font-size: 0.75rem;
+  }
+
+  .fecha {
+    font-size: 0.6rem;
+  }
+
+  .diasSemana {
+    font-size: 0.55rem;
+  }
+
+  .diaSemana {
+    font-size: 0.55rem;
+    padding: 0.25rem 0;
+  }
+
+  .navButton {
+    width: 22px;
+    height: 22px;
+    font-size: 0.85rem;
   }
 
   .verMas {
@@ -928,21 +1183,6 @@
 
 /* Mobile Small (375px - 480px) */
 @media (max-width: 480px) {
-  .galeria {
-    gap: 1rem;
-  }
-
-  .imagenPrincipal img {
-    max-width: 100%;
-    height: 200px;
-  }
-
-  .imagenesSecundarias {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 80px);
-    gap: 0.375rem;
-  }
-
   .caracteristicasGrid {
     grid-template-columns: 1fr;
     gap: 0.5rem;
@@ -951,17 +1191,6 @@
   .politicasGrid {
     grid-template-columns: 1fr;
     gap: 0.75rem;
-  }
-
-  .calendarioWrapper {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .calendario {
-    padding: 0.75rem;
-    min-width: auto;
-    width: 100%;
   }
 
   .verMas {
@@ -979,15 +1208,6 @@
 
 /* Mobile Extra Small (320px - 374px) */
 @media (max-width: 374px) {
-  .imagenPrincipal img {
-    height: 180px;
-  }
-
-  .imagenesSecundarias {
-    grid-template-rows: repeat(2, 70px);
-    gap: 0.25rem;
-  }
-
   .verMas button {
     max-width: 140px;
     padding: 0.45rem 0.875rem;
@@ -997,38 +1217,43 @@
 
 /* Landscape orientation para móvil */
 @media (max-height: 500px) and (orientation: landscape) {
-  .galeria {
-    flex-direction: row;
-    gap: 1rem;
-  }
-
-  .imagenPrincipal {
-    flex: 1 1 60%;
-  }
-
-  .imagenesSecundarias {
-    flex: 1 1 40%;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 60px);
-  }
-
-  .imagenPrincipal img {
-    height: 150px;
-  }
-
   .calendarioWrapper {
-    flex-direction: row;
-    gap: 1rem;
+    gap: 0.5rem;
   }
 
   .calendario {
-    flex: 1;
-    min-width: 200px;
+    flex: 1 1 50%;
+    max-width: 50%;
+    min-width: 140px;
+    padding: 0.4375rem;
+  }
+
+  .calendarioHeader h3 {
+    font-size: 0.7rem;
+  }
+
+  .fecha {
+    font-size: 0.55rem;
+  }
+
+  .diasSemana {
+    font-size: 0.5rem;
+  }
+
+  .diaSemana {
+    font-size: 0.5rem;
+    padding: 0.25rem 0;
+  }
+
+  .navButton {
+    width: 20px;
+    height: 20px;
+    font-size: 0.75rem;
   }
 }
-
 /* Asegurar que no haya overflow horizontal */
 .container {
   width: 100%;
   overflow-x: hidden;
 }
+

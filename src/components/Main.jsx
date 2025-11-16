@@ -43,15 +43,12 @@ export const Main = () => {
 
   useEffect(() => {
     const handleFavoritosUpdate = () => {
-      const token = localStorage.getItem('token');
-      if (token && favoritos.length > 0) {
-        showInfo('Sincronizando favoritos desde otra página');
-      }
+      // Sincronizar favoritos sin mostrar notificación
     };
 
     window.addEventListener('favoritosUpdated', handleFavoritosUpdate);
     return () => window.removeEventListener('favoritosUpdated', handleFavoritosUpdate);
-  }, [favoritos, showInfo]);
+  }, [favoritos]);
 
  
   const cargarFavoritosSiEsNecesario = async () => {
@@ -76,7 +73,6 @@ export const Main = () => {
       if (response.ok) {
         const data = await response.json();
         setFavoritos(data);
-        showSuccess(`Favoritos cargados: ${data.length} productos`);
       } else if (response.status === 401) {
         showWarning('Token expirado, redirigiendo al login');
         localStorage.removeItem('token');
@@ -87,29 +83,13 @@ export const Main = () => {
         setIsLoggedIn(false);
         setFavoritos([]);
         navigate('/login');
-      } else if (response.status === 403) {
-        showWarning('Usuario no autorizado para acceder a favoritos');
-      } else if (response.status === 404) {
-        showWarning('Servicio de favoritos no disponible');
-      } else if (response.status === 500) {
-        showError('Error interno del servidor');
-      } else if (response.status === 502 || response.status === 503 || response.status === 504) {
-        showError(`Error del servidor: ${response.status}`);
       } else {
-        showWarning(`Código de error inesperado: ${response.status}`);
+        // Errores silenciados durante la carga inicial de favoritos
+        console.error('Error cargando favoritos:', response.status);
       }
     } catch (error) {
+      // Errores silenciados durante la carga inicial de favoritos
       console.error('Error cargando favoritos en Main:', error);
-      
-      if (error.name === 'AbortError') {
-        showWarning('Timeout al cargar favoritos');
-      } else if (error.message.includes('ERR_INCOMPLETE_CHUNKED_ENCODING')) {
-        showError('Error de conexión con el servidor al cargar favoritos');
-      } else if (error.message.includes('Failed to fetch')) {
-        showError('No se pudo conectar con el servidor');
-      } else if (error.message.includes('NetworkError')) {
-        showError('Error de red');
-      }
     }
   };
 
@@ -168,8 +148,6 @@ export const Main = () => {
         
         localStorage.setItem('favoritosUpdated', Date.now().toString());
         window.dispatchEvent(new Event('favoritosUpdated'));
-        
-        showSuccess('Favorito actualizado correctamente');
       } else if (response.status === 401) {
         showWarning('Token expirado, limpiando sesión');
         localStorage.removeItem('token');

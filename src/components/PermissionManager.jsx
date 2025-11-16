@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import styles from './PermissionManager.module.css';
 
 export const PermissionManager = ({ 
   user, 
@@ -45,36 +46,24 @@ export const PermissionManager = ({
   ];
 
   return (
-    <div>
-      <h3 style={{ marginTop: 0, marginBottom: '16px', fontSize: '16px', fontWeight: '600' }}>
+    <div className={styles.container}>
+      <h3 className={styles.title}>
         Gestionar Permisos
       </h3>
 
       {/* Controles de búsqueda y filtro */}
-      <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
+      <div className={styles.controls}>
         <input
           type="text"
           placeholder="Buscar permisos..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          style={{
-            flex: 1,
-            minWidth: '200px',
-            padding: '8px 12px',
-            border: '2px solid #e5e7eb',
-            borderRadius: '6px',
-            fontSize: '14px'
-          }}
+          className={styles.searchInput}
         />
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
-          style={{
-            padding: '8px 12px',
-            border: '2px solid #e5e7eb',
-            borderRadius: '6px',
-            fontSize: '14px'
-          }}
+          className={styles.categorySelect}
         >
           {categories.map(category => (
             <option key={category.value} value={category.value}>
@@ -86,51 +75,29 @@ export const PermissionManager = ({
 
       {/* Lista de permisos */}
       {isLoadingPermissions ? (
-        <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
+        <div className={styles.loadingState}>
           Cargando permisos...
         </div>
       ) : (
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
-          gap: '12px',
-          marginBottom: '20px',
-          maxHeight: '300px',
-          overflow: 'auto'
-        }}>
+        <div className={styles.permissionsGrid}>
           {filteredPermissions.map(permission => {
             const isSelected = selectedPermissions.includes(permission);
             
             return (
               <div 
                 key={permission} 
-                style={{
-                  padding: '12px',
-                  border: '2px solid #e5e7eb',
-                  borderRadius: '6px',
-                  backgroundColor: '#ffffff',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s'
-                }}
+                className={`${styles.permissionCard} ${isSelected ? styles.permissionCardSelected : ''}`}
                 onClick={() => handlePermissionChange(permission, !isSelected)}
-                onMouseOver={(e) => {
-                  e.target.style.borderColor = '#3b82f6';
-                  e.target.style.backgroundColor = '#f8fafc';
-                }}
-                onMouseOut={(e) => {
-                  e.target.style.borderColor = '#e5e7eb';
-                  e.target.style.backgroundColor = '#ffffff';
-                }}
               >
-                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', margin: 0 }}>
+                <label className={styles.permissionLabel}>
                   <input
                     type="checkbox"
                     checked={isSelected}
                     onChange={(e) => handlePermissionChange(permission, e.target.checked)}
                     disabled={isSaving}
-                    style={{ width: '16px', height: '16px' }}
+                    className={styles.permissionCheckbox}
                   />
-                  <span style={{ fontSize: '14px', fontWeight: '500' }}>{permission}</span>
+                  <span className={styles.permissionText}>{permission}</span>
                 </label>
               </div>
             );
@@ -139,29 +106,18 @@ export const PermissionManager = ({
       )}
 
       {filteredPermissions.length === 0 && !isLoadingPermissions && (
-        <div style={{ 
-          textAlign: 'center', 
-          color: '#6b7280', 
-          fontStyle: 'italic',
-          padding: '40px'
-        }}>
+        <div className={styles.emptyState}>
           No se encontraron permisos que coincidan con los filtros aplicados.
         </div>
       )}
 
       {/* Resumen de permisos seleccionados */}
       {selectedPermissions.length > 0 && (
-        <div style={{
-          marginTop: '16px',
-          padding: '12px',
-          backgroundColor: '#ecfdf5',
-          borderRadius: '6px',
-          border: '1px solid #d1fae5'
-        }}>
-          <p style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: '600', color: '#065f46' }}>
+        <div className={styles.summary}>
+          <p className={styles.summaryTitle}>
             Permisos seleccionados: {selectedPermissions.length}
           </p>
-          <div style={{ fontSize: '12px', color: '#047857' }}>
+          <div className={styles.summaryList}>
             {selectedPermissions.slice(0, 3).join(', ')}
             {selectedPermissions.length > 3 && ` y ${selectedPermissions.length - 3} más...`}
           </div>

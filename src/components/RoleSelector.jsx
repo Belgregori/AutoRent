@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './RoleSelector.module.css';
 
 export const RoleSelector = ({ user, onRoleChange }) => {
   const handleRoleChange = (newRole) => {
@@ -6,69 +7,36 @@ export const RoleSelector = ({ user, onRoleChange }) => {
   };
 
   return (
-    <div>
-      <h3 style={{ marginTop: 0, marginBottom: '16px', fontSize: '16px', fontWeight: '600' }}>
+    <div className={styles.container}>
+      <h3 className={styles.title}>
         Asignar Rol
       </h3>
       
-      <div style={{ marginBottom: '16px' }}>
-        <p style={{ margin: '0 0 8px 0', color: '#6b7280', fontSize: '14px' }}>
-          Rol actual: <span style={{ fontWeight: '600', color: '#1f2937' }}>{user.role || 'No asignado'}</span>
+      <div className={styles.currentRole}>
+        <p className={styles.currentRoleText}>
+          Rol actual: <span className={styles.currentRoleValue}>{user.role || 'No asignado'}</span>
         </p>
       </div>
 
-      <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+      <div className={styles.buttons}>
         <button
           onClick={() => handleRoleChange('ADMIN')}
-          style={{
-            padding: '12px 20px',
-            backgroundColor: '#3b82f6',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: '500',
-            transition: 'background-color 0.2s',
-            minWidth: '120px'
-          }}
-          onMouseOver={(e) => e.target.style.backgroundColor = '#2563eb'}
-          onMouseOut={(e) => e.target.style.backgroundColor = '#3b82f6'}
+          className={`${styles.roleButton} ${styles.roleButtonAdmin}`}
         >
           Asignar ADMIN
         </button>
 
         <button
           onClick={() => handleRoleChange('USER')}
-          style={{
-            padding: '12px 20px',
-            backgroundColor: '#6b7280',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: '500',
-            transition: 'background-color 0.2s',
-            minWidth: '120px'
-          }}
-          onMouseOver={(e) => e.target.style.backgroundColor = '#4b5563'}
-          onMouseOut={(e) => e.target.style.backgroundColor = '#6b7280'}
+          className={`${styles.roleButton} ${styles.roleButtonUser}`}
         >
           Asignar USER
         </button>
       </div>
 
-      <div style={{
-        marginTop: '16px',
-        padding: '12px',
-        backgroundColor: '#f3f4f6',
-        borderRadius: '6px',
-        fontSize: '13px',
-        color: '#6b7280'
-      }}>
+      <div className={styles.infoBox}>
         <strong>Información:</strong>
-        <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px' }}>
+        <ul>
           <li><strong>ADMIN:</strong> Acceso completo al sistema administrativo</li>
           <li><strong>USER:</strong> Acceso según permisos específicos asignados</li>
         </ul>

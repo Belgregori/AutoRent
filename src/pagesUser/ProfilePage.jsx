@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserNavControls } from "../components/UserNavControls";
+import Header from "../components/Header";
+import { Footer } from "../components/Footer";
 import styles from "./profile.module.css";
 
 export const ProfilePage = () => {
@@ -113,94 +115,101 @@ export const ProfilePage = () => {
 
   if (cargando) {
     return (
-      <div className={styles.container}>
-        <UserNavControls />
-        <div className={styles.loadingContainer}>
-          <h2>Mi perfil</h2>
-          <p>Cargando datos del usuario...</p>
+      <>
+        <Header />
+        <div className={styles.container}>
+          <UserNavControls />
+          <div className={styles.loadingContainer}>
+            <h2>Mi perfil</h2>
+            <p>Cargando datos del usuario...</p>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className={styles.container}>
-      <UserNavControls />
-      <div className={styles.profileCard}>
-        <h2 className={styles.title}>Mi perfil</h2>
-        
-        <div className={styles.currentData}>
-          <h3>📋 Datos actuales</h3>
-          <p><strong>Email:</strong> {email || 'No disponible'}</p>
-          <p><strong>Nombre:</strong> {nombre || 'No disponible'}</p>
-          <p><strong>Apellido:</strong> {apellido || 'No disponible'}</p>
+    <>
+      <Header />
+      <div className={styles.container}>
+        <UserNavControls />
+        <div className={styles.profileCard}>
+          <h2 className={styles.title}>Mi perfil</h2>
+          
+          <div className={styles.currentData}>
+            <h3>�� Datos actuales</h3>
+            <p><strong>Email:</strong> {email || 'No disponible'}</p>
+            <p><strong>Nombre:</strong> {nombre || 'No disponible'}</p>
+            <p><strong>Apellido:</strong> {apellido || 'No disponible'}</p>
+          </div>
+          
+          <h3 className={styles.editTitle}>✏️ Editar datos</h3>
+          
+          <form onSubmit={handleSave} className={styles.form}>
+            <div className={styles.formRow}>
+              <div className={styles.formField}>
+                <label className={styles.label}>Nombre</label>
+                <input 
+                  value={nombre} 
+                  onChange={(e) => setNombre(e.target.value)} 
+                  className={styles.input}
+                  placeholder="Ingresa tu nombre"
+                />
+              </div>
+              <div className={styles.formField}>
+                <label className={styles.label}>Apellido</label>
+                <input 
+                  value={apellido} 
+                  onChange={(e) => setApellido(e.target.value)} 
+                  className={styles.input}
+                  placeholder="Ingresa tu apellido"
+                />
+              </div>
+              <div className={styles.formField}>
+                <label className={styles.label}>Contraseña</label>
+                <input 
+                  type="password"
+                  value={contraseña} 
+                  onChange={(e) => setContraseña(e.target.value)} 
+                  className={styles.input}
+                  placeholder="Nueva contraseña (opcional)"
+                />
+              </div>
+            </div>
+            
+            <div className={`${styles.formField} ${styles.fullWidth}`}>
+              <label className={styles.label}>Email</label>
+              <input 
+                value={email} 
+                disabled 
+                className={styles.input}
+              />
+            </div>
+            
+            {error && <p className={styles.error}>{error}</p>}
+            {ok && <p className={styles.success}>{ok}</p>}
+            
+            <div className={styles.buttonGroup}>
+              <button 
+                type="submit" 
+                disabled={guardando} 
+                className={`${styles.button} ${styles.primaryButton}`}
+              >
+                {guardando ? 'Guardando…' : 'Guardar cambios'}
+              </button>
+              <button 
+                type="button" 
+                onClick={() => navigate('/')} 
+                className={`${styles.button} ${styles.secondaryButton}`}
+              >
+                Volver al inicio
+              </button>
+            </div>
+          </form>
         </div>
-        
-        <h3 className={styles.editTitle}>✏️ Editar datos</h3>
-        
-        <form onSubmit={handleSave} className={styles.form}>
-          <div className={styles.formRow}>
-            <div className={styles.formField}>
-              <label className={styles.label}>Nombre</label>
-              <input 
-                value={nombre} 
-                onChange={(e) => setNombre(e.target.value)} 
-                className={styles.input}
-                placeholder="Ingresa tu nombre"
-              />
-            </div>
-            <div className={styles.formField}>
-              <label className={styles.label}>Apellido</label>
-              <input 
-                value={apellido} 
-                onChange={(e) => setApellido(e.target.value)} 
-                className={styles.input}
-                placeholder="Ingresa tu apellido"
-              />
-            </div>
-            <div className={styles.formField}>
-              <label className={styles.label}>Contraseña</label>
-              <input 
-                type="password"
-                value={contraseña} 
-                onChange={(e) => setContraseña(e.target.value)} 
-                className={styles.input}
-                placeholder="Nueva contraseña (opcional)"
-              />
-            </div>
-          </div>
-          
-          <div className={`${styles.formField} ${styles.fullWidth}`}>
-            <label className={styles.label}>Email</label>
-            <input 
-              value={email} 
-              disabled 
-              className={styles.input}
-            />
-          </div>
-          
-          {error && <p className={styles.error}>{error}</p>}
-          {ok && <p className={styles.success}>{ok}</p>}
-          
-          <div className={styles.buttonGroup}>
-            <button 
-              type="submit" 
-              disabled={guardando} 
-              className={`${styles.button} ${styles.primaryButton}`}
-            >
-              {guardando ? 'Guardando…' : 'Guardar cambios'}
-            </button>
-            <button 
-              type="button" 
-              onClick={() => navigate('/')} 
-              className={`${styles.button} ${styles.secondaryButton}`}
-            >
-              Volver al inicio
-            </button>
-          </div>
-        </form>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 };
 

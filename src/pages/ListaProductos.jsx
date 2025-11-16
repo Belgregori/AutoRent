@@ -1,21 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './lista.module.css';
+import Header from '../components/Header';
+import { Footer } from '../components/Footer';
+import { AdminDesktopOnly } from '../components/AdminDesktopOnly';
 
 export const ListaProductos = () => {
   const [productos, setProductos] = useState([]);
-  const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('token'); 
@@ -65,57 +57,40 @@ export const ListaProductos = () => {
       .catch(() => alert('Error al eliminar el producto en el servidor'));
   };
 
-  if (isMobile) {
-    return (
-      <div style={{ padding: '2rem', textAlign: 'center', color: 'red' }}>
-        <h2>⚠️ Acceso restringido</h2>
-        <p>Esta sección no está disponible en dispositivos móviles.</p>
-      </div>
-    );
-  }
-
   return (
-    <div>
-      <h2>Productos Disponibles</h2>
-      {productos.length === 0 ? (
-        <p>No hay productos disponibles para mostrar.</p>
-      ) : (
-        <table
-          border="1"
-          cellPadding="8"
-          cellSpacing="0"
-          style={{ width: '100%', borderCollapse: 'collapse' }}
-        >
-          <thead style={{ backgroundColor: '#4a5568', color: 'white' }}>
-            <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Imagen</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {productos.map(prod => (
-              <tr key={prod.id}>
-                <td>{prod.id}</td>
-                <td>{prod.nombre}</td>
-                <td>
-                  {prod.imagenesData && prod.imagenesData.length > 0 ? (
-                    <img
-                      src={`data:image/jpeg;base64,${prod.imagenesData[0]}`}
-                      alt="Miniatura"
-                      style={{
-                        width: '100px',
-                        height: 'auto',
-                        objectFit: 'cover',
-                        borderRadius: '8px'
-                      }}
-                    />
-                  ) : (
-                    <span>Sin imagen</span>
-                  )}
-                </td>
-                <td>
+    <AdminDesktopOnly>
+      <Header />
+      <div className={styles.productosContainer}>
+        <h2 className={styles.titulo}>Productos Disponibles</h2>
+        {productos.length === 0 ? (
+          <div className={styles.sinProductos}>
+            <p>No hay productos disponibles para mostrar.</p>
+          </div>
+        ) : (
+          <div className={styles.productosGrid}>
+            {productos.map((prod, index) => (
+              <div key={prod.id} className={styles.productoCard} style={{ animationDelay: `${index * 0.1}s` }}>
+                {prod.imagenesData && prod.imagenesData.length > 0 ? (
+                  <img
+                    src={`data:image/jpeg;base64,${prod.imagenesData[0]}`}
+                    alt={prod.nombre}
+                    className={styles.productoImagen}
+                  />
+                ) : (
+                  <div className={styles.productoImagen} style={{ 
+                    background: 'rgba(255, 255, 255, 0.1)', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    color: 'rgba(255, 255, 255, 0.5)',
+                    fontSize: '1.2rem'
+                  }}>
+                    Sin imagen
+                  </div>
+                )}
+                <div className={styles.productoInfo}>
+                  <h3 className={styles.productoNombre}>{prod.nombre}</h3>
+                  <p className={styles.productoId}>ID: {prod.id}</p>
                   <div className={styles.Botones}>
                     <button
                       className={styles.botonEliminar}
@@ -127,16 +102,17 @@ export const ListaProductos = () => {
                       className={styles.botonEditar}
                       onClick={() => handleEditarProductos(prod.id)}
                     >
-                      Editar Producto
+                      Editar
                     </button>
                   </div>
-                </td>
-              </tr>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+          </div>
+        )}
+      </div>
+      <Footer />
+    </AdminDesktopOnly>
   );
 };
 

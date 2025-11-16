@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { UserModal } from '../components/UserModal';
+import Header from '../components/Header';
+import { Footer } from '../components/Footer';
+import styles from './administrarPermisos.module.css';
+import { AdminDesktopOnly } from '../components/AdminDesktopOnly';
 
 export const AdministrarPermisos = () => {
   const [users, setUsers] = useState([]);
@@ -239,236 +243,171 @@ export const AdministrarPermisos = () => {
   ];
 
   if (isLoading) {
-    return <div style={{ padding: 16 }}>Cargando usuarios...</div>;
+    return (
+      <AdminDesktopOnly>
+        <Header />
+        <div className={styles.container}>Cargando usuarios...</div>
+        <Footer />
+      </AdminDesktopOnly>
+    );
   }
 
   return (
-    <div style={{ padding: 16 }}>
-      <h2>Administrar Permisos de Usuarios</h2>
-      
-      {mensaje.texto && (
-        <div style={{
-          marginBottom: 12,
-          padding: 10,
-          borderRadius: 8,
-          background: mensaje.tipo === 'exito' ? '#ecfdf5' : '#fff1f2',
-          color: mensaje.tipo === 'exito' ? '#065f46' : '#7f1d1d'
-        }}>
-          {mensaje.texto}
-        </div>
-      )}
-
-      {/* Selector de usuario */}
-      <div style={{ marginBottom: 24 }}>
-        <label htmlFor="userSelect" style={{ display: 'block', marginBottom: 8, fontWeight: 600 }}>
-          Selecciona un usuario para administrar sus permisos:
-        </label>
-        <select
-          id="userSelect"
-          value={selectedUserId || ''}
-          onChange={(e) => setSelectedUserId(e.target.value ? Number(e.target.value) : null)}
-          style={{
-            padding: '8px 12px',
-            border: '2px solid #e5e7eb',
-            borderRadius: '6px',
-            fontSize: '14px',
-            minWidth: '300px'
-          }}
-        >
-          <option value="">-- Selecciona un usuario --</option>
-          {users.map(user => (
-            <option key={user.id} value={user.id}>
-              {user.nombre} {user.apellido} ({user.email})
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Lista de usuarios con botón de gestión */}
-      <div style={{ marginBottom: 24 }}>
-        <h3 style={{ marginBottom: 16 }}>Gestionar Usuarios:</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {users.filter(user => selectedUserId ? user.id === selectedUserId : true).map(user => (
-            <div key={user.id} style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'space-between',
-              padding: '12px',
-              border: '1px solid #e5e7eb',
-              borderRadius: '6px',
-              backgroundColor: '#f9fafb'
-            }}>
-              <div>
-                <span style={{ fontWeight: '500', display: 'block' }}>
-                  {user.nombre} {user.apellido}
-                </span>
-                <span style={{ fontSize: '14px', color: '#6b7280' }}>
-                  {user.email}
-                </span>
-                <span style={{ 
-                  fontSize: '12px', 
-                  color: '#6b7280',
-                  display: 'block',
-                  marginTop: '4px'
-                }}>
-                  Rol: {user.role || 'No asignado'}
-                </span>
-              </div>
-              <div>
-                <button
-                  onClick={() => openUserModal(user)}
-                  style={{
-                    backgroundColor: '#10b981',
-                    color: 'white',
-                    padding: '8px 16px',
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    transition: 'background-color 0.2s'
-                  }}
-                  onMouseOver={(e) => e.target.style.backgroundColor = '#059669'}
-                  onMouseOut={(e) => e.target.style.backgroundColor = '#10b981'}
-                >
-                  Gestionar Usuario
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Panel de permisos */}
-      {selectedUserId && (
-        <div style={{ 
-          border: '1px solid #e5e7eb', 
-          borderRadius: '8px', 
-          padding: '20px',
-          backgroundColor: '#f9fafb'
-        }}>
-          <h3 style={{ marginTop: 0, marginBottom: '16px' }}>
-            Permisos para: {users.find(u => u.id === selectedUserId)?.nombre} {users.find(u => u.id === selectedUserId)?.apellido}
-          </h3>
-
-          {/* Controles de búsqueda y filtro */}
-          <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', flexWrap: 'wrap' }}>
-            <input
-              type="text"
-              placeholder="Buscar permisos..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                flex: 1,
-                minWidth: '200px',
-                padding: '8px 12px',
-                border: '2px solid #e5e7eb',
-                borderRadius: '6px',
-                fontSize: '14px'
-              }}
-            />
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              style={{
-                padding: '8px 12px',
-                border: '2px solid #e5e7eb',
-                borderRadius: '6px',
-                fontSize: '14px'
-              }}
-            >
-              {categories.map(category => (
-                <option key={category.value} value={category.value}>
-                  {category.label}
-                </option>
-              ))}
-            </select>
+    <AdminDesktopOnly>
+      <Header />
+      <div className={styles.container}>
+        <h2 className={styles.title}>Administrar Permisos de Usuarios</h2>
+        
+        {mensaje.texto && (
+          <div className={`${styles.mensaje} ${mensaje.tipo === 'exito' ? styles.mensajeExito : styles.mensajeError}`}>
+            {mensaje.texto}
           </div>
+        )}
 
-          {/* Lista de permisos */}
-          {isLoadingPermissions ? (
-            <p>Cargando permisos...</p>
-          ) : (
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-              gap: '12px',
-              marginBottom: '20px'
-            }}>
-              {filteredPermissions.map(permission => {
-                const isSelected = selectedPermissions.includes(permission);
-                
-                return (
-                  <div 
-                    key={permission} 
-                    style={{
-                      padding: '12px',
-                      border: '2px solid #e5e7eb',
-                      borderRadius: '6px',
-                      backgroundColor: '#ffffff',
-                      cursor: 'pointer'
-                    }}
-                    onClick={() => handlePermissionChange(permission, !isSelected)}
+        {/* Selector de usuario */}
+        <div className={styles.section}>
+          <label htmlFor="userSelect" className={styles.label}>
+            Selecciona un usuario para administrar sus permisos:
+          </label>
+          <select
+            id="userSelect"
+            value={selectedUserId || ''}
+            onChange={(e) => setSelectedUserId(e.target.value ? Number(e.target.value) : null)}
+            className={styles.select}
+          >
+            <option value="">-- Selecciona un usuario --</option>
+            {users.map(user => (
+              <option key={user.id} value={user.id}>
+                {user.nombre} {user.apellido} ({user.email})
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Lista de usuarios con botón de gestión */}
+        <div className={styles.section}>
+          <h3 className={styles.sectionTitle}>Gestionar Usuarios:</h3>
+          <div className={styles.usersList}>
+            {users.filter(user => selectedUserId ? user.id === selectedUserId : true).map(user => (
+              <div key={user.id} className={styles.userCard}>
+                <div className={styles.userInfo}>
+                  <span className={styles.userName}>
+                    {user.nombre} {user.apellido}
+                  </span>
+                  <span className={styles.userEmail}>
+                    {user.email}
+                  </span>
+                  <span className={styles.userRole}>
+                    Rol: {user.role || 'No asignado'}
+                  </span>
+                </div>
+                <div>
+                  <button
+                    onClick={() => openUserModal(user)}
+                    className={styles.gestionarButton}
                   >
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', margin: 0 }}>
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={(e) => handlePermissionChange(permission, e.target.checked)}
-                        disabled={isSaving}
-                        style={{ width: '16px', height: '16px' }}
-                      />
-                      <span style={{ fontSize: '14px', fontWeight: '500' }}>{permission}</span>
-                    </label>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          {filteredPermissions.length === 0 && !isLoadingPermissions && (
-            <p style={{ textAlign: 'center', color: '#6b7280', fontStyle: 'italic' }}>
-              No se encontraron permisos que coincidan con los filtros aplicados.
-            </p>
-          )}
-
-          {/* Botón de guardar */}
-          <div style={{ textAlign: 'center' }}>
-            <button
-              onClick={handleSave}
-              disabled={isSaving}
-              style={{
-                padding: '12px 24px',
-                backgroundColor: isSaving ? '#9ca3af' : '#3b82f6',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                fontSize: '14px',
-                fontWeight: '600',
-                cursor: isSaving ? 'not-allowed' : 'pointer',
-                minWidth: '140px'
-              }}
-            >
-              {isSaving ? 'Guardando...' : 'Guardar Cambios'}
-            </button>
+                    Gestionar Usuario
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      )}
 
-      {/* Modal de gestión de usuario */}
-      <UserModal
-        isOpen={isModalOpen}
-        onClose={closeUserModal}
-        user={selectedUser}
-        onRoleChange={handleAssignRole}
-        onPermissionsChange={handlePermissionsChange}
-        onSavePermissions={handleSavePermissions}
-        allPermissions={allPermissions}
-        userPermissions={userPermissions}
-        isLoadingPermissions={isLoadingPermissions}
-        isSaving={isSaving}
-      />
-    </div>
+        {/* Panel de permisos */}
+        {selectedUserId && (
+          <div className={styles.permissionsPanel}>
+            <h3 className={styles.panelTitle}>
+              Permisos para: {users.find(u => u.id === selectedUserId)?.nombre} {users.find(u => u.id === selectedUserId)?.apellido}
+            </h3>
+
+            {/* Controles de búsqueda y filtro */}
+            <div className={styles.controlsRow}>
+              <input
+                type="text"
+                placeholder="Buscar permisos..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className={styles.searchInput}
+              />
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className={styles.categorySelect}
+              >
+                {categories.map(category => (
+                  <option key={category.value} value={category.value}>
+                    {category.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Lista de permisos */}
+            {isLoadingPermissions ? (
+              <p>Cargando permisos...</p>
+            ) : (
+              <div className={styles.permissionsGrid}>
+                {filteredPermissions.map(permission => {
+                  const isSelected = selectedPermissions.includes(permission);
+                  
+                  return (
+                    <div 
+                      key={permission} 
+                      className={styles.permissionCard}
+                      onClick={() => handlePermissionChange(permission, !isSelected)}
+                    >
+                      <label className={styles.permissionLabel}>
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={(e) => handlePermissionChange(permission, e.target.checked)}
+                          disabled={isSaving}
+                          className={styles.permissionCheckbox}
+                        />
+                        <span className={styles.permissionText}>{permission}</span>
+                      </label>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {filteredPermissions.length === 0 && !isLoadingPermissions && (
+              <p className={styles.emptyState}>
+                No se encontraron permisos que coincidan con los filtros aplicados.
+              </p>
+            )}
+
+            {/* Botón de guardar */}
+            <div className={styles.saveButtonContainer}>
+              <button
+                onClick={handleSave}
+                disabled={isSaving}
+                className={styles.saveButton}
+              >
+                {isSaving ? 'Guardando...' : 'Guardar Cambios'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Modal de gestión de usuario */}
+        <UserModal
+          isOpen={isModalOpen}
+          onClose={closeUserModal}
+          user={selectedUser}
+          onRoleChange={handleAssignRole}
+          onPermissionsChange={handlePermissionsChange}
+          onSavePermissions={handleSavePermissions}
+          allPermissions={allPermissions}
+          userPermissions={userPermissions}
+          isLoadingPermissions={isLoadingPermissions}
+          isSaving={isSaving}
+        />
+      </div>
+      <Footer />
+    </AdminDesktopOnly>
   );
 };
 
