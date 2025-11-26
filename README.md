@@ -8,23 +8,23 @@ El sistema permite a los usuarios **buscar, reservar y gestionar vehículos** f�
 
 ## 📚 Tabla de Contenidos
 
-- [👩🏻‍💻[1. Descripción General](#1-descripción-general)
-- [📝[2. Características Principales](#2-características-principales)
-- [🛠️ [3. Tecnologías Utilizadas](#3-tecnologías-utilizadas)
-- [📋 [4. Requisitos Previos](#4-requisitos-previos)
-- [⚙️ [5. Instalación y Configuración](#5-instalación-y-configuración)
-  - [5.1 Backend (Spring Boot)](#51-backend-spring-boot)
-  - [5.2 Frontend (React + Vite)](#52-frontend-react--vite)
-- [🔑 [6. Variables de Entorno](#6-variables-de-entorno)
-- [🗄️ [7. Base de Datos](#7-base-de-datos)
-- [🔗 [8. Endpoints Principales](#8-endpoints-principales)
-- [📁 [9. Estructura del Proyecto](#9-estructura-del-proyecto)
-- [🧪 [10. Testing](#10-testing)
-- [🚀 [11. Deploy](#11-deploy)
-- [💡 [12. Solución de Problemas](#12-solución-de-problemas)
-- [🤝 [13. Contribución](#13-contribución)
-- [14. Licencia](#14-licencia)
--[👩‍💻  [15. Autora y Contacto](#15-autora-y-contacto)
+- 👩🏻‍💻[1. Descripción General](#1-descripción-general)
+- 📝[2. Características Principales](#2-características-principales)
+- 🛠️ [3. Tecnologías Utilizadas](#3-tecnologías-utilizadas)
+- 📋 [4. Requisitos Previos](#4-requisitos-previos)
+- ⚙️ [5. Instalación y Configuración](#5-instalación-y-configuración)
+  - 5.1 Backend (Spring Boot)](#51-backend-spring-boot)
+  - 5.2 Frontend (React + Vite)](#52-frontend-react--vite)
+- 🔑 [6. Variables de Entorno](#6-variables-de-entorno)
+- 🗄️ [7. Base de Datos](#7-base-de-datos)
+- 🔗 [8. Endpoints Principales](#8-endpoints-principales)
+- 📁 [9. Estructura del Proyecto](#9-estructura-del-proyecto)
+- 🧪 [10. Testing](#10-testing)
+- 🚀 [11. Deploy](#11-deploy)
+- 💡 [12. Solución de Problemas](#12-solución-de-problemas)
+- 🤝 [13. Contribución](#13-contribución)
+- ✨  [14. Licencia](#14-licencia)
+- 👩‍💻  [15. Autora y Contacto](#15-autora-y-contacto)
 
 ---
 
@@ -146,6 +146,16 @@ FRONTEND_URL=http://localhost:5173
 mvn clean install
 mvn spring-boot:run
 ```
+
+#### 4️⃣ Usuario administrador por defecto
+
+Al levantar el backend por primera vez, si la base de datos está vacía, el sistema crea automáticamente un **usuario administrador**
+con rol `ADMIN` para permitir el acceso inicial al panel de administración.
+
+Credenciales por defecto:                                                                                                                          
+Email: admin@ejemplo.com
+Contraseña: admin123                                                                                                                   
+> ⚠️ Se recomienda cambiar estas credenciales al usar el proyecto fuera de un entorno de desarrollo.
 
 #### ✅ Verificar
 - API: http://localhost:8080
