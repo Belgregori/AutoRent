@@ -1,10 +1,15 @@
 package com.autoRent.autoRent.controller;
 
 import com.autoRent.autoRent.DTO.ReservaRequest;
+import com.autoRent.autoRent.configuration.CustomAccessDeniedHandler;
+import com.autoRent.autoRent.configuration.JwtRequestFilter;
+import com.autoRent.autoRent.configuration.JwtUtil;
 import com.autoRent.autoRent.model.Producto;
 import com.autoRent.autoRent.model.Reserva;
 import com.autoRent.autoRent.model.Usuario;
+import com.autoRent.autoRent.repository.UsuarioRepository;
 import com.autoRent.autoRent.service.EmailService;
+import com.autoRent.autoRent.service.PermissionService;
 import com.autoRent.autoRent.service.ProductoService;
 import com.autoRent.autoRent.service.ReservaService;
 import com.autoRent.autoRent.service.UsuarioService;
@@ -12,9 +17,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -31,13 +35,27 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+@WebMvcTest(ReservaController.class)
 @AutoConfigureMockMvc(addFilters = false)
-@TestPropertySource(locations = "classpath:application-test.properties")
 public class ReservaControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockitoBean
+    private JwtUtil jwtUtil;
+
+    @MockitoBean
+    private JwtRequestFilter jwtRequestFilter;
+
+    @MockitoBean
+    private PermissionService permissionService;
+
+    @MockitoBean
+    private UsuarioRepository usuarioRepository;
+
+    @MockitoBean
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @MockitoBean
     private ReservaService reservaService;
