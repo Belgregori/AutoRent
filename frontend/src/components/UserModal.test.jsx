@@ -14,7 +14,7 @@ const baseProps = {
 test('renderiza y permite cerrar', async () => {
   const user = await createUser();
   render(<UserModal {...baseProps} />);
-  await user.click(screen.getByRole('button', { name: '×' }));
+  await user.click(screen.getByRole('button', { name: /cerrar modal/i }));
   expect(baseProps.onClose).toHaveBeenCalled();
 });
 
