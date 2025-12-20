@@ -1,0 +1,1259 @@
+.container {
+  min-height: calc(100vh - 64px);
+  background: linear-gradient(135deg, 
+    #1e3a8a 0%, 
+    #1e40af 14%, 
+    #2563eb 28%, 
+    #3b82f6 42%, 
+    #60a5fa 56%, 
+    #93c5fd 70%, 
+    #bfdbfe 84%, 
+    #3b82f6 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 32px 16px;
+  margin-top: 64px;
+  box-sizing: border-box;
+  color: var(--color-blanco);
+  font-family: inherit;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.productoInfoContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 0 2rem 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.headerInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.flechaVolver {
+  cursor: pointer;
+  font-size: 1.3rem;
+  color: var(--color-blanco);
+  font-weight: bold;
+  transition: var(--transicion-suave);
+  margin-left: auto;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.15);
+  user-select: none;
+}
+
+.flechaVolver:hover {
+  color: var(--color-gris-claro);
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.nombre {
+  text-align: center;
+  width: 100%;
+  margin-bottom: 2.5rem;
+  font-size: 3rem;
+  color: var(--color-blanco);
+  font-weight: 900;
+  letter-spacing: 2px;
+  font-family: var(--font-family-base);
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  line-height: 1.1;
+  text-transform: uppercase;
+  position: relative;
+  padding-bottom: 1.5rem;
+}
+
+.nombre::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: var(--color-blanco);
+  border-radius: 2px;
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.5);
+}
+
+.precio {
+  font-size: 1.8rem;
+  color: var(--color-amarillo-advertencia);
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+  font-family: inherit;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  border: 2px solid var(--color-amarillo-advertencia);
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  background-color: rgba(245, 158, 11, 0.1);
+  backdrop-filter: blur(5px);
+}
+
+.precio::before {
+  content: '$';
+  font-size: 1.4rem;
+  margin-right: 0.3rem;
+  color: var(--color-amarillo-advertencia);
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+}
+
+.precio::after {
+  content: '/día';
+  font-size: 1rem;
+  margin-left: 0.5rem;
+  color: var(--color-blanco);
+  font-weight: 600;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.descripcion {
+  margin-bottom: 2rem;
+  font-size: 1.3rem;
+  color: var(--color-blanco);
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+  line-height: 1.6;
+  font-family: inherit;
+  font-weight: 400;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.galeria {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 0;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+}
+
+.imagenPrincipal {
+  flex: 1 1 50%;
+  min-width: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.imagenPrincipal img {
+  width: 100%;
+  max-width: 500px;
+  height: 350px;
+  border-radius: 6px;
+  object-fit: contain;
+  object-position: center;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.imagenPrincipal img:hover {
+  opacity: 1;
+  transform: scale(1.4);
+}
+
+.imagenesSecundarias {
+  flex: 1 1 50%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 140px);
+  gap: 0.75rem;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.imagenesSecundarias img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.imagenesSecundarias img:hover,
+.imagenesSecundarias img.selected {
+  opacity: 1;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+@media (max-width: 1200px) {
+  .galeria {
+    gap: 0.875rem;
+  }
+  
+  .imagenPrincipal img {
+    max-width: 100%;
+    height: 320px;
+  }
+  
+  .imagenesSecundarias {
+    grid-template-rows: repeat(2, 120px);
+    gap: 0.625rem;
+  }
+
+  .calendarioWrapper {
+    gap: 0.875rem;
+  }
+
+  .calendario {
+    min-width: 180px;
+    padding: 0.625rem;
+  }
+
+  .calendarioHeader h3 {
+    font-size: 0.875rem;
+  }
+
+  .fecha {
+    font-size: 0.7rem;
+  }
+
+  .diasSemana {
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .galeria {
+    gap: 0.75rem;
+  }
+  
+  .imagenPrincipal img {
+    height: 280px;
+  }
+  
+  .imagenesSecundarias {
+    grid-template-rows: repeat(2, 110px);
+    gap: 0.5rem;
+  }
+
+  .calendarioWrapper {
+    gap: 0.75rem;
+  }
+
+  .calendario {
+    min-width: 160px;
+    padding: 0.5625rem;
+  }
+
+  .calendarioHeader h3 {
+    font-size: 0.8rem;
+  }
+
+  .fecha {
+    font-size: 0.65rem;
+  }
+
+  .diasSemana {
+    font-size: 0.6rem;
+  }
+
+  .diaSemana {
+    font-size: 0.6rem;
+    padding: 0.3125rem 0;
+  }
+
+  .navButton {
+    width: 24px;
+    height: 24px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .galeria {
+    gap: 0.625rem;
+  }
+  
+  .imagenPrincipal {
+    flex: 1 1 55%;
+  }
+  
+  .imagenPrincipal img {
+    height: 240px;
+  }
+  
+  .imagenesSecundarias {
+    flex: 1 1 45%;
+    grid-template-rows: repeat(2, 90px);
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .galeria {
+    gap: 0.5rem;
+  }
+  
+  .imagenPrincipal {
+    flex: 1 1 60%;
+  }
+  
+  .imagenPrincipal img {
+    height: 200px;
+  }
+  
+  .imagenesSecundarias {
+    flex: 1 1 40%;
+    grid-template-rows: repeat(2, 70px);
+    gap: 0.375rem;
+  }
+
+  .calendarioWrapper {
+    gap: 0.5rem;
+  }
+
+  .calendario {
+    min-width: 130px;
+    padding: 0.5rem;
+  }
+
+  .calendarioHeader h3 {
+    font-size: 0.7rem;
+  }
+
+  .fecha {
+    font-size: 0.575rem;
+  }
+
+  .diasSemana {
+    font-size: 0.525rem;
+    gap: 2px;
+  }
+
+  .diaSemana {
+    font-size: 0.525rem;
+    padding: 0.25rem 0;
+  }
+
+  .fechasGrid {
+    gap: 2px;
+  }
+
+  .navButton {
+    width: 22px;
+    height: 22px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .galeria {
+    gap: 0.375rem;
+  }
+  
+  .imagenPrincipal {
+    flex: 1 1 65%;
+  }
+  
+  .imagenPrincipal img {
+    height: 180px;
+  }
+  
+  .imagenesSecundarias {
+    flex: 1 1 35%;
+    grid-template-rows: repeat(2, 60px);
+    gap: 0.25rem;
+  }
+}
+
+.verMas {
+  margin-top: 1.5rem;
+  text-align: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.verMas button {
+  background-color: var(--color-azul-medio);
+  color: var(--color-blanco);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 0 0.5rem;
+}
+
+.btnCompartir {
+  background-color: var(--color-verde-exito) !important;
+}
+
+.btnCompartir:hover {
+  background-color: #059669 !important;
+}
+
+.verMas button:hover {
+  background-color: #2563eb;
+}
+
+.calendarioSection {
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.calendarioContainer {
+  width: 100%;
+  margin-top: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+}
+
+.calendarioWrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+  flex-wrap: nowrap;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.calendario {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.75rem;
+  min-width: 200px;
+  flex: 1 1 50%;
+  max-width: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  box-sizing: border-box;
+}
+
+.calendarioHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.625rem;
+}
+
+.calendarioHeader h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: capitalize;
+}
+
+.navButton {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.diasSemana {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  margin-bottom: 0.375rem;
+}
+
+.diaSemana {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #ffd700;
+  padding: 0.375rem 0;
+  text-transform: uppercase;
+}
+
+.fechasGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.fecha {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.fecha:hover {
+  transform: scale(1.1);
+  z-index: 1;
+}
+
+.fecha.disponible {
+  background: var(--color-verde-exito);
+  color: var(--color-blanco);
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+.fecha.disponible:hover {
+  background: #059669;
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.5);
+}
+
+.fecha.ocupada {
+  background: var(--color-rojo-error);
+  color: var(--color-blanco);
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+}
+
+.fecha.ocupada:hover {
+  background: #dc2626;
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.5);
+}
+
+.fecha.indefinida {
+  background: #6b7280;
+  color: #e5e7eb;
+  box-shadow: 0 2px 4px rgba(107, 114, 128, 0.3);
+}
+
+.fecha.indefinida:hover {
+  background: #4b5563;
+  box-shadow: 0 4px 8px rgba(107, 114, 128, 0.5);
+}
+
+.fecha.otro-mes {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.4);
+  cursor: default;
+}
+
+.fecha.otro-mes:hover {
+  transform: none;
+}
+
+.fecha.seleccionada {
+  border: 3px solid #ffd700;
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.5);
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+.fecha.seleccionada-inicio {
+  background: var(--color-azul-medio);
+  color: var(--color-blanco);
+  border: 3px solid var(--color-boton-hover);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+  transform: scale(1.1);
+  z-index: 3;
+}
+
+.fecha.seleccionada-inicio:hover {
+  background: #2563eb;
+  border-color: #1e40af;
+}
+
+.fecha.seleccionada-fin {
+  background: #8b5cf6;
+  color: white;
+  border: 3px solid #6d28d9;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.5);
+  transform: scale(1.1);
+  z-index: 3;
+}
+
+.fecha.seleccionada-fin:hover {
+  background: #7c3aed;
+  border-color: #5b21b6;
+}
+
+.fecha.en-rango {
+  background: #f59e0b;
+  color: white;
+  border: 2px solid #d97706;
+  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.4);
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+.fecha.en-rango:hover {
+  background: #d97706;
+  border-color: #b45309;
+}
+
+.reservaRapida {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btnReservar {
+  background: linear-gradient(135deg, var(--color-verde-exito), #059669);
+  color: var(--color-blanco);
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btnReservar:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+}
+
+.btnReservar:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.4);
+}
+
+.leyenda {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.leyendaItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #e5e7eb;
+  font-size: 0.9rem;
+}
+
+.leyendaColor {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.leyendaColor.disponible {
+  background: var(--color-verde-exito);
+}
+
+.leyendaColor.ocupada {
+  background: var(--color-rojo-error);
+}
+
+.leyendaColor.indefinida {
+  background: #6b7280;
+}
+
+.calendarioLoading,
+.calendarioError {
+  text-align: center;
+  padding: 2rem;
+}
+
+.calendarioLoading p {
+  margin-top: 1rem;
+  color: #e0e0e0;
+  font-size: 1rem;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.calendarioError {
+  color: #fca5a5;
+}
+
+.errorIcon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.errorMessage {
+  margin: 1rem 0;
+  color: #fca5a5;
+  font-size: 1rem;
+}
+
+.retryButton {
+  background: var(--color-rojo-error);
+  color: var(--color-blanco);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+}
+
+.retryButton:hover {
+  background: #dc2626;
+}
+
+.caracteristicasSection {
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.subtitulo {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 0.5rem;
+  text-decoration-thickness: 2px;
+}
+
+.caracteristicasGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.caracteristicaItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.caracteristicaIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  object-fit: cover;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+.caracteristicaIconFallback {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.2);
+}
+
+.caracteristicaNombre {
+  color: #fff;
+  font-weight: 700;
+}
+
+.sinCaracteristicas {
+  color: #e0e0e0;
+  margin: 0.5rem 0 0 0;
+}
+
+.politicasSection {
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.politicasGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.politicaItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.politicaItem:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.politicaIcon {
+  font-size: 2rem;
+  min-width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.politicaContenido {
+  flex: 1;
+}
+
+.politicaContenido h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.politicaContenido p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #e0e0e0;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+.valoracionesSection {
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.loadingResenas {
+  text-align: center;
+  padding: 2rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.errorResenas {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .caracteristicasGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .politicasGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .politicaItem {
+    padding: 1rem;
+  }
+
+  .politicaIcon {
+    min-width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+  }
+
+  .calendarioWrapper {
+    gap: 0.625rem;
+  }
+
+  .calendario {
+    min-width: 140px;
+    padding: 0.5rem;
+    flex: 1 1 50%;
+    max-width: 50%;
+  }
+
+  .calendarioHeader h3 {
+    font-size: 0.75rem;
+  }
+
+  .fecha {
+    font-size: 0.6rem;
+  }
+
+  .diasSemana {
+    font-size: 0.55rem;
+  }
+
+  .diaSemana {
+    font-size: 0.55rem;
+    padding: 0.25rem 0;
+  }
+
+  .navButton {
+    width: 22px;
+    height: 22px;
+    font-size: 0.85rem;
+  }
+
+  .leyenda {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendarioWrapper {
+    gap: 0.5rem;
+  }
+
+  .calendario {
+    padding: 0.4375rem;
+    min-width: 120px;
+    flex: 1 1 50%;
+    max-width: 50%;
+  }
+
+  .calendarioHeader h3 {
+    font-size: 0.7rem;
+  }
+
+  .fecha {
+    font-size: 0.55rem;
+  }
+
+  .diasSemana {
+    font-size: 0.5rem;
+    gap: 2px;
+    margin-bottom: 0.25rem;
+  }
+
+  .diaSemana {
+    font-size: 0.5rem;
+    padding: 0.25rem 0;
+  }
+
+  .fechasGrid {
+    gap: 1px;
+  }
+
+  .navButton {
+    width: 20px;
+    height: 20px;
+    font-size: 0.75rem;
+  }
+
+  .leyenda {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    font-size: 0.7rem;
+  }
+}
+
+.instrucciones {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+}
+
+.instrucciones p {
+  margin: 0;
+  color: #e0f2fe;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.instrucciones strong {
+  color: #3b82f6;
+}
+
+/* ===== RESPONSIVE DESIGN - MANTENIENDO DISEÑO ACTUAL ===== */
+
+/* Tablet (768px - 1023px) */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .calendarioWrapper {
+    gap: 0.75rem;
+  }
+
+  .calendario {
+    min-width: 160px;
+    flex: 1 1 50%;
+    max-width: 50%;
+    padding: 0.5625rem;
+  }
+
+  .calendarioHeader h3 {
+    font-size: 0.8rem;
+  }
+
+  .fecha {
+    font-size: 0.65rem;
+  }
+
+  .diasSemana {
+    font-size: 0.6rem;
+  }
+
+  .diaSemana {
+    font-size: 0.6rem;
+    padding: 0.3125rem 0;
+  }
+
+  .navButton {
+    width: 24px;
+    height: 24px;
+    font-size: 0.9rem;
+  }
+
+  .verMas {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .verMas button {
+    width: 100%;
+    max-width: 200px;
+  }
+}
+
+/* Mobile Large (481px - 767px) */
+@media (max-width: 767px) and (min-width: 481px) {
+  .caracteristicasGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .politicasGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .calendarioWrapper {
+    gap: 0.625rem;
+  }
+
+  .calendario {
+    min-width: 140px;
+    flex: 1 1 50%;
+    max-width: 50%;
+    padding: 0.5rem;
+  }
+
+  .calendarioHeader h3 {
+    font-size: 0.75rem;
+  }
+
+  .fecha {
+    font-size: 0.6rem;
+  }
+
+  .diasSemana {
+    font-size: 0.55rem;
+  }
+
+  .diaSemana {
+    font-size: 0.55rem;
+    padding: 0.25rem 0;
+  }
+
+  .navButton {
+    width: 22px;
+    height: 22px;
+    font-size: 0.85rem;
+  }
+
+  .verMas {
+    margin-top: 1.25rem;
+    padding-top: 0.875rem;
+  }
+
+  .verMas button {
+    width: 100%;
+    max-width: 180px;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile Small (375px - 480px) */
+@media (max-width: 480px) {
+  .caracteristicasGrid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .politicasGrid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .verMas {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+  }
+
+  .verMas button {
+    width: 100%;
+    max-width: 160px;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Mobile Extra Small (320px - 374px) */
+@media (max-width: 374px) {
+  .verMas button {
+    max-width: 140px;
+    padding: 0.45rem 0.875rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Landscape orientation para móvil */
+@media (max-height: 500px) and (orientation: landscape) {
+  .calendarioWrapper {
+    gap: 0.5rem;
+  }
+
+  .calendario {
+    flex: 1 1 50%;
+    max-width: 50%;
+    min-width: 140px;
+    padding: 0.4375rem;
+  }
+
+  .calendarioHeader h3 {
+    font-size: 0.7rem;
+  }
+
+  .fecha {
+    font-size: 0.55rem;
+  }
+
+  .diasSemana {
+    font-size: 0.5rem;
+  }
+
+  .diaSemana {
+    font-size: 0.5rem;
+    padding: 0.25rem 0;
+  }
+
+  .navButton {
+    width: 20px;
+    height: 20px;
+    font-size: 0.75rem;
+  }
+}
+/* Asegurar que no haya overflow horizontal */
+.container {
+  width: 100%;
+  overflow-x: hidden;
+}
+

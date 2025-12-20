@@ -1,0 +1,299 @@
+/* === ADMIN PAGE - DISEÑO MODERNO Y ATRACTIVO === */
+
+.adminContainer {
+  min-height: calc(100vh - 64px);
+  padding: 80px 20px 40px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, 
+    #1e3a8a 0%, 
+    #1e40af 14%, 
+    #2563eb 28%, 
+    #3b82f6 42%, 
+    #60a5fa 56%, 
+    #93c5fd 70%, 
+    #bfdbfe 84%, 
+    #3b82f6 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  box-sizing: border-box;
+}
+
+/* Efecto de partículas decorativas en el fondo */
+.adminContainer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.adminContainer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(255, 255, 255, 0.03) 10px,
+    rgba(255, 255, 255, 0.03) 20px
+  );
+  animation: float 20s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.adminContent {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+h1 {
+  color: var(--color-blanco);
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 80px;
+  padding-bottom: 1.5rem;
+  text-align: center;
+  letter-spacing: 2px;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  animation: fadeInUp 0.8s ease-out;
+  position: relative;
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: var(--color-blanco);
+  border-radius: 2px;
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.5);
+}
+
+/* === BOTONES MODERNOS CON GLASSMORPHISM Y 3D === */
+.adminButton {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 20px 50px;
+  font-size: 1.3rem;
+  color: var(--color-blanco);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+  margin: 30px auto;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  animation: fadeInUp 0.8s ease-out backwards;
+  z-index: 1;
+}
+
+/* Efecto de brillo al pasar el mouse */
+.adminButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+  z-index: -1;
+}
+
+.adminButton:hover::before {
+  left: 100%;
+}
+
+.adminButton:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 0 30px rgba(255, 255, 255, 0.2);
+}
+
+.adminButton:active {
+  transform: translateY(-2px) scale(0.98);
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.25),
+    inset 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Animaciones escalonadas para cada botón */
+.agregarProducto,
+.listaProductos,
+.AgregarCategoria,
+.AdministrarCaracteristicas,
+.AdministrarPermisos {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 20px 50px;
+  font-size: 1.3rem;
+  color: var(--color-blanco);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+  margin: 30px auto;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  z-index: 1;
+  width: 100%;
+  max-width: 450px;
+  white-space: nowrap;
+}
+
+.agregarProducto {
+  animation: fadeInUp 0.8s ease-out 0.1s backwards;
+}
+
+.listaProductos {
+  animation: fadeInUp 0.8s ease-out 0.2s backwards;
+}
+
+.AgregarCategoria {
+  animation: fadeInUp 0.8s ease-out 0.3s backwards;
+}
+
+.AdministrarCaracteristicas {
+  animation: fadeInUp 0.8s ease-out 0.4s backwards;
+}
+
+.AdministrarPermisos {
+  animation: fadeInUp 0.8s ease-out 0.5s backwards;
+}
+
+/* Efectos hover para todos los botones */
+.agregarProducto::before,
+.listaProductos::before,
+.AgregarCategoria::before,
+.AdministrarCaracteristicas::before,
+.AdministrarPermisos::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+  z-index: -1;
+}
+
+.agregarProducto:hover::before,
+.listaProductos:hover::before,
+.AgregarCategoria:hover::before,
+.AdministrarCaracteristicas:hover::before,
+.AdministrarPermisos:hover::before {
+  left: 100%;
+}
+
+.agregarProducto:hover,
+.listaProductos:hover,
+.AgregarCategoria:hover,
+.AdministrarCaracteristicas:hover,
+.AdministrarPermisos:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 0 30px rgba(255, 255, 255, 0.2);
+}
+
+.agregarProducto:active,
+.listaProductos:active,
+.AgregarCategoria:active,
+.AdministrarCaracteristicas:active,
+.AdministrarPermisos:active {
+  transform: translateY(-2px) scale(0.98);
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.25),
+    inset 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .adminContainer {
+    padding: 100px 15px 30px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 40px;
+  }
+  
+  .adminButton {
+    padding: 16px 35px;
+    font-size: 1.1rem;
+    margin: 20px auto;
+  }
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}

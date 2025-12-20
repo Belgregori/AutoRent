@@ -1,0 +1,50 @@
+.estrellasContainer {
+    display: inline-flex;
+    gap: 2px;
+    align-items: center;
+  }
+  
+  .estrella {
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: all 0.2s ease;
+    user-select: none;
+  }
+  
+  .estrella.activa {
+    color: #ffd700;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+  }
+  
+  .estrella.inactiva {
+    color: #d1d5db;
+  }
+  
+  .estrella:hover {
+    transform: scale(1.1);
+  }
+  
+  .estrella.activa:hover {
+    color: #ffed4e;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
+  }
+  
+  .normal .estrella {
+    font-size: 1.5rem;
+  }
+  
+  .grande .estrella {
+    font-size: 2rem;
+  }
+  
+  .pequeña .estrella {
+    font-size: 1.2rem;
+  }
+  
+  .soloLectura .estrella {
+    cursor: default;
+  }
+  
+  .soloLectura .estrella:hover {
+    transform: none;
+  }
