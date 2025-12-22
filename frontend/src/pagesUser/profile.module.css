@@ -3,7 +3,7 @@
 .container {
   min-height: calc(100vh - 64px);
   background: #f9f9f9;
-  padding: 32px 16px;
+  padding: 32px 16px 100px 16px;
   box-sizing: border-box;
   color: #333;
   font-family: inherit;
@@ -210,7 +210,7 @@
 /* Tablet (768px - 1024px) */
 @media (max-width: 1024px) {
   .container {
-    padding: 24px 16px;
+    padding: 24px 16px 90px 16px;
   }
   
   .profileCard {
@@ -226,7 +226,7 @@
 /* Mobile Large (481px - 767px) */
 @media (max-width: 768px) {
   .container {
-    padding: 20px 12px;
+    padding: 20px 12px 80px 12px;
     margin-top: 64px;
     padding-top: 24px;
   }
@@ -271,7 +271,7 @@
 /* Mobile (320px - 480px) */
 @media (max-width: 480px) {
   .container {
-    padding: 16px 8px;
+    padding: 16px 8px 70px 8px;
     margin-top: 64px;
     padding-top: 20px;
   }
@@ -334,7 +334,7 @@
 /* Mobile Small (320px - 374px) */
 @media (max-width: 374px) {
   .container {
-    padding: 12px 6px;
+    padding: 12px 6px 60px 6px;
   }
   
   .profileCard {

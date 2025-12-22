@@ -14,13 +14,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 24px 16px 32px 16px;
-  margin-top: 64px;
+  padding: 24px 16px 100px 16px;
+  margin: 0;
+  padding-top: calc(64px + 24px);
   box-sizing: border-box;
   color: var(--color-blanco);
   font-family: inherit;
   position: relative;
   overflow-x: hidden;
+  border-top: none;
 }
 
 .container::before {
@@ -110,6 +112,114 @@
   background: var(--color-blanco);
   border-radius: 2px;
   box-shadow: 0 2px 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Media Queries para .nombre - Responsive */
+@media (max-width: 1200px) {
+  .container {
+    padding-top: calc(60px + 24px);
+  }
+  
+  .nombre {
+    font-size: 2.75rem;
+    letter-spacing: 1.75px;
+    padding-bottom: 1.375rem;
+  }
+  
+  .nombre::after {
+    width: 90px;
+    height: 3.5px;
+  }
+}
+
+@media (max-width: 992px) {
+  .container {
+    padding-top: calc(56px + 24px);
+  }
+  
+  .nombre {
+    font-size: 2.5rem;
+    letter-spacing: 1.5px;
+    padding-bottom: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  
+  .nombre::after {
+    width: 80px;
+    height: 3.5px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding-top: calc(52px + 24px);
+  }
+  
+  .nombre {
+    font-size: 2rem;
+    letter-spacing: 1.25px;
+    padding-bottom: 1rem;
+    margin-bottom: 1.75rem;
+  }
+  
+  .nombre::after {
+    width: 70px;
+    height: 3px;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding-top: calc(48px + 24px);
+  }
+  
+  .nombre {
+    font-size: 1.75rem;
+    letter-spacing: 1px;
+    padding-bottom: 0.875rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .nombre::after {
+    width: 60px;
+    height: 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding-top: calc(46px + 24px);
+  }
+  
+  .nombre {
+    font-size: 1.5rem;
+    letter-spacing: 0.875px;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .nombre::after {
+    width: 50px;
+    height: 2.5px;
+  }
+}
+
+@media (max-width: 375px) {
+  .container {
+    padding-top: calc(44px + 24px);
+  }
+  
+  .nombre {
+    font-size: 1.375rem;
+    letter-spacing: 0.75px;
+    padding-bottom: 0.625rem;
+    margin-bottom: 1rem;
+  }
+  
+  .nombre::after {
+    width: 45px;
+    height: 2.5px;
+  }
 }
 
 .precio {
@@ -1255,5 +1365,180 @@
 .container {
   width: 100%;
   overflow-x: hidden;
+}
+
+/* ===== ESTILOS DEL MODAL DE GALERÍA ===== */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.modalContent {
+  background: linear-gradient(135deg, 
+    #1e3a8a 0%, 
+    #1e40af 14%, 
+    #2563eb 28%, 
+    #3b82f6 42%, 
+    #60a5fa 56%, 
+    #93c5fd 70%, 
+    #bfdbfe 84%, 
+    #3b82f6 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 1200px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modalContent h2 {
+  color: var(--color-blanco);
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.modalGaleria {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.modalGaleria img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 3px solid transparent;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: block;
+}
+
+.modalGaleria img:hover {
+  transform: scale(1.02);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.modalGaleria img.selected {
+  border-color: var(--color-amarillo-advertencia);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+}
+
+/* Estilo del botón cerrar modal - mismo estilo que los demás botones */
+.cerrarModal {
+  background-color: var(--color-azul-medio);
+  color: var(--color-blanco);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 0 0.5rem;
+  width: 100%;
+  max-width: 200px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cerrarModal:hover {
+  background-color: #2563eb;
+}
+
+/* Responsive para el modal */
+@media (max-width: 992px) {
+  .modalContent {
+    padding: 1.5rem;
+    max-width: 95vw;
+  }
+
+  .modalContent h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .modalGaleria {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .modalGaleria img {
+    height: 180px;
+  }
+}
+
+@media (max-width: 768px) {
+  .modalOverlay {
+    padding: 1rem;
+  }
+
+  .modalContent {
+    padding: 1.25rem;
+  }
+
+  .modalContent h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .modalGaleria {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  .modalGaleria img {
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modalOverlay {
+    padding: 0.5rem;
+  }
+
+  .modalContent {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .modalContent h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .modalGaleria {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .modalGaleria img {
+    height: 120px;
+  }
+
+  .cerrarModal {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.9rem;
+  }
 }
 

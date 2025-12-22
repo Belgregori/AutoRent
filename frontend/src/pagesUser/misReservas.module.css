@@ -14,14 +14,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px 16px;
+  padding: 32px 16px 100px 16px;
   box-sizing: border-box;
   color: #333;
   font-family: inherit;
-  margin-top: 64px; 
-  padding-top: 48px;
+  margin: 0;
+  padding-top: calc(64px + 32px);
   position: relative;
   overflow: hidden;
+  border-top: none;
 }
 
 .container::before {
@@ -602,10 +603,18 @@
 
 /* ===== RESPONSIVE DESIGN - MIS RESERVAS ===== */
 
-/* Tablet (768px - 1024px) */
+/* Desktop Large (1200px+) */
+@media (max-width: 1200px) {
+  .container {
+    padding-top: calc(60px + 32px);
+  }
+}
+
+/* Tablet (992px - 1024px) */
 @media (max-width: 1024px) {
   .container {
-    padding: 24px 16px;
+    padding: 24px 16px 90px 16px;
+    padding-top: calc(56px + 24px);
   }
   
   .reservasGrid {
@@ -630,12 +639,19 @@
   }
 }
 
+/* Tablet Small (576px - 768px) */
+@media (max-width: 992px) {
+  .container {
+    padding-top: calc(56px + 32px);
+  }
+}
+
 /* Mobile Large (481px - 767px) */
 @media (max-width: 768px) {
   .container {
-    padding: 20px 12px;
-    margin-top: 64px;
-    padding-top: 32px;
+    padding: 20px 12px 80px 12px;
+    margin: 0;
+    padding-top: calc(52px + 20px);
   }
 
   .titulo {
@@ -712,12 +728,19 @@
   }
 }
 
+/* Mobile Medium (481px - 576px) */
+@media (max-width: 576px) {
+  .container {
+    padding-top: calc(48px + 20px);
+  }
+}
+
 /* Mobile (320px - 480px) */
 @media (max-width: 480px) {
   .container {
-    padding: 16px 8px;
-    margin-top: 64px;
-    padding-top: 24px;
+    padding: 16px 8px 70px 8px;
+    margin: 0;
+    padding-top: calc(46px + 16px);
   }
 
   .titulo {
@@ -811,7 +834,8 @@
 /* Mobile Small (320px - 374px) */
 @media (max-width: 374px) {
   .container {
-    padding: 12px 6px;
+    padding: 12px 6px 60px 6px;
+    padding-top: calc(44px + 12px);
   }
   
   .titulo {

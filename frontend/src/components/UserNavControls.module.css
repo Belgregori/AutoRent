@@ -1,7 +1,7 @@
-.navBar {
+﻿.navBar {
   position: fixed;
-  right: 12px;
-  bottom: 12px;
+  right: 10px;
+  bottom: 10px;
   z-index: 1000;
   display: flex;
   justify-content: flex-end;
@@ -10,10 +10,10 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 16px;
-  padding: 10px 14px;
+  border-radius: 12px;
+  padding: 6px 10px;
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 6px 24px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
   width: fit-content;
   transition: all 0.3s ease;
@@ -23,39 +23,42 @@
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.4);
   box-shadow: 
-    0 12px 40px rgba(0, 0, 0, 0.3),
+    0 8px 30px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .counter {
   font-weight: 700;
   color: var(--color-blanco);
-  font-size: 0.9rem;
-  margin-right: 10px;
+  font-size: 0.75rem;
+  margin-right: 8px;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  min-width: 16px;
+  text-align: center;
 }
 
 .actions { 
   display: flex; 
-  gap: 8px; 
+  gap: 5px; 
 }
 
 .btn {
   background: rgba(37, 99, 235, 0.4);
   backdrop-filter: blur(10px);
   color: var(--color-blanco);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 10px;
-  padding: 8px 14px;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 5px 10px;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   font-weight: 600;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+  box-shadow: 0 3px 12px rgba(37, 99, 235, 0.2);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   position: relative;
   overflow: hidden;
+  white-space: nowrap;
 }
 
 .btn::before {
@@ -77,28 +80,133 @@
 .btn:hover { 
   background: rgba(37, 99, 235, 0.6);
   border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+  transform: translateY(-1px) scale(1.03);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
 }
 
 .btn:active { 
   transform: translateY(0) scale(0.98);
 }
 
-@media (max-width: 768px) {
-  .navBar { 
-    top: 56px; 
-    right: 8px; 
-    bottom: auto; 
-    padding: 8px 12px; 
-  }
-  
-  .btn { 
-    padding: 6px 12px; 
-    font-size: 0.8rem; 
+/* Pantallas grandes (TV, monitores grandes) */
+@media (min-width: 1400px) {
+  .navBar {
+    right: 16px;
+    bottom: 16px;
+    padding: 8px 12px;
+    border-radius: 14px;
   }
   
   .counter {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    margin-right: 10px;
+  }
+  
+  .btn {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    border-radius: 10px;
+  }
+  
+  .actions {
+    gap: 6px;
+  }
+}
+
+/* Tablets portrait */
+@media (min-width: 768px) and (max-width: 991px) {
+  .navBar {
+    right: 8px;
+    bottom: 8px;
+    padding: 5px 8px;
+  }
+  
+  .counter {
+    font-size: 0.7rem;
+    margin-right: 6px;
+  }
+  
+  .btn {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+  }
+  
+  .actions {
+    gap: 4px;
+  }
+}
+
+/* Moviles grandes */
+@media (min-width: 576px) and (max-width: 767px) {
+  .navBar { 
+    right: 6px; 
+    bottom: 6px; 
+    padding: 5px 8px;
+    border-radius: 10px;
+  }
+  
+  .counter {
+    font-size: 0.65rem;
+    margin-right: 5px;
+  }
+  
+  .btn { 
+    padding: 4px 7px; 
+    font-size: 0.6rem;
+    border-radius: 6px;
+  }
+  
+  .actions {
+    gap: 4px;
+  }
+}
+
+/* Moviles pequenos */
+@media (max-width: 575px) {
+  .navBar { 
+    right: 5px; 
+    bottom: 5px; 
+    padding: 4px 6px;
+    border-radius: 8px;
+  }
+  
+  .counter {
+    font-size: 0.6rem;
+    margin-right: 4px;
+    min-width: 14px;
+  }
+  
+  .btn { 
+    padding: 3px 6px; 
+    font-size: 0.55rem;
+    border-radius: 5px;
+    letter-spacing: 0.2px;
+  }
+  
+  .actions {
+    gap: 3px;
+  }
+}
+
+/* Moviles muy pequenos */
+@media (max-width: 375px) {
+  .navBar { 
+    right: 4px; 
+    bottom: 4px;
+    padding: 3px 5px;
+  }
+  
+  .counter {
+    font-size: 0.55rem;
+    margin-right: 3px;
+  }
+  
+  .btn { 
+    padding: 3px 5px; 
+    font-size: 0.5rem;
+  }
+  
+  .actions {
+    gap: 2px;
   }
 }

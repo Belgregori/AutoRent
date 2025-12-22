@@ -1,6 +1,6 @@
 .container {
   min-height: calc(100vh - 64px);
-  padding: 100px 20px 60px;
+  padding: 100px 20px 100px 20px;
   background: linear-gradient(135deg, 
     #1e3a8a 0%, 
     #1e40af 14%, 
@@ -678,7 +678,7 @@
 /* Tablet (768px - 1024px) */
 @media (max-width: 1024px) {
   .container {
-    padding: 90px 16px 32px 16px;
+    padding: 90px 16px 90px 16px;
   }
   
   .favoritosGrid {
@@ -702,7 +702,7 @@
 /* Mobile Large (481px - 767px) */
 @media (max-width: 768px) {
   .container {
-    padding: 80px 12px 24px 12px;
+    padding: 80px 12px 80px 12px;
   }
   
   .title {
@@ -767,7 +767,7 @@
 /* Mobile (320px - 480px) */
 @media (max-width: 480px) {
   .container {
-    padding: 70px 8px 20px 8px;
+    padding: 70px 8px 70px 8px;
   }
   
   .title {
@@ -854,7 +854,7 @@
 /* Mobile Small (320px - 374px) */
 @media (max-width: 374px) {
   .container {
-    padding: 60px 6px 16px 6px;
+    padding: 60px 6px 60px 6px;
   }
   
   .title {

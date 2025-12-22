@@ -21,6 +21,17 @@ body{
     padding: 0;
     box-sizing: border-box;
     font-family: var(--font-family-base);
+    background: linear-gradient(135deg, 
+      #1e3a8a 0%, 
+      #1e40af 14%, 
+      #2563eb 28%, 
+      #3b82f6 42%, 
+      #60a5fa 56%, 
+      #93c5fd 70%, 
+      #bfdbfe 84%, 
+      #3b82f6 100%);
+    background-size: 400% 400%;
+    min-height: 100vh;
 }
 
 
@@ -32,7 +43,16 @@ html, body, #root {
   padding: 0;
   box-sizing: border-box;
   overflow-x: hidden;
-  
+  background: linear-gradient(135deg, 
+    #1e3a8a 0%, 
+    #1e40af 14%, 
+    #2563eb 28%, 
+    #3b82f6 42%, 
+    #60a5fa 56%, 
+    #93c5fd 70%, 
+    #bfdbfe 84%, 
+    #3b82f6 100%);
+  background-size: 400% 400%;
 }
 
 

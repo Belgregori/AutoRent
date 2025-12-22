@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.25rem;
+  padding: 1.25rem 1.25rem 100px 1.25rem;
   box-sizing: border-box;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -222,7 +222,7 @@
 @media (max-width: 1024px) {
   .registerContainer {
     padding-top: 4.5rem;
-    padding: 1.125rem;
+    padding: 1.125rem 1.125rem 90px 1.125rem;
   }
 
   .registerCard {
@@ -247,7 +247,7 @@
 @media (max-width: 768px) {
   .registerContainer {
     padding-top: 4rem;
-    padding: 1rem;
+    padding: 1rem 1rem 80px 1rem;
     min-height: calc(100vh - 64px);
   }
 
@@ -304,7 +304,7 @@
 @media (max-width: 480px) {
   .registerContainer {
     padding-top: 3.5rem;
-    padding: 0.75rem;
+    padding: 0.75rem 0.75rem 70px 0.75rem;
   }
 
   .registerCard {
@@ -377,7 +377,7 @@
 /* Mobile Small (320px - 374px) */
 @media (max-width: 374px) {
   .registerContainer {
-    padding: 0.625rem;
+    padding: 0.625rem 0.625rem 60px 0.625rem;
     padding-top: 3rem;
   }
 

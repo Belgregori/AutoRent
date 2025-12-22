@@ -22,10 +22,11 @@ El sistema permite a los usuarios **buscar, reservar y gestionar vehículos** f�
 - [🧪 10. Testing](#10-testing)
 - [🚀 11. Deploy](#11-deploy)
 - [💡 12. Solución de Problemas](#12-solución-de-problemas)
-- [🤝 13. Contribución](#13-contribución)
-- [✨ 14. Licencia](#14-licencia)
-- [👩‍💻 15. Autora y Contacto](#15-autora-y-contacto)
-- [🖼️ 16. Imágenes](#16-imágenes)
+- [🔐 13. Sistema de Autenticación y Roles](#13-sistema-de-autenticación-y-roles)
+- [🤝 14. Contribución](#14-contribución)
+- [✨ 15. Licencia](#15-licencia)
+- [👩‍💻 16. Autora y Contacto](#16-autora-y-contacto)
+- [🖼️ 17. Imágenes](#17-imágenes)
 
 ---
 
@@ -189,7 +190,7 @@ kill -9 <PID>
 1. En `application.properties`, cambiá `server.port=8080` por `server.port=0`
 2. Ejecutá `mvn spring-boot:run`
 3. En la consola aparecerá el puerto asignado, por ejemplo: `Tomcat started on port(s): 54321`
-4. Actualizá el archivo `frontend/front-alquiler-autos/vite.config.js` con ese puerto:
+4. Actualizá el archivo `frontend/vite.config.js` con ese puerto:
    ```javascript
    target: 'http://localhost:54321'  // Reemplazar en todos los proxy
    ```
@@ -198,15 +199,24 @@ kill -9 <PID>
 
 ### 5.2 Frontend (React + Vite)
 
+⚠️ **IMPORTANTE: Primero debes levantar el backend antes de ejecutar el frontend.**
+
 ```bash
-cd frontend/front-alquiler-autos
+# Desde la raíz del proyecto
+cd frontend
 npm install
 npm run dev
 ```
 
 **Servidor:** http://localhost:5173
 
+#### Verificar Puerto del Backend
+
+Antes de ejecutar el frontend, verifica que el backend esté corriendo en el puerto **8080**. Si el backend está en otro puerto, deberás actualizar el archivo `vite.config.js`.
+
 #### Proxy en `vite.config.js`
+
+El frontend está configurado para conectarse al backend mediante un proxy. En `vite.config.js`:
 
 ```javascript
 server: {
@@ -231,11 +241,16 @@ server: {
       changeOrigin: true,
       secure: false,
     },
+    '/admin': {
+      target: 'http://localhost:8080',
+      changeOrigin: true,
+      secure: false,
+    },
   },
 }
 ```
 
-> 💡 Si usaste puerto dinámico en el backend, recordá actualizar el `target` con el puerto real.
+> 💡 Si usaste puerto dinámico en el backend, recordá actualizar el `target` con el puerto real en todas las configuraciones del proxy.
 
 ---
 
@@ -253,14 +268,21 @@ server: {
 | `JWT_SECRET` | Clave JWT | `claveSuperSecreta` |
 | `EMAIL_USERNAME` | Email | `tu_email@gmail.com` |
 | `EMAIL_PASSWORD` | App password | `app_password` |
+| `EMAIL_FROM` | Email remitente | `tu_email@gmail.com` |
 | `FRONTEND_URL` | URL frontend | `http://localhost:5173` |
 
-### Frontend `.env.example`
+### Configuración de Gmail para Emails
 
-```bash
-VITE_API_URL=http://localhost:8080/api
-VITE_APP_NAME=AutoRent
-```
+Para que el sistema de notificaciones por email funcione:
+
+1. Ir a tu cuenta de Gmail
+2. Configuración → Seguridad → Verificación en 2 pasos (activar)
+3. Contraseñas de aplicaciones → Generar contraseña
+4. Usar esa contraseña en `EMAIL_PASSWORD` del archivo `.env`
+
+### Frontend
+
+El frontend no requiere variables de entorno - funciona directamente con la configuración del proxy en `vite.config.js`.
 
 ---
 
@@ -320,10 +342,28 @@ Usuario (1) ←→ (N) Resena (N) ←→ (1) Producto
 | | `DELETE` | `/api/categorias/{id}` | Eliminar categoría | ✅ |
 | **Características** | `GET` | `/api/caracteristicas` | Listar características | ❌ |
 | | `POST` | `/api/caracteristicas` | Crear característica | ✅ |
+| | `PUT` | `/api/caracteristicas/{id}` | Actualizar característica | ✅ |
 | | `DELETE` | `/api/caracteristicas/{id}` | Eliminar característica | ✅ |
 | **Administración** | `GET` | `/api/admin/users` | Listar usuarios | ✅ Admin |
+| | `GET` | `/api/admin/users-with-permissions` | Usuarios con permisos | ✅ Admin |
 | | `GET` | `/api/admin/permissions` | Listar permisos | ✅ Admin |
+| | `GET` | `/api/admin/users/{id}/permissions` | Permisos de usuario | ✅ Admin |
 | | `PATCH` | `/api/admin/users/{id}/permissions` | Asignar permisos | ✅ Admin |
+| | `PATCH` | `/api/admin/users/{id}/role` | Asignar rol | ✅ Admin |
+| **Productos** | `GET` | `/api/productos/random` | Productos aleatorios | ❌ |
+| | `GET` | `/api/productos/por-caracteristica/{caractId}` | Filtrar por característica | ❌ |
+| | `PUT` | `/api/productos/{id}` | Actualizar producto | ✅ |
+| | `POST` | `/api/productos/{id}/caracteristicas` | Asociar característica | ✅ |
+| **Reservas** | `GET` | `/api/reservas/{reservaId}` | Obtener reserva específica | ✅ |
+| | `PUT` | `/api/reservas/{reservaId}/cancelar` | Cancelar reserva | ✅ |
+| | `PUT` | `/api/reservas/usuario/{reservaId}/confirmar` | Confirmar reserva | ✅ |
+| | `DELETE` | `/api/reservas/usuario/{reservaId}` | Eliminar reserva | ✅ |
+| | `GET` | `/api/reservas/admin/estadisticas` | Estadísticas (Admin) | ✅ Admin |
+| **Reseñas** | `GET` | `/api/resenas/producto/{productoId}/puede-valorar` | Verificar si puede valorar | ✅ |
+| **Favoritos** | `GET` | `/api/favoritos/verificar/{productoId}` | Verificar si es favorito | ✅ |
+| **Usuarios** | `GET` | `/usuarios` | Listar todos los usuarios | ✅ |
+| | `GET` | `/usuarios/{email}` | Obtener usuario por email | ✅ |
+| | `PUT` | `/usuarios/{email}` | Actualizar usuario | ✅ |
 
 ---
 
@@ -335,37 +375,99 @@ AutoRent/
 │   ├── src/
 │   │   ├── main/
 │   │   │   ├── java/com/autoRent/autoRent/
-│   │   │   │   ├── controller/
-│   │   │   │   ├── service/
-│   │   │   │   ├── repository/
-│   │   │   │   ├── model/
-│   │   │   │   ├── DTO/
-│   │   │   │   ├── configuration/
+│   │   │   │   ├── controller/          # Controladores REST
+│   │   │   │   │   ├── UsuarioController.java
+│   │   │   │   │   ├── ProductoController.java
+│   │   │   │   │   ├── ReservaController.java
+│   │   │   │   │   ├── FavoritoController.java
+│   │   │   │   │   ├── ResenaController.java
+│   │   │   │   │   ├── CategoriaController.java
+│   │   │   │   │   ├── CaracteristicaController.java
+│   │   │   │   │   ├── AdminController.java
+│   │   │   │   │   └── EmailController.java
+│   │   │   │   ├── service/             # Lógica de negocio
+│   │   │   │   │   ├── UsuarioService.java
+│   │   │   │   │   ├── ProductoService.java
+│   │   │   │   │   ├── ReservaService.java
+│   │   │   │   │   ├── FavoritoService.java
+│   │   │   │   │   ├── ResenaService.java
+│   │   │   │   │   ├── CategoriaService.java
+│   │   │   │   │   ├── CaracteristicaService.java
+│   │   │   │   │   ├── EmailService.java
+│   │   │   │   │   └── PermissionService.java
+│   │   │   │   ├── repository/          # Acceso a datos
+│   │   │   │   │   ├── UsuarioRepository.java
+│   │   │   │   │   ├── ProductoRepository.java
+│   │   │   │   │   ├── ReservaRepository.java
+│   │   │   │   │   └── ...
+│   │   │   │   ├── model/               # Entidades JPA
+│   │   │   │   │   ├── Usuario.java
+│   │   │   │   │   ├── Producto.java
+│   │   │   │   │   ├── Reserva.java
+│   │   │   │   │   └── ...
+│   │   │   │   ├── DTO/                 # Objetos de transferencia
+│   │   │   │   │   ├── ReservaRequest.java
+│   │   │   │   │   ├── ResenaRequest.java
+│   │   │   │   │   └── ...
+│   │   │   │   ├── configuration/       # Configuración Spring
+│   │   │   │   │   ├── JwtUtil.java
+│   │   │   │   │   ├── JwtRequestFilter.java
+│   │   │   │   │   └── ...
 │   │   │   │   └── AutoRentApplication.java
 │   │   │   └── resources/
 │   │   │       └── application.properties
-│   │   └── test/
-│   ├── uploads/imagenes/
-│   ├── pom.xml
-│   ├── .env
-│   └── README.md
+│   │   └── test/                        # Tests unitarios e integración
+│   │       ├── java/com/autoRent/autoRent/
+│   │       │   ├── controller/
+│   │       │   ├── service/
+│   │       │   └── repository/
+│   ├── uploads/imagenes/                # Imágenes subidas
+│   ├── target/                         # Archivos compilados
+│   ├── pom.xml                         # Configuración Maven
+│   ├── .env                           # Variables de entorno
+│   └── env.example                    # Plantilla de variables
 │
 ├── frontend/
-│   └── front-alquiler-autos/
-│       ├── src/
-│       │   ├── components/
-│       │   ├── pages/
-│       │   ├── pagesUser/
-│       │   ├── hooks/
-│       │   ├── utils/
-│       │   ├── App.jsx
-│       │   └── main.jsx
-│       ├── public/
-│       ├── vite.config.js
-│       ├── package.json
-│       └── README.md
+│   ├── src/
+│   │   ├── components/           # Componentes reutilizables
+│   │   │   ├── Header.jsx       # Cabecera de la aplicación
+│   │   │   ├── Footer.jsx       # Pie de página
+│   │   │   ├── Main.jsx         # Componente principal del home
+│   │   │   ├── FormularioReserva.jsx
+│   │   │   ├── SistemaValoracion.jsx
+│   │   │   ├── WhatsAppButton.jsx
+│   │   │   └── ...
+│   │   ├── pages/               # Páginas de administración
+│   │   │   ├── Adminpage.jsx    # Panel principal de admin
+│   │   │   ├── LoginPage.jsx    # Página de login
+│   │   │   ├── AgregarProductos.jsx
+│   │   │   ├── ListaProductos.jsx
+│   │   │   ├── AdministrarCaracteristicas.jsx
+│   │   │   └── ...
+│   │   ├── pagesUser/           # Páginas del usuario final
+│   │   │   ├── Home.jsx         # Página de inicio
+│   │   │   ├── DetalleProducto.jsx
+│   │   │   ├── ProfilePage.jsx  # Perfil de usuario
+│   │   │   ├── FavoritosPage.jsx
+│   │   │   ├── MisReservasPage.jsx
+│   │   │   └── RegisterPage.jsx
+│   │   ├── hooks/               # Hooks personalizados
+│   │   │   ├── useReservas.js   # Hook para gestión de reservas
+│   │   │   ├── useFavoritos.js  # Hook para favoritos
+│   │   │   ├── useResenas.js    # Hook para reseñas
+│   │   │   └── ...
+│   │   ├── utils/               # Utilidades y helpers
+│   │   │   └── errorHandler.js  # Manejo de errores
+│   │   ├── test/                # Configuración de testing
+│   │   │   └── msw/             # Mock Service Worker
+│   │   ├── App.jsx              # Componente principal
+│   │   └── main.jsx             # Punto de entrada
+│   ├── public/                  # Archivos estáticos
+│   ├── vite.config.js           # Configuración de Vite
+│   ├── package.json             # Dependencias y scripts
+│   └── jest.config.js           # Configuración de Jest
 │
-└── README.md
+└── README.md                     # Este archivo
 ```
 
 ---
@@ -375,17 +477,41 @@ AutoRent/
 ### Backend
 
 ```bash
+# Ejecutar todos los tests
 mvn test
+
+# Ejecutar tests específicos
+mvn test -Dtest=CaracteristicaServiceTest
+mvn test -Dtest=UsuarioControllerTests
+
+# Ejecutar tests con reporte de cobertura
 mvn test jacoco:report
 ```
+
+**Tipos de Tests:**
+- **Tests Unitarios**: Servicios y lógica de negocio
+- **Tests de Integración**: Controladores REST
+- **Tests de Repositorio**: Acceso a datos
+- **Cobertura**: Más de 50 tests implementados
 
 ### Frontend
 
 ```bash
+# Ejecutar todos los tests
 npm run test
+
+# Ejecutar tests en modo watch (desarrollo)
 npm run test:watch
+
+# Ejecutar tests con cobertura
 npm run test -- --coverage
 ```
+
+**Herramientas de Testing:**
+- **Jest**: Framework de testing principal
+- **React Testing Library**: Utilidades para testing de componentes React
+- **MSW**: Mock Service Worker para simular respuestas del backend
+- **jsdom**: Entorno de testing que simula el DOM del navegador
 
 ---
 
@@ -393,20 +519,78 @@ npm run test -- --coverage
 
 ### Backend (Railway / Render / Heroku)
 
+#### Opción 1: Railway (Recomendado)
+```bash
+# Conectar repositorio
+# Configurar variables de entorno en dashboard
+# Deploy automático en cada push
+```
+
+#### Opción 2: Render
+```bash
+# Conectar repositorio
+# Configurar build command: mvn clean package
+# Configurar start command: java -jar target/autoRent-0.0.1-SNAPSHOT.jar
+# Configurar variables de entorno
+```
+
+#### Opción 3: Heroku
+```bash
+# Crear Procfile
+echo "web: java -jar target/autoRent-0.0.1-SNAPSHOT.jar" > Procfile
+
+# Deploy
+git push heroku main
+```
+
+**Comandos para compilar:**
 ```bash
 mvn clean package
 java -jar target/autoRent-0.0.1-SNAPSHOT.jar
 ```
 
+**Variables de entorno para producción:**
+```bash
+DB_PASSWORD=password_produccion_seguro
+MAIL_PASSWORD=app_password_gmail_produccion
+JWT_SECRET=clave_super_secreta_produccion
+SPRING_PROFILES_ACTIVE=prod
+```
+
 ### Frontend (Vercel / Netlify / GitHub Pages)
 
+#### Opción 1: Vercel (Recomendado)
 ```bash
-npm run build
+# Instalar Vercel CLI
+npm i -g vercel
+
+# Deploy
 vercel
 ```
 
-**Variables de entorno en producción:**
+#### Opción 2: Netlify
+```bash
+# Construir la aplicación
+npm run build
 
+# Subir la carpeta dist/ a Netlify
+# Configurar variables de entorno en Netlify
+```
+
+#### Opción 3: GitHub Pages
+```bash
+# Instalar gh-pages
+npm install --save-dev gh-pages
+
+# Agregar script al package.json
+# "deploy": "gh-pages -d dist"
+
+# Deploy
+npm run build
+npm run deploy
+```
+
+**Variables de entorno en producción:**
 ```bash
 VITE_API_URL=https://tu-backend-deploy/api
 VITE_APP_NAME=AutoRent
@@ -417,36 +601,101 @@ VITE_APP_NAME=AutoRent
 ## 12. Solución de Problemas
 
 ### ❌ Error: Could not connect to database
-- Verificar MySQL corriendo
-- Revisar `.env`
-- Confirmar base de datos creada
+
+```bash
+# Verificar que MySQL esté corriendo
+net start mysql  # Windows
+sudo systemctl start mysql  # Linux
+
+# Verificar credenciales en .env
+# Verificar que la base de datos existe
+mysql -u root -p -e "SHOW DATABASES;"
+```
 
 ### ❌ Error: Port 8080 already in use
 
 ```bash
-# Windows
-netstat -ano | findstr :8080
-taskkill /PID <PID> /F
+# Encontrar proceso usando puerto 8080
+netstat -ano | findstr :8080  # Windows
+lsof -i :8080  # Linux/Mac
 
-# Linux/Mac
-lsof -i :8080
-kill -9 <PID>
+# Matar proceso
+taskkill /PID <PID> /F  # Windows
+kill -9 <PID>  # Linux/Mac
 ```
 
 O usar `server.port=0` en `application.properties` y actualizar `vite.config.js` con el puerto asignado.
 
+### ❌ Error: Java version not found
+
+```bash
+# Verificar JAVA_HOME
+echo $JAVA_HOME  # Linux/Mac
+echo %JAVA_HOME%  # Windows
+
+# Configurar JAVA_HOME si es necesario
+```
+
 ### ❌ Error: Maven not found
-- Agregar Maven al PATH
+
+```bash
+# Verificar PATH
+echo $PATH  # Linux/Mac
+echo %PATH%  # Windows
+
+# Agregar Maven al PATH si es necesario
+```
 
 ### ❌ Error: Node modules not found
+
 ```bash
-cd frontend/front-alquiler-autos
+cd frontend
 npm install
 ```
 
+### ❌ Error: Frontend no se conecta al backend
+
+1. Verificar que el backend esté corriendo en `http://localhost:8080`
+2. Verificar que el puerto en `vite.config.js` coincida con el puerto del backend
+3. Verificar CORS en el backend para permitir peticiones desde `http://localhost:5173`
+4. Revisar la consola del navegador para errores de conexión
+
 ---
 
-## 13. Contribución
+## 13. Sistema de Autenticación y Roles
+
+### Autenticación
+
+El sistema utiliza **JWT (JSON Web Tokens)** para la autenticación:
+- Los tokens se almacenan en `localStorage`
+- Se incluyen automáticamente en las peticiones HTTP
+- Redirección automática al login si el token expira
+
+### Roles y Permisos
+
+#### Roles Disponibles:
+- **USER**: Usuario final (puede reservar, ver favoritos, etc.)
+- **ADMIN**: Administrador (acceso completo al panel de admin)
+
+#### Rutas Protegidas:
+
+El frontend implementa rutas protegidas mediante el componente `PrivateRoute`:
+- Rutas solo para usuarios autenticados
+- Rutas solo para administradores
+- Redirección automática si no se cumplen los permisos
+
+### Usuario Administrador por Defecto
+
+Al levantar el backend por primera vez, si la base de datos está vacía, el sistema crea automáticamente un usuario administrador:
+
+- **Email:** admin@ejemplo.com
+- **Contraseña:** admin123
+
+> ⚠️ Se recomienda cambiar estas credenciales al usar el proyecto fuera de un entorno de desarrollo.
+
+---
+
+## 14. Contribución
 
 1. Hacer fork del repositorio
 2. Crear rama de feature: `git checkout -b feature/nueva-funcionalidad`
@@ -454,24 +703,30 @@ npm install
 4. Push: `git push origin feature/nueva-funcionalidad`
 5. Crear Pull Request
 
+### Estándares de código:
+- Usar **ESLint** para mantener código limpio
+- Escribir **tests** para nuevas funcionalidades
+- Seguir las **convenciones de naming** del proyecto
+- Documentar funciones complejas
+
 ---
 
-## 14. Licencia
+## 15. Licencia
 
 Este proyecto está bajo la **Licencia MIT**.
 
 ---
 
-## 15. Autora y Contacto
+## 16. Autora y Contacto
 
-**Romina Belgregori**
+**Romina Belgregori** - Desarrolladora Full Stack
 
 - 📧 autorentargentina@gmail.com
 - 📦 [Repositorio GitHub](https://github.com/Belgregori/AutoRent)
 
 ---
 
-## 16. Imágenes
+## 17. Imágenes
 
 ### Home
 ![Home](https://github.com/user-attachments/assets/b3604cff-home.png)
